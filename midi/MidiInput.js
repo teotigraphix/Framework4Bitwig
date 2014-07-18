@@ -7,7 +7,7 @@ function MidiInput ()
 {
 }
 
-MidiInput.prototype.init = function (f)
+MidiInput.prototype.init = function ()
 {
     this.port = host.getMidiInPort (0);
 };
@@ -19,5 +19,5 @@ MidiInput.prototype.setMidiCallback = function (f)
 
 MidiInput.prototype.createNoteInput = function ()
 {
-    return this.port.createNoteInput ();
+    return null;
 };

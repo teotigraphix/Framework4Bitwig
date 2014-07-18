@@ -35,7 +35,7 @@ Model.prototype.getSelectedDevice = function ()
 };
 
 /**
- * @returns {TransportProxy|
+ * @returns {TransportProxy}
  */
 Model.prototype.getTransport = function () { return this.transport; };
 
