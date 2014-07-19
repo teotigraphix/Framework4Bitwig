@@ -58,6 +58,11 @@ ControlSurface.prototype.configure = function (config)
     this.shiftButtonId = config.shiftButtonId;
     this.display = config.display;
 
+    this.model.getTrackBank ().addTrackSelectionListener (doObject (this, function (index, isSelected)
+    {
+        this.onSelectedTrackChanged (index, isSelected);
+    }));
+
     this.input.init ();
     this.input.setMidiCallback (doObject (this, this.handleMidi));
 
@@ -65,6 +70,10 @@ ControlSurface.prototype.configure = function (config)
 
     for (var i = 0; i < this.buttons.length; i++)
         this.buttonStates[this.buttons[i]] = ButtonEvent.UP;
+};
+
+ControlSurface.prototype.onSelectedTrackChanged = function (index, isSelected)
+{
 };
 
 //--------------------------------------
@@ -106,6 +115,7 @@ ControlSurface.prototype.redrawGrid = function ()
         return;
     view.drawGrid ();
     //this.pads.flush ();
+
 };
 
 ControlSurface.prototype.shutdown = function ()
@@ -285,19 +295,12 @@ ControlSurface.prototype.isPressed = function (button)
 
 ControlSurface.prototype.handleMidi = function (status, data1, data2)
 {
-    var channel = MIDIChannel (status);
-    if (!this.isActiveMode (channel))
-    {
-        this.setActiveMode (channel);
-        this.scheduledFlush ();
-    }
-
     switch (status & 0xF0)
     {
         case 0x80:
         case 0x90:
             if (this.isGridNote (data1))
-                this.handleGrid (data1, data2);
+                this.handleGridNote (data1, data2);
             else
                 this.handleTouch (data1, data2);
             break;
@@ -308,11 +311,13 @@ ControlSurface.prototype.handleMidi = function (status, data1, data2)
     }
 };
 
-ControlSurface.prototype.handleGrid = function (note, velocity)
+ControlSurface.prototype.handleGridNote = function (note, velocity)
 {
+    //println("ControlSurface.handleGridNote()");
+
     var view = this.getActiveView ();
     if (view != null)
-        view.onGridTouch (note, velocity);
+        view.onGridNote (note, velocity);
 };
 
 ControlSurface.prototype.handleTouch = function (knob, value) {
@@ -364,7 +369,7 @@ ControlSurface.prototype.checkButtonState = function (buttonID)
 
 ControlSurface.prototype.isGridNote = function (note)
 {
-    return this.gridNotes[note -12] != null;
+    return this.gridNotes[note - this.gridNotes[0]] != null;
 };
 
 ControlSurface.prototype.getFractionValue = function ()
