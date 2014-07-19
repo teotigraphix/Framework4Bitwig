@@ -78,6 +78,7 @@ ControlSurface.prototype.setButton = function (button, state)
 
 ControlSurface.prototype.flush = function ()
 {
+   // println("ControlSurface.flush()");
     if (this.taskReturning)
     {
         this.taskReturning = false;
@@ -94,11 +95,31 @@ ControlSurface.prototype.flush = function ()
             this.taskReturning = true;
         }), null, 5);
     }
-    //this.redrawGrid ();
+    this.redrawGrid ();
 }
+
+ControlSurface.prototype.redrawGrid = function ()
+{
+    //println("ControlSurface.redrawGrid()");
+    var view = this.getActiveView ();
+    if (view == null)
+        return;
+    view.drawGrid ();
+    //this.pads.flush ();
+};
 
 ControlSurface.prototype.shutdown = function ()
 {
+};
+
+ControlSurface.prototype.setKeyTranslationTable = function (table)
+{
+    this.noteInput.setKeyTranslationTable (table);
+};
+
+ControlSurface.prototype.setVelocityTranslationTable = function (table)
+{
+    this.noteInput.setVelocityTranslationTable (table);
 };
 
 ControlSurface.prototype.scheduledFlush = function ()
@@ -264,7 +285,6 @@ ControlSurface.prototype.isPressed = function (button)
 
 ControlSurface.prototype.handleMidi = function (status, data1, data2)
 {
-    //println(MIDIChannel(status));
     var channel = MIDIChannel (status);
     if (!this.isActiveMode (channel))
     {
@@ -292,7 +312,7 @@ ControlSurface.prototype.handleGrid = function (note, velocity)
 {
     var view = this.getActiveView ();
     if (view != null)
-        view.onGrid (note, velocity);
+        view.onGridTouch (note, velocity);
 };
 
 ControlSurface.prototype.handleTouch = function (knob, value) {

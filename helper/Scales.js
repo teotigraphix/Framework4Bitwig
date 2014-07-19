@@ -4,6 +4,18 @@
 // (c) 2014
 // Licensed under GPLv3 - http://www.gnu.org/licenses/gpl.html
 
+//Scales.prototype.startNote = 36;
+//Scales.prototype.endNote = 100;
+
+Scales.startNote = 36;
+Scales.endNote = 52; // last note + 1
+
+//Scales.numColums = 8;
+//Scales.numRows = 8;
+
+Scales.numColumns = 4;
+Scales.numRows = 4;
+
 Scales.NOTE_NAMES    = [ 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B' ];
 Scales.BASES   = [ 'C', 'G', 'D', 'A', 'E', 'B', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb' ];
 Scales.OFFSETS = [  0,   7,   2,   9,   4,   11,  5,   10,   3,    8,    1,    6 ];
@@ -62,7 +74,7 @@ Scales.ORIENT_RIGHT  = 1;
 
 function Scales ()
 {
-    this.selectedScale = 0;      // Major
+    this.selectedScale = 1;      // Major
     this.scaleOffset   = 0;      // C
     this.scaleLayout   = Scales.FOURTH_UP;
     this.orientation   = Scales.ORIENT_UP;
@@ -205,21 +217,21 @@ Scales.prototype.getColor = function (noteMap, note)
 {
     var midiNote = noteMap[note];
     if (midiNote == -1)
-        return PUSH_COLOR_BLACK;
+        return NOTE_BLACK;
     var n = (midiNote - Scales.OFFSETS[this.scaleOffset]) % 12;
     if (n == 0)
-        return PUSH_COLOR2_OCEAN_HI;
+        return NOTE_OCEAN;
     if (this.isChromatic ())
     {
         var notes = Scales.INTERVALS[this.selectedScale].notes;
         for (var i = 0; i < notes.length; i++)
         {
             if (notes[i] == n)
-                return PUSH_COLOR2_WHITE;
+                return NOTE_WHITE;
         }
-        return PUSH_COLOR_BLACK;
+        return NOTE_BLACK;
     }
-    return PUSH_COLOR2_WHITE;
+    return NOTE_WHITE;
 };
 
 Scales.prototype.getSequencerColor = function (noteMap, note)
@@ -243,13 +255,14 @@ Scales.prototype.getSequencerColor = function (noteMap, note)
     return PUSH_COLOR2_WHITE;
 };
 
+
 Scales.prototype.getNoteMatrix = function ()
 {
     var matrix = this.getActiveMatrix ();
     var noteMap = this.getEmptyMatrix ();
-    for (var note = 36; note < 100; note++)
+    for (var note = Scales.startNote; note < Scales.endNote; note++)
     {
-        var n = matrix[note - 36] + Scales.OFFSETS[this.scaleOffset] + 36 + this.octave * 12;
+        var n = matrix[note - Scales.startNote] + Scales.OFFSETS[this.scaleOffset] + Scales.startNote + this.octave * 12;
         noteMap[note] = n < 0 || n > 127 ? -1 : n;
     }
     return noteMap;
@@ -276,9 +289,9 @@ Scales.prototype.getDrumMatrix = function ()
 {
     var matrix = Scales.DRUM_MATRIX;
     var noteMap = this.getEmptyMatrix ();
-    for (var note = 36; note < 100; note++)
+    for (var note = Scales.startNote; note < Scales.endNote; note++)
     {
-        var n = matrix[note - 36] == -1 ? -1 : matrix[note - 36] + 36 + this.drumOctave * 16;
+        var n = matrix[note - Scales.startNote] == -1 ? -1 : matrix[note - Scales.startNote] + Scales.startNote + this.drumOctave * 16;
         noteMap[note] = n < 0 || n > 127 ? -1 : n;
     }
     return noteMap;
@@ -302,15 +315,15 @@ Scales.prototype.createScale = function (scale)
     var matrix = [];
     var chromatic = [];
     var isUp = this.orientation == Scales.ORIENT_UP;
-    for (var row = 0; row < 8; row++)
+    for (var row = 0; row < Scales.numRows; row++)
     {
-        for (var column = 0; column < 8; column++)
+        for (var column = 0; column < Scales.numColumns; column++)
         {
             var y = isUp ? row : column;
             var x = isUp ? column : row;
             var offset = y * this.shift + x;
             matrix.push ((Math.floor (offset / len)) * 12 + scale.notes[offset % len]);
-            chromatic.push (y * (this.shift == 8 ? 8 : scale.notes[this.shift % len]) + x);
+            chromatic.push (y * (this.shift == Scales.numRows ? Scales.numRows : scale.notes[this.shift % len]) + x);
         }
     }
     return { name: scale.name, matrix: matrix, chromatic: chromatic };
@@ -327,3 +340,5 @@ Scales.prototype.generateMatrices = function ()
     for (var i = 0; i < Scales.INTERVALS.length; i++)
         this.scales.push (this.createScale (Scales.INTERVALS[i]));
 };
+
+

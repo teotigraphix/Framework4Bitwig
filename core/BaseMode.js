@@ -37,26 +37,26 @@ BaseMode.prototype.updateDisplay = function () {};
 
 BaseMode.prototype.updateFirstRow = function ()
 {
-    var tb = this.model.getTrackBank ();
-    var selTrack = tb.getSelectedTrack ();
-    var selIndex = selTrack == null ? -1 : selTrack.index;
-    for (var i = 0; i < 8; i++)
-    {
-        var isSel = i == selIndex;
-        // Light up selection and record buttons
-        this.push.setButton (20 + i, isSel ? PUSH_COLOR_ORANGE_LO : PUSH_COLOR_BLACK);
-    }
+//    var tb = this.model.getTrackBank ();
+//    var selTrack = tb.getSelectedTrack ();
+//    var selIndex = selTrack == null ? -1 : selTrack.index;
+//    for (var i = 0; i < 8; i++)
+//    {
+//        var isSel = i == selIndex;
+//        // Light up selection and record buttons
+//        this.push.setButton (20 + i, isSel ? PUSH_COLOR_ORANGE_LO : PUSH_COLOR_BLACK);
+//    }
 };
 
 BaseMode.prototype.updateSecondRow = function ()
 {
-    var tb = this.model.getTrackBank ();
-    for (var i = 0; i < 8; i++)
-    {
-        var t = tb.getTrack (i);
-        if (!this.hasSecondRowPriority)
-            this.push.setButton (102 + i, t.recarm ? PUSH_COLOR2_RED_LO : PUSH_COLOR2_BLACK);
-    }
+//    var tb = this.model.getTrackBank ();
+//    for (var i = 0; i < 8; i++)
+//    {
+//        var t = tb.getTrack (i);
+//        if (!this.hasSecondRowPriority)
+//            this.push.setButton (102 + i, t.recarm ? PUSH_COLOR2_RED_LO : PUSH_COLOR2_BLACK);
+//    }
 };
 
 BaseMode.prototype.drawTrackNames = function ()
