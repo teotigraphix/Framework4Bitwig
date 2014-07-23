@@ -156,6 +156,10 @@ function TrackBankProxy ()
         for (var j = 0; j < 6; j++)
         {
             var s = t.getSend (j);
+            s.addNameObserver (8, '', doObjectDoubleIndex (this, i, j, function (index1, index2, text)
+            {
+                this.tracks[index1].sends[index2].name = text;
+            }));
             s.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, function (index1, index2, value)
             {
                 this.tracks[index1].sends[index2].volume = value;
@@ -247,10 +251,17 @@ TrackBankProxy.prototype.select = function (index)
         t.select ();
 };
 
-TrackBankProxy.prototype.setVolume = function (index, value, fractionValue)
+TrackBankProxy.prototype.changeVolume = function (index, value, fractionValue)
 {
     var t = this.getTrack (index);
     t.volume = changeValue (value, t.volume, fractionValue, Config.maxParameterValue);
+    this.trackBank.getTrack (t.index).getVolume ().set (t.volume, Config.maxParameterValue);
+};
+
+TrackBankProxy.prototype.setVolume = function (index, value)
+{
+    var t = this.getTrack (index);
+    t.volume = value;
     this.trackBank.getTrack (t.index).getVolume ().set (t.volume, Config.maxParameterValue);
 };
 
@@ -259,10 +270,17 @@ TrackBankProxy.prototype.setVolumeIndication = function (index, indicate)
     this.trackBank.getTrack (index).getVolume ().setIndication (indicate);
 };
 
-TrackBankProxy.prototype.setPan = function (index, value, fractionValue)
+TrackBankProxy.prototype.changePan = function (index, value, fractionValue)
 {
     var t = this.getTrack (index);
     t.pan = changeValue (value, t.pan, fractionValue, Config.maxParameterValue);
+    this.trackBank.getTrack (t.index).getPan ().set (t.pan, Config.maxParameterValue);
+};
+
+TrackBankProxy.prototype.setPan = function (index, value, fractionValue)
+{
+    var t = this.getTrack (index);
+    t.pan = value;
     this.trackBank.getTrack (t.index).getPan ().set (t.pan, Config.maxParameterValue);
 };
 
@@ -304,11 +322,19 @@ TrackBankProxy.prototype.toggleArm = function (index)
     this.setArm (index, !this.getTrack (index).recarm);
 };
 
-TrackBankProxy.prototype.setSend = function (index, sendIndex, value, fractionValue)
+TrackBankProxy.prototype.changeSend = function (index, sendIndex, value, fractionValue)
 {
     var t = this.getTrack (index);
     var send = t.sends[sendIndex];
     send.volume = changeValue (value, send.volume, fractionValue, Config.maxParameterValue);
+    this.trackBank.getTrack (t.index).getSend (sendIndex).set (send.volume, Config.maxParameterValue);
+};
+
+TrackBankProxy.prototype.setSend = function (index, sendIndex, value)
+{
+    var t = this.getTrack (index);
+    var send = t.sends[sendIndex];
+    send.volume = value;
     this.trackBank.getTrack (t.index).getSend (sendIndex).set (send.volume, Config.maxParameterValue);
 };
 
