@@ -93,9 +93,15 @@ MasterTrackProxy.prototype.getPanString = function () { return this.panStr; };
 MasterTrackProxy.prototype.getVolume = function () { return this.volume; };
 MasterTrackProxy.prototype.getVolumeString = function () { return this.volumeStr; };
 
-MasterTrackProxy.prototype.setVolume = function (value, fractionValue)
+MasterTrackProxy.prototype.changeVolume = function (value, fractionValue)
 {
     this.volume = changeValue (value, this.volume, fractionValue, Config.maxParameterValue);
+    this.masterTrack.getVolume ().set (this.volume, Config.maxParameterValue);
+};
+
+MasterTrackProxy.prototype.setVolume = function (value)
+{
+    this.volume = value;
     this.masterTrack.getVolume ().set (this.volume, Config.maxParameterValue);
 };
 
@@ -104,9 +110,15 @@ MasterTrackProxy.prototype.setVolumeIndication = function (indicate)
     this.masterTrack.getVolume ().setIndication (indicate);
 };
 
-MasterTrackProxy.prototype.setPan = function (value, fractionValue)
+MasterTrackProxy.prototype.changePan = function (value, fractionValue)
 {
     this.pan = changeValue (value, this.pan, fractionValue, Config.maxParameterValue);
+    this.masterTrack.getPan ().set (this.pan, Config.maxParameterValue);
+};
+
+MasterTrackProxy.prototype.setPan = function (value)
+{
+    this.pan = value;
     this.masterTrack.getPan ().set (this.pan, Config.maxParameterValue);
 };
 

@@ -11,6 +11,7 @@ function CursorDeviceProxy ()
     this.hasPreviousParamPage = false;
 
     this.selectedParameterPage = -1;
+    this.parameterPageNames = null;
     this.presetWidth = 16;
     this.fxparams = [ { index: 0, name: '' }, { index: 1, name: '' }, { index: 2, name: '' }, { index: 3, name: '' }, { index: 4, name: '' }, { index: 5, name: '' }, { index: 6, name: '' }, { index: 7, name: '' } ];
     this.selectedDevice =
@@ -20,7 +21,9 @@ function CursorDeviceProxy ()
         hasPreviousDevice: false,
         hasNextDevice: false
     };
-    
+
+    this.isMacroMappings = initArray(false, 8);
+
     this.cursorDevice = host.createCursorDevice ();
 
     this.cursorDevice.addIsEnabledObserver (doObject (this, function (isEnabled)
@@ -46,6 +49,10 @@ function CursorDeviceProxy ()
     {
         this.selectedParameterPage = page;
     }));
+    this.cursorDevice.addPageNamesObserver(doObject (this,  function ()
+    {
+        this.parameterPageNames = arguments;
+    }));
 
     for (var i = 0; i < 8; i++)
     {
@@ -64,6 +71,12 @@ function CursorDeviceProxy ()
         p.addValueDisplayObserver (8, '',  doObjectIndex (this, i, function (index, value)
         {
             this.fxparams[index].valueStr = value;
+        }));
+
+        var m = this.getMacro(i).getModulationSource();
+        m.addIsMappingObserver (doObjectIndex (this, i, function (index, value)
+        {
+            this.isMacroMappings[index] = value;
         }));
     }
 
@@ -250,6 +263,16 @@ CursorDeviceProxy.prototype.getFXParam = function (index)
 CursorDeviceProxy.prototype.hasPreviousParameterPage = function ()
 {
     return this.selectedParameterPage > 0;
+};
+
+CursorDeviceProxy.prototype.getSelectedParameterPageName = function ()
+{
+    return this.selectedParameterPage >= 0 ? this.parameterPageNames[this.selectedParameterPage] : "";
+};
+
+CursorDeviceProxy.prototype.isMacroMapping = function (index)
+{
+    return this.isMacroMappings[index];
 };
 
 //--------------------------------------

@@ -3,7 +3,7 @@
 // (c) 2014
 // Licensed under GPLv3 - http://www.gnu.org/licenses/gpl.html
 
-function Model (userCCStart)
+function Model (userCCStart, scales)
 {
     this.application = new ApplicationProxy ();
     this.transport = new TransportProxy ();
@@ -13,7 +13,7 @@ function Model (userCCStart)
     this.userControlBank = new UserControlBankProxy (userCCStart);
     this.cursorDevice = new CursorDeviceProxy ();
 
-    this.scales = new Scales ();
+    this.scales = scales;
 }
 
 /**
@@ -35,7 +35,7 @@ Model.prototype.getSelectedDevice = function ()
 };
 
 /**
- * @returns {TransportProxy}
+ * @returns {TransportProxy|
  */
 Model.prototype.getTransport = function () { return this.transport; };
 
