@@ -9,6 +9,8 @@ function ControlSurfaceConfig (model, input, output, buttons, gridNotes)
 
     this.selectButtonId = -1;
     this.shiftButtonId = -1;
+
+    this.pads = null;
     this.display = null;
 }
 
@@ -38,6 +40,7 @@ function ControlSurface ()
     this.views = [];
 
     this.display = null;
+    this.pads = null;
 
     // Button related
     this.buttons = [];
@@ -56,6 +59,8 @@ ControlSurface.prototype.configure = function (config)
 
     this.selectButtonId = config.selectButtonId;
     this.shiftButtonId = config.shiftButtonId;
+
+    this.pads = config.pads;
     this.display = config.display;
 
     this.model.getTrackBank ().addTrackSelectionListener (doObject (this, function (index, isSelected)
@@ -114,8 +119,7 @@ ControlSurface.prototype.redrawGrid = function ()
     if (view == null)
         return;
     view.drawGrid ();
-    //this.pads.flush ();
-
+    this.pads.flush ();
 };
 
 ControlSurface.prototype.shutdown = function ()
