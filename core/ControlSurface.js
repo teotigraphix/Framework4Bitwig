@@ -75,10 +75,26 @@ ControlSurface.prototype.configure = function (config)
 
     for (var i = 0; i < this.buttons.length; i++)
         this.buttonStates[this.buttons[i]] = ButtonEvent.UP;
+
+    // TODO add in PUSH
+    this.model.getCursorDevice ().cursorDevice.addSelectedPageObserver (-1, doObject (this, function (page)
+    {
+        this.onSelectedPageChanged (page);
+    }));
 };
 
 ControlSurface.prototype.onSelectedTrackChanged = function (index, isSelected)
 {
+};
+
+ControlSurface.prototype.onSelectedPageChanged = function (index, isSelected)
+{
+    println("ControlSurface.onSelectedPageChanged()");
+    var m = this.getActiveMode ();
+    if (m != null)
+    {
+        m.updateDisplay();
+    }
 };
 
 //--------------------------------------
@@ -119,7 +135,8 @@ ControlSurface.prototype.redrawGrid = function ()
     if (view == null)
         return;
     view.drawGrid ();
-    this.pads.flush ();
+    if (this.pads != null)
+        this.pads.flush ();
 };
 
 ControlSurface.prototype.shutdown = function ()

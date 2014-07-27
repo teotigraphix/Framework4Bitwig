@@ -127,6 +127,38 @@ MasterTrackProxy.prototype.setPanIndication = function (indicate)
     this.masterTrack.getPan ().setIndication (indicate);
 };
 
+MasterTrackProxy.prototype.setMute = function (value)
+{
+    this.mute = value;
+    this.masterTrack.getMute ().set (value);
+};
+
+MasterTrackProxy.prototype.toggleMute = function ()
+{
+    this.setMute (!this.mute);
+};
+
+MasterTrackProxy.prototype.setSolo = function (value)
+{
+    this.solo = value;
+    this.masterTrack.getSolo ().set (value);
+};
+
+MasterTrackProxy.prototype.toggleSolo = function ()
+{
+    this.setSolo (!this.solo);
+};
+
+MasterTrackProxy.prototype.setArm = function (value)
+{
+    this.recarm = value;
+    this.masterTrack.getArm ().set (value);
+};
+
+MasterTrackProxy.prototype.toggleArm = function ()
+{
+    this.setArm (!this.recarm);
+};
 
 //--------------------------------------
 // Actions
