@@ -7,19 +7,17 @@ function CursorDeviceProxy ()
 {
     // TODO when parameter page enabled bug is fixed, these will be used
     // for knowing when to show 'Next' and 'Previous' entries
-    this.hasNextParameterPage = false;
+    this.hasNextParamPage = false;
     this.hasPreviousParamPage = false;
 
     this.selectedParameterPage = -1;
     this.parameterPageNames = null;
     this.presetWidth = 16;
-    this.fxparams = [ { index: 0, name: '' }, { index: 1, name: '' }, { index: 2, name: '' }, { index: 3, name: '' }, { index: 4, name: '' }, { index: 5, name: '' }, { index: 6, name: '' }, { index: 7, name: '' } ];
+    this.fxparams = this.createFXParams (8);
     this.selectedDevice =
     {
         name: 'None',
-        enabled: false,
-        hasPreviousDevice: false,
-        hasNextDevice: false
+        enabled: false
     };
 
     this.isMacroMappings = initArray(false, 8);
@@ -43,7 +41,7 @@ function CursorDeviceProxy ()
     }));
     this.cursorDevice.addNextParameterPageEnabledObserver (doObject (this, function (isEnabled)
     {
-        this.hasNextParameterPage = isEnabled;
+        this.hasNextParamPage = isEnabled;
     }));
     this.cursorDevice.addSelectedPageObserver (-1, doObject (this, function (page)
     {
@@ -265,6 +263,11 @@ CursorDeviceProxy.prototype.hasPreviousParameterPage = function ()
     return this.selectedParameterPage > 0;
 };
 
+CursorDeviceProxy.prototype.hasNextParameterPage = function ()
+{
+    return true;
+};
+
 CursorDeviceProxy.prototype.getSelectedParameterPageName = function ()
 {
     return this.selectedParameterPage >= 0 ? this.parameterPageNames[this.selectedParameterPage] : "";
@@ -273,6 +276,22 @@ CursorDeviceProxy.prototype.getSelectedParameterPageName = function ()
 CursorDeviceProxy.prototype.isMacroMapping = function (index)
 {
     return this.isMacroMappings[index];
+};
+
+CursorDeviceProxy.prototype.createFXParams = function (count)
+{
+    var fxparams = [];
+    for (var i = 0; i < count; i++)
+    {
+        fxparams.push (
+        {
+            index: i,
+            name: '',
+            valueStr: '',
+            value: 0,
+        });
+    }
+    return fxparams;
 };
 
 //--------------------------------------
