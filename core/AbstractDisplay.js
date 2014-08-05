@@ -3,16 +3,15 @@
 // (c) 2014
 // Licensed under GPLv3 - http://www.gnu.org/licenses/gpl.html
 
-function BaseDisplay ()
+function AbstractDisplay ()
 {
     this.output = null;
     this.currentMessage = [];
     this.message = [];
-
     this.cells = [];
 }
 
-BaseDisplay.prototype.init = function (output)
+AbstractDisplay.prototype.init = function (output)
 {
     this.output = output;
 };

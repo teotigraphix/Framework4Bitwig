@@ -3,33 +3,22 @@
 // (c) 2014
 // Licensed under GPLv3 - http://www.gnu.org/licenses/gpl.html
 
-function ControlSurfaceConfig (model, input, output, buttons, gridNotes)
+AbstractControlSurface.buttonStateInterval = 400;
+
+
+function AbstractControlSurface (output, input, buttons)
 {
-    this.model = model;
-    this.input = input;
+    if (output == null)
+        return;
+
     this.output = output;
-    this.buttons = buttons;
-    this.gridNotes = gridNotes;
-
+    this.input = input;
+    this.input.init ();
+    this.input.setMidiCallback (doObject (this, this.handleMidi));
+    this.noteInput = this.input.createNoteInput ();
+    
     this.selectButtonId = -1;
-    this.shiftButtonId = -1;
-
-    this.pads = null;
-    this.display = null;
-}
-
-function ControlSurface ()
-{
-    this.model = null;
-    this.input = null;
-    this.output = null;
-    this.buttons = null;
-    this.gridNotes = null;
-
-    this.selectButtonId = -1;
-    this.shiftButtonId = -1;
-
-    this.noteInput = null;
+    this.shiftButtonId  = -1;
 
     // Mode related
     this.previousMode  = null;
@@ -43,57 +32,33 @@ function ControlSurface ()
     this.activeViewId = -1;
     this.views = [];
 
-    this.display = null;
+    this.gridNotes = [];
     this.pads = null;
+    this.display = null;
 
     // Button related
-    this.buttons = [];
+    this.buttons = buttons;
     this.buttonStates = [];
-}
-
-ControlSurface.buttonStateInterval = 400;
-
-ControlSurface.prototype.configure = function (config)
-{
-    this.model = config.model;
-    this.input = config.input;
-    this.output = config.output;
-    this.buttons = config.buttons;
-    this.gridNotes = config.gridNotes;
-
-    this.selectButtonId = config.selectButtonId;
-    this.shiftButtonId = config.shiftButtonId;
-
-    this.pads = config.pads;
-    this.display = config.display;
-
-    this.model.getTrackBank ().addTrackSelectionListener (doObject (this, function (index, isSelected)
+    if (this.buttons)
     {
-        this.onSelectedTrackChanged (index, isSelected);
-    }));
-
-    this.input.init ();
-    this.input.setMidiCallback (doObject (this, this.handleMidi));
-
-    this.noteInput = this.input.createNoteInput ();
-
-    for (var i = 0; i < this.buttons.length; i++)
-        this.buttonStates[this.buttons[i]] = ButtonEvent.UP;
-
-    // TODO add in PUSH
-    this.model.getCursorDevice ().cursorDevice.addSelectedPageObserver (-1, doObject (this, function (page)
-    {
-        this.onSelectedPageChanged (page);
-    }));
+        for (var i = 0; i < this.buttons.length; i++)
+            this.buttonStates[this.buttons[i]] = ButtonEvent.UP;
+    }
+    
+    // Flush optimisation
+    this.displayScheduled = false;
+    this.taskReturning    = false;
 };
 
-ControlSurface.prototype.onSelectedTrackChanged = function (index, isSelected)
+// TODO Not used in Push4Bitwig
+AbstractControlSurface.prototype.onSelectedTrackChanged = function (index, isSelected)
 {
 };
 
-ControlSurface.prototype.onSelectedPageChanged = function (index, isSelected)
+// TODO Not used in Push4Bitwig
+AbstractControlSurface.prototype.onSelectedPageChanged = function (index, isSelected)
 {
-    println("ControlSurface.onSelectedPageChanged()");
+    println("AbstractControlSurface.onSelectedPageChanged()");
     var m = this.getActiveMode ();
     if (m != null)
     {
@@ -105,12 +70,13 @@ ControlSurface.prototype.onSelectedPageChanged = function (index, isSelected)
 // Display
 //--------------------------------------
 
-ControlSurface.prototype.setButton = function (button, state)
+// TODO specific code, make abstract
+AbstractControlSurface.prototype.setButton = function (button, state)
 {
     this.output.sendCC (button, state);
 };
 
-ControlSurface.prototype.flush = function ()
+AbstractControlSurface.prototype.flush = function ()
 {
     if (this.taskReturning)
     {
@@ -131,7 +97,7 @@ ControlSurface.prototype.flush = function ()
     this.redrawGrid ();
 }
 
-ControlSurface.prototype.redrawGrid = function ()
+AbstractControlSurface.prototype.redrawGrid = function ()
 {
     var view = this.getActiveView ();
     if (view == null)
@@ -141,21 +107,21 @@ ControlSurface.prototype.redrawGrid = function ()
         this.pads.flush ();
 };
 
-ControlSurface.prototype.shutdown = function ()
+AbstractControlSurface.prototype.shutdown = function ()
 {
 };
 
-ControlSurface.prototype.setKeyTranslationTable = function (table)
+AbstractControlSurface.prototype.setKeyTranslationTable = function (table)
 {
     this.noteInput.setKeyTranslationTable (table);
 };
 
-ControlSurface.prototype.setVelocityTranslationTable = function (table)
+AbstractControlSurface.prototype.setVelocityTranslationTable = function (table)
 {
     this.noteInput.setVelocityTranslationTable (table);
 };
 
-ControlSurface.prototype.scheduledFlush = function ()
+AbstractControlSurface.prototype.scheduledFlush = function ()
 {
     var view = this.getActiveView ();
     if (view != null)
@@ -168,35 +134,33 @@ ControlSurface.prototype.scheduledFlush = function ()
 // ViewState
 //--------------------------------------
 
-ControlSurface.prototype.addView = function (viewId, view)
+AbstractControlSurface.prototype.addView = function (viewId, view)
 {
     view.attachTo (this);
-    // TODO is this correct?
-    view.model = this.model;
     this.views[viewId] = view;
 };
 
-ControlSurface.prototype.setActiveView = function (viewId)
+AbstractControlSurface.prototype.setActiveView = function (viewId)
 {
     this.activeViewId = viewId;
 
     var view = this.getActiveView ();
     if (view == null)
     {
-        this.turnOff ();
+        this.shutdown ();
         return;
     }
 
-    this.updateButtons();
+    this.updateButtons ();
 
     view.onActivate ();
 };
 
-ControlSurface.prototype.updateButtons = function ()
+AbstractControlSurface.prototype.updateButtons = function ()
 {
 };
 
-ControlSurface.prototype.getActiveView = function ()
+AbstractControlSurface.prototype.getActiveView = function ()
 {
     if (this.activeViewId < 0)
         return null;
@@ -204,7 +168,7 @@ ControlSurface.prototype.getActiveView = function ()
     return view ? view : null;
 };
 
-ControlSurface.prototype.isActiveView = function (viewId)
+AbstractControlSurface.prototype.isActiveView = function (viewId)
 {
     return this.activeViewId == viewId;
 };
@@ -213,19 +177,19 @@ ControlSurface.prototype.isActiveView = function (viewId)
 // ModeState
 //--------------------------------------
 
-ControlSurface.prototype.addMode = function (modeId, mode)
+AbstractControlSurface.prototype.addMode = function (modeId, mode)
 {
     mode.attachTo (this);
     this.modes[modeId] = mode;
 };
 
 // listener must be a 2 parameter function: [int] oldMode, [int] newMode
-ControlSurface.prototype.addModeListener = function (listener)
+AbstractControlSurface.prototype.addModeListener = function (listener)
 {
     this.modeListeners.push (listener);
 };
 
-ControlSurface.prototype.setDefaultMode = function (mode)
+AbstractControlSurface.prototype.setDefaultMode = function (mode)
 {
     this.defaultMode = mode;
     if (this.currentMode == null)
@@ -234,7 +198,7 @@ ControlSurface.prototype.setDefaultMode = function (mode)
         this.previousMode = this.defaultMode;
 };
 
-ControlSurface.prototype.setPendingMode = function (mode)
+AbstractControlSurface.prototype.setPendingMode = function (mode)
 {
     if (mode == null)
         mode = this.defaultMode;
@@ -250,19 +214,19 @@ ControlSurface.prototype.setPendingMode = function (mode)
     // Notify all mode change listeners
     for (var i = 0; i < this.modeListeners.length; i++)
         this.modeListeners[i].call (null, this.previousMode, this.currentMode);
-}
+};
 
-ControlSurface.prototype.getPreviousMode = function ()
+AbstractControlSurface.prototype.getPreviousMode = function ()
 {
     return this.previousMode;
 };
 
-ControlSurface.prototype.getCurrentMode = function ()
+AbstractControlSurface.prototype.getCurrentMode = function ()
 {
     return this.currentMode;
 };
 
-ControlSurface.prototype.getActiveMode = function ()
+AbstractControlSurface.prototype.getActiveMode = function ()
 {
     if (this.activeModeId < 0)
         return null;
@@ -270,7 +234,7 @@ ControlSurface.prototype.getActiveMode = function ()
     return mode ? mode : null;
 };
 
-ControlSurface.prototype.setActiveMode = function (modeId)
+AbstractControlSurface.prototype.setActiveMode = function (modeId)
 {
     this.activeModeId = modeId;
 
@@ -281,12 +245,12 @@ ControlSurface.prototype.setActiveMode = function (modeId)
     mode.onActivate ();
 };
 
-ControlSurface.prototype.isActiveMode = function (modeId)
+AbstractControlSurface.prototype.isActiveMode = function (modeId)
 {
     return this.activeModeId == modeId;
 };
 
-ControlSurface.prototype.getMode = function (modeId)
+AbstractControlSurface.prototype.getMode = function (modeId)
 {
     return this.modes[modeId];
 };
@@ -295,17 +259,17 @@ ControlSurface.prototype.getMode = function (modeId)
 // Gesture
 //--------------------------------------
 
-ControlSurface.prototype.isSelectPressed = function ()
+AbstractControlSurface.prototype.isSelectPressed = function ()
 {
     return this.isPressed (this.selectButtonId);
 };
 
-ControlSurface.prototype.isShiftPressed = function ()
+AbstractControlSurface.prototype.isShiftPressed = function ()
 {
     return this.isPressed (this.shiftButtonId);
 };
 
-ControlSurface.prototype.isPressed = function (button)
+AbstractControlSurface.prototype.isPressed = function (button)
 {
     return this.buttonStates[button] != ButtonEvent.UP;
 };
@@ -314,7 +278,7 @@ ControlSurface.prototype.isPressed = function (button)
 // Handlers
 //--------------------------------------
 
-ControlSurface.prototype.handleMidi = function (status, data1, data2)
+AbstractControlSurface.prototype.handleMidi = function (status, data1, data2)
 {
     switch (status & 0xF0)
     {
@@ -329,28 +293,27 @@ ControlSurface.prototype.handleMidi = function (status, data1, data2)
         case 0xB0:
             this.handleCC (data1, data2);
             break;
+            
+        // Pitch Bend
+        case 0xE0:
+            var view = this.getActiveView ();
+            if (view != null)
+                view.onPitchbend (data1, data2);
+            break;
     }
 };
 
-ControlSurface.prototype.handleGridNote = function (note, velocity)
+AbstractControlSurface.prototype.handleGridNote = function (note, velocity)
 {
-    //println("ControlSurface.handleGridNote()");
-
     var view = this.getActiveView ();
     if (view != null)
         view.onGridNote (note, velocity);
 };
 
-ControlSurface.prototype.handleTouch = function (knob, value) {
-    var view = this.getActiveView();
-    if (view == null)
-        return;
+// Override if you like to handle touching knobs
+AbstractControlSurface.prototype.handleTouch = function (knob, value) {};
 
-    switch (knob) {
-    }
-};
-
-ControlSurface.prototype.handleCC = function (cc, value)
+AbstractControlSurface.prototype.handleCC = function (cc, value)
 {
     if (this.isButton (cc))
     {
@@ -360,7 +323,7 @@ ControlSurface.prototype.handleCC = function (cc, value)
             scheduleTask (function (object, buttonID)
             {
                 object.checkButtonState (buttonID);
-            }, [this, cc], ControlSurface.buttonStateInterval);
+            }, [this, cc], AbstractControlSurface.buttonStateInterval);
         }
     }
 
@@ -372,14 +335,14 @@ ControlSurface.prototype.handleCC = function (cc, value)
  * @param cc
  * @param value
  */
-ControlSurface.prototype.handleEvent = function (cc, value) {};
+AbstractControlSurface.prototype.handleEvent = function (cc, value) {};
 
-ControlSurface.prototype.isButton = function (cc)
+AbstractControlSurface.prototype.isButton = function (cc)
 {
     return typeof (this.buttonStates[cc]) != 'undefined';
 };
 
-ControlSurface.prototype.checkButtonState = function (buttonID)
+AbstractControlSurface.prototype.checkButtonState = function (buttonID)
 {
     if (this.buttonStates[buttonID] != ButtonEvent.DOWN)
         return;
@@ -388,17 +351,19 @@ ControlSurface.prototype.checkButtonState = function (buttonID)
     this.handleEvent (buttonID, 127);
 };
 
-ControlSurface.prototype.isGridNote = function (note)
+AbstractControlSurface.prototype.isGridNote = function (note)
 {
-    return this.gridNotes[note - this.gridNotes[0]] != null;
+    if (this.gridNotes && this.gridNotes.length > 0)
+        return note >= this.gridNotes[0] && note <= this.gridNotes[this.gridNotes.length - 1];
+    return false;
 };
 
-ControlSurface.prototype.getFractionValue = function ()
+AbstractControlSurface.prototype.getFractionValue = function ()
 {
     return this.isShiftPressed () ? Config.fractionMinValue : Config.fractionValue;
 };
 
-ControlSurface.prototype.changeValue = function (control, value)
+AbstractControlSurface.prototype.changeValue = function (control, value)
 {
     return changeValue (control, value, this.getFractionValue (), Config.maxParameterValue);
 };
