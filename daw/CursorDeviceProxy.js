@@ -185,6 +185,11 @@ CursorDeviceProxy.prototype.setParameterPage = function (index)
     return this.cursorDevice.setParameterPage (index);
 };
 
+CursorDeviceProxy.prototype.getCurrentPreset = function ()
+{
+    return this.currentPreset;
+};
+
 CursorDeviceProxy.prototype.setPresetCategory = function (index)
 {
     return this.cursorDevice.setPresetCategory (index)
