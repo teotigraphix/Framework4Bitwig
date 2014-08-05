@@ -11,7 +11,6 @@ function View ()
 
 View.prototype.attachTo = function (surface)
 {
-    println("View.attatchTo()");
     this.surface = surface;
     this.model = this.surface.model;
 };

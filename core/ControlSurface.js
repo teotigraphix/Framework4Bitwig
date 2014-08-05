@@ -1,3 +1,7 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+//            Michael Schmalle - teotigraphix.com
+// (c) 2014
+// Licensed under GPLv3 - http://www.gnu.org/licenses/gpl.html
 
 function ControlSurfaceConfig (model, input, output, buttons, gridNotes)
 {
@@ -108,7 +112,6 @@ ControlSurface.prototype.setButton = function (button, state)
 
 ControlSurface.prototype.flush = function ()
 {
-   // println("ControlSurface.flush()");
     if (this.taskReturning)
     {
         this.taskReturning = false;
@@ -130,7 +133,6 @@ ControlSurface.prototype.flush = function ()
 
 ControlSurface.prototype.redrawGrid = function ()
 {
-    //println("ControlSurface.redrawGrid()");
     var view = this.getActiveView ();
     if (view == null)
         return;
@@ -192,9 +194,7 @@ ControlSurface.prototype.setActiveView = function (viewId)
 
 ControlSurface.prototype.updateButtons = function ()
 {
-    //    for (var i = 0; i < this.buttons.length; i++)
-    //        this.setButton (this.buttons[i], view.usesButton (this.buttons[i]) ? PUSH_BUTTON_STATE_ON : PUSH_BUTTON_STATE_OFF);
-}
+};
 
 ControlSurface.prototype.getActiveView = function ()
 {
@@ -401,4 +401,4 @@ ControlSurface.prototype.getFractionValue = function ()
 ControlSurface.prototype.changeValue = function (control, value)
 {
     return changeValue (control, value, this.getFractionValue (), Config.maxParameterValue);
-}
+};

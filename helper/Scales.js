@@ -332,5 +332,3 @@ Scales.prototype.generateMatrices = function ()
     for (var i = 0; i < Scales.INTERVALS.length; i++)
         this.scales.push (this.createScale (Scales.INTERVALS[i]));
 };
-
-
