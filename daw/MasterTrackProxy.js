@@ -164,11 +164,6 @@ MasterTrackProxy.prototype.toggleArm = function ()
 // Actions
 //--------------------------------------
 
-MasterTrackProxy.prototype.incVolume = function (value)
-{
-    this.masterTrack.getVolume ().inc (value <= 61 ? 1 : -1, Config.maxParameterValue);
-};
-
 MasterTrackProxy.prototype.select = function ()
 {
     this.masterTrack.select ();
