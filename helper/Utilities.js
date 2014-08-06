@@ -10,7 +10,9 @@ function toggleValue (value)
 
 function changeValue (control, value, fractionValue, maxParameterValue)
 {
-    return control <= 61 ? Math.min (value + fractionValue, maxParameterValue) : Math.max (value - fractionValue, 0);
+    var isInc = control <= 61;
+    var speed = (isInc ? control : 127 - control) * fractionValue;
+    return isInc ? Math.min (value + speed, maxParameterValue) : Math.max (value - speed, 0);
 }
 
 function doObject (object, f)
