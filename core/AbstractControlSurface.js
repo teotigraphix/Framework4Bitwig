@@ -50,6 +50,12 @@ function AbstractControlSurface (output, input, buttons)
     this.taskReturning    = false;
 };
 
+AbstractControlSurface.prototype.getDisplay = function ()
+{
+    return this.display;
+};
+
+
 // TODO Not used in Push4Bitwig
 AbstractControlSurface.prototype.onSelectedTrackChanged = function (index, isSelected)
 {
@@ -92,7 +98,7 @@ AbstractControlSurface.prototype.flush = function ()
             this.scheduledFlush ();
             this.displayScheduled = false;
             this.taskReturning = true;
-        }), null, 5);
+        }), null, 70);
     }
     this.redrawGrid ();
 }
@@ -280,14 +286,15 @@ AbstractControlSurface.prototype.isPressed = function (button)
 
 AbstractControlSurface.prototype.handleMidi = function (status, data1, data2)
 {
-    switch (status & 0xF0)
+    var code = status & 0xF0;
+    switch (code)
     {
         case 0x80:
         case 0x90:
             if (this.isGridNote (data1))
-                this.handleGridNote (data1, data2);
+                this.handleGridNote (data1, code == 0x80 ? 0 : data2);
             else
-                this.handleTouch (data1, data2);
+                this.handleTouch (data1, code == 0x80 ? 0 : data2);
             break;
 
         case 0xB0:
@@ -317,7 +324,7 @@ AbstractControlSurface.prototype.handleCC = function (cc, value)
 {
     if (this.isButton (cc))
     {
-        this.buttonStates[cc] = value == 127 ? ButtonEvent.DOWN : ButtonEvent.UP;
+        this.buttonStates[cc] = value > 0 ? ButtonEvent.DOWN : ButtonEvent.UP;
         if (this.buttonStates[cc] == ButtonEvent.DOWN)
         {
             scheduleTask (function (object, buttonID)

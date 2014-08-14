@@ -14,6 +14,7 @@ function TransportProxy ()
     this.isClickOn   = false;
     this.isPlaying   = false;
     this.isRecording = false;
+    this.isLooping   = false;
     
     // For tap tempo calculation
     this.ttLastMillis = -1;
@@ -36,6 +37,11 @@ function TransportProxy ()
     this.transport.addIsRecordingObserver (doObject (this, function (isRec)
     {
         this.isRecording = isRec;
+    }));
+    // Loop
+    this.transport.addIsLoopActiveObserver (doObject (this, function (isLoop)
+    {
+        this.isLooping = isLoop;
     }));
     // Tempo
     this.transport.getTempo ().addValueObserver (TransportProxy.TEMPO_RESOLUTION, doObject (this, function (value)
