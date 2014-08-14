@@ -11,7 +11,7 @@ function toggleValue (value)
 function changeValue (control, value, fractionValue, maxParameterValue)
 {
     var isInc = control <= 61;
-    var speed = (isInc ? control : 127 - control) * fractionValue;
+    var speed = Math.max((isInc ? control : 127 - control) * fractionValue, fractionValue);
     return isInc ? Math.min (value + speed, maxParameterValue) : Math.max (value - speed, 0);
 }
 
