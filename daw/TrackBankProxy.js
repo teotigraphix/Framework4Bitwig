@@ -73,10 +73,10 @@ function TrackBankProxy ()
             for (var l = 0; l < this.listeners.length; l++)
                 this.listeners[l].call (null, index, isSelected);
         }));
-//        t.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, function (index, value)
-//        {
-//            this.tracks[index].vu = value;
-//        }));
+        t.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, function (index, value)
+        {
+            this.tracks[index].vu = value;
+        }));
 
         // Track Mute
         t.getMute ().addValueObserver (doObjectIndex (this, i, function (index, isMuted)

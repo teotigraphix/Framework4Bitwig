@@ -29,10 +29,10 @@ function MasterTrackProxy ()
         for (var l = 0; l < this.listeners.length; l++)
             this.listeners[l].call (null, isSelected);
     }));
-//    this.masterTrack.addVuMeterObserver (Config.maxParameterValue, -1, true, doObject (this, function (value)
-//    {
-//        this.vu = value;
-//    }));
+    this.masterTrack.addVuMeterObserver (Config.maxParameterValue, -1, true, doObject (this, function (value)
+    {
+        this.vu = value;
+    }));
 
     // Master Track Mute
     this.masterTrack.getMute ().addValueObserver (doObject (this, function (isMuted)
