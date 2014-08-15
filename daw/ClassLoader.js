@@ -6,6 +6,7 @@
 load ("Globals.js");
 load ("ApplicationProxy.js");
 load ("TransportProxy.js");
+load ("CursorClipProxy.js");
 load ("CursorDeviceProxy.js");
 load ("GrooveProxy.js");
 load ("MasterTrackProxy.js");

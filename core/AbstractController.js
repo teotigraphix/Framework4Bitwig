@@ -8,16 +8,6 @@ function AbstractController ()
     this.surface = null;
 }
 
-/*AbstractController.prototype.init = function ()
-{
-};
-
-AbstractController.prototype.attach = function (surface, config)
-{
-    this.surface = surface;
-    this.surface.configure (config);
-};*/
-
 AbstractController.prototype.shutdown = function ()
 {
     this.surface.shutdown ();

@@ -64,8 +64,18 @@ Model.prototype.getCursorDevice = function () { return this.cursorDevice; };
  */
 Model.prototype.getUserControlBank = function () { return this.userControlBank; };
 
-
+/**
+ * @returns {ApplicationProxy}
+ */
 Model.prototype.getApplication = function ()
 {
     return this.application;
+};
+
+/**
+ * @returns {CursorClipProxy}
+ */
+Model.prototype.createCursorClip = function (cols, rows)
+{
+    return new CursorClipProxy (cols, rows);
 };

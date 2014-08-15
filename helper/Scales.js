@@ -88,6 +88,11 @@ Scales.prototype.getSelectedScale = function ()
     return this.selectedScale;
 };
 
+Scales.prototype.getScaleSize = function ()
+{
+    return this.scales.length;
+};
+
 Scales.prototype.setScale = function (scale)
 {
     this.selectedScale = Math.max (0, Math.min (scale, this.scales.length - 1));

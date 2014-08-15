@@ -56,31 +56,11 @@ AbstractControlSurface.prototype.getDisplay = function ()
 };
 
 
-// TODO Not used in Push4Bitwig
-AbstractControlSurface.prototype.onSelectedTrackChanged = function (index, isSelected)
-{
-};
-
-// TODO Not used in Push4Bitwig
-AbstractControlSurface.prototype.onSelectedPageChanged = function (index, isSelected)
-{
-    println("AbstractControlSurface.onSelectedPageChanged()");
-    var m = this.getActiveMode ();
-    if (m != null)
-    {
-        m.updateDisplay();
-    }
-};
-
 //--------------------------------------
 // Display
 //--------------------------------------
 
-// TODO specific code, make abstract
-AbstractControlSurface.prototype.setButton = function (button, state)
-{
-    this.output.sendCC (button, state);
-};
+AbstractControlSurface.prototype.setButton = function (button, state) {};
 
 AbstractControlSurface.prototype.flush = function ()
 {
@@ -162,9 +142,7 @@ AbstractControlSurface.prototype.setActiveView = function (viewId)
     view.onActivate ();
 };
 
-AbstractControlSurface.prototype.updateButtons = function ()
-{
-};
+AbstractControlSurface.prototype.updateButtons = function () {};
 
 AbstractControlSurface.prototype.getActiveView = function ()
 {

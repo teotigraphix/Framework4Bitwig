@@ -5,8 +5,6 @@
 
 function CursorDeviceProxy ()
 {
-    // TODO when parameter page enabled bug is fixed, these will be used
-    // for knowing when to show 'Next' and 'Previous' entries
     this.hasNextParamPage = false;
     this.hasPreviousParamPage = false;
 
@@ -33,8 +31,6 @@ function CursorDeviceProxy ()
         this.selectedDevice.name = name;
     }));
 
-    // TODO (mschmalle) These don't seem to work, when working, the Next, Previous visibilities
-    // can be managed correctly, right now just using selectedParameterPage
     this.cursorDevice.addPreviousParameterPageEnabledObserver (doObject (this, function (isEnabled)
     {
         this.hasPreviousParamPage = isEnabled;
@@ -265,11 +261,15 @@ CursorDeviceProxy.prototype.getFXParam = function (index)
 
 CursorDeviceProxy.prototype.hasPreviousParameterPage = function ()
 {
+    // TODO When working this.hasPreviousParamPage is correctly updated replace
+    // return this.hasPreviousParamPage;
     return this.selectedParameterPage > 0;
 };
 
 CursorDeviceProxy.prototype.hasNextParameterPage = function ()
 {
+    // TODO When working this.hasNextParamPage is correctly updated replace
+    // return this.hasNextParamPage;
     return true;
 };
 
