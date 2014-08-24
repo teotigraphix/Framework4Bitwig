@@ -51,6 +51,14 @@ CursorClipProxy.prototype.setStep = function (step, row, velocity)
     this.clip.toggleStep (step, row, velocity);
 };
 
+CursorClipProxy.prototype.clearRow = function (row)
+{
+    // Since there is no dedicated function, we suggest a maximum of 32 tracks 
+    // with a resolution of 64 steps each
+    for (var step = 0; step < 64 * 32; step++)
+        this.clip.clearStep (step, row);
+};
+
 CursorClipProxy.prototype.setStepLength = function (length)
 {
     this.clip.setStepSize (length);
