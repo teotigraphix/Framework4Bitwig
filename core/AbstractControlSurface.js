@@ -39,10 +39,14 @@ function AbstractControlSurface (output, input, buttons)
     // Button related
     this.buttons = buttons;
     this.buttonStates = [];
+    this.buttonConsumed = [];
     if (this.buttons)
     {
         for (var i = 0; i < this.buttons.length; i++)
+        {
             this.buttonStates[this.buttons[i]] = ButtonEvent.UP;
+            this.buttonConsumed[this.buttons[i]] = false;
+        }
     }
     
     // Flush optimisation
@@ -310,6 +314,13 @@ AbstractControlSurface.prototype.handleCC = function (cc, value)
                 object.checkButtonState (buttonID);
             }, [this, cc], AbstractControlSurface.buttonStateInterval);
         }
+
+        // If consumed flag is set ignore the UP event
+        if (this.buttonStates[cc] == ButtonEvent.UP && this.buttonConsumed[cc])
+        {
+            this.buttonConsumed[cc] = false;
+            return;
+        }
     }
 
     this.handleEvent (cc, value);
@@ -326,6 +337,11 @@ AbstractControlSurface.prototype.isButton = function (cc)
 {
     return typeof (this.buttonStates[cc]) != 'undefined';
 };
+
+AbstractControlSurface.prototype.setButtonConsumed = function (buttonID)
+{
+    this.buttonConsumed[buttonID] = true;
+}
 
 AbstractControlSurface.prototype.checkButtonState = function (buttonID)
 {
