@@ -1,7 +1,7 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
 // (c) 2014
-// Licensed under GPLv3 - http://www.gnu.org/licenses/gpl.html
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 function MasterTrackProxy ()
 {
@@ -17,60 +17,22 @@ function MasterTrackProxy ()
     this.volumeStr = null;
     this.selected = false;
 
-    // Master Track name
-    this.masterTrack.addNameObserver (8, '', doObject (this, function (name)
-    {
-        this.name = name;
-    }));
-    // Master Track selection
-    this.masterTrack.addIsSelectedObserver (doObject (this, function (isSelected)
-    {
-        this.selected = isSelected;
-        for (var l = 0; l < this.listeners.length; l++)
-            this.listeners[l].call (null, isSelected);
-    }));
-    this.masterTrack.addVuMeterObserver (Config.maxParameterValue, -1, true, doObject (this, function (value)
-    {
-        this.vu = value;
-    }));
-
-    // Master Track Mute
-    this.masterTrack.getMute ().addValueObserver (doObject (this, function (isMuted)
-    {
-        this.mute = isMuted;
-    }));
-    // Master Track Solo
-    this.masterTrack.getSolo ().addValueObserver (doObject (this, function (isSoloed)
-    {
-        this.solo = isSoloed;
-    }));
-    // Master Track Arm
-    this.masterTrack.getArm ().addValueObserver (doObject (this, function (isArmed)
-    {
-        this.recarm = isArmed;
-    }));
+    this.masterTrack.addNameObserver (8, '', doObject (this, MasterTrackProxy.prototype.handleName));
+    this.masterTrack.addIsSelectedObserver (doObject (this, MasterTrackProxy.prototype.handleIsSelected));
+    this.masterTrack.addVuMeterObserver (Config.maxParameterValue, -1, true, doObject (this, MasterTrackProxy.prototype.handleVuMeter));
+    this.masterTrack.getMute ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleMute));
+    this.masterTrack.getSolo ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleSolo));
+    this.masterTrack.getArm ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleRecArm));
 
     // Master Track Pan value & text
     var p = this.masterTrack.getPan ();
-    p.addValueObserver (Config.maxParameterValue, doObject (this, function (value)
-    {
-        this.pan = value;
-    }));
-    p.addValueDisplayObserver (8, '', doObject (this, function (text)
-    {
-        this.panStr = text;
-    }));
+    p.addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handlePan));
+    p.addValueDisplayObserver (8, '', doObject (this, MasterTrackProxy.prototype.handlePanStr));
 
     // Master Track volume value & text
     var v = this.masterTrack.getVolume ();
-    v.addValueObserver (Config.maxParameterValue, doObject (this, function (value)
-    {
-        this.volume = value;
-    }));
-    v.addValueDisplayObserver (8, '', doObject (this, function (text)
-    {
-        this.volumeStr = text;
-    }));
+    v.addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handleVolume));
+    v.addValueDisplayObserver (8, '', doObject (this, MasterTrackProxy.prototype.handleVolumeStr));
 }
 
 // listener has 1 parameter: [boolean] isSelected
@@ -167,4 +129,60 @@ MasterTrackProxy.prototype.toggleArm = function ()
 MasterTrackProxy.prototype.select = function ()
 {
     this.masterTrack.select ();
+};
+
+//--------------------------------------
+// Callback Handlers
+//--------------------------------------
+
+MasterTrackProxy.prototype.handleName = function (name)
+{
+    this.name = name;
+};
+
+MasterTrackProxy.prototype.handleIsSelected = function (isSelected)
+{
+    this.selected = isSelected;
+    for (var l = 0; l < this.listeners.length; l++)
+        this.listeners[l].call (null, isSelected);
+};
+
+MasterTrackProxy.prototype.handleVuMeter = function (value)
+{
+    this.vu = value;
+};
+
+MasterTrackProxy.prototype.handleMute = function (isMuted)
+{
+    this.mute = isMuted;
+};
+
+MasterTrackProxy.prototype.handleSolo = function (isSoloed)
+{
+    this.solo = isSoloed;
+};
+
+MasterTrackProxy.prototype.handleRecArm = function (isArmed)
+{
+    this.recarm = isArmed;
+};
+
+MasterTrackProxy.prototype.handlePan = function (value)
+{
+    this.pan = value;
+};
+
+MasterTrackProxy.prototype.handlePanStr = function (text)
+{
+    this.panStr = text;
+};
+
+MasterTrackProxy.prototype.handleVolume = function (value)
+{
+    this.volume = value;
+};
+
+MasterTrackProxy.prototype.handleVolumeStr = function (text)
+{
+    this.volumeStr = text;
 };

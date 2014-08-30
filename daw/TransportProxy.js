@@ -1,7 +1,7 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
 // (c) 2014
-// Licensed under GPLv3 - http://www.gnu.org/licenses/gpl.html
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 TransportProxy.INC_FRACTION_TIME      = 1.0;        // 1 beat
 TransportProxy.INC_FRACTION_TIME_SLOW = 1.0 / 20;    // 1/20th of a beat
@@ -24,30 +24,11 @@ function TransportProxy ()
     // Note: For real BPM add 20
     this.setInternalTempo (100);
 
-    this.transport.addClickObserver (doObject (this, function (isOn)
-    {
-        this.isClickOn = isOn;
-    }));
-    // Play
-    this.transport.addIsPlayingObserver (doObject (this, function (isPlaying)
-    {
-        this.isPlaying = isPlaying;
-    }));
-    // Record
-    this.transport.addIsRecordingObserver (doObject (this, function (isRec)
-    {
-        this.isRecording = isRec;
-    }));
-    // Loop
-    this.transport.addIsLoopActiveObserver (doObject (this, function (isLoop)
-    {
-        this.isLooping = isLoop;
-    }));
-    // Tempo
-    this.transport.getTempo ().addValueObserver (TransportProxy.TEMPO_RESOLUTION, doObject (this, function (value)
-    {
-        this.setInternalTempo (value);
-    }));
+    this.transport.addClickObserver (doObject (this, TransportProxy.prototype.handleClick));
+    this.transport.addIsPlayingObserver (doObject (this, TransportProxy.prototype.handleIsPlaying));
+    this.transport.addIsRecordingObserver (doObject (this, TransportProxy.prototype.handleIsRecording));
+    this.transport.addIsLoopActiveObserver (doObject (this, TransportProxy.prototype.handleIsLoopActive));
+    this.transport.getTempo ().addValueObserver (TransportProxy.TEMPO_RESOLUTION, doObject (this, TransportProxy.prototype.handleTempo));
 }
 
 //--------------------------------------
@@ -61,17 +42,17 @@ TransportProxy.prototype.fastForward = function ()
 
 TransportProxy.prototype.getInPosition = function ()
 {
-    this.transport.getInPosition ();
+    return this.transport.getInPosition ();
 };
 
 TransportProxy.prototype.getOutPosition = function ()
 {
-    this.transport.getOutPosition ();
+    return this.transport.getOutPosition ();
 };
 
 TransportProxy.prototype.getPosition = function ()
 {
-    this.transport.getPosition ();
+    return this.transport.getPosition ();
 };
 
 TransportProxy.prototype.incPosition = function (deltaBase, snap)
@@ -285,4 +266,33 @@ TransportProxy.prototype.setLauncherOverdub = function (on)
 {
     // Note: This is a bug: On and off are switched
     this.transport.setLauncherOverdub (!on);
+};
+
+//--------------------------------------
+// Callback Handlers
+//--------------------------------------
+
+TransportProxy.prototype.handleClick = function (isOn)
+{
+    this.isClickOn = isOn;
+};
+
+TransportProxy.prototype.handleIsPlaying = function (isPlaying)
+{
+    this.isPlaying = isPlaying;
+};
+
+TransportProxy.prototype.handleIsRecording = function (isRec)
+{
+    this.isRecording = isRec;
+};
+
+TransportProxy.prototype.handleIsLoopActive = function (isLoop)
+{
+    this.isLooping = isLoop;
+};
+
+TransportProxy.prototype.handleTempo = function (value)
+{
+    this.setInternalTempo (value);
 };

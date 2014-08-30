@@ -1,7 +1,7 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
 // (c) 2014
-// Licensed under GPLv3 - http://www.gnu.org/licenses/gpl.html
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 function GrooveProxy ()
 {
@@ -14,10 +14,7 @@ function GrooveProxy ()
     this.addValue (GrooveValue.Kind.ACCENT_AMOUNT);
     this.addValue (GrooveValue.Kind.ACCENT_PHASE);
 
-    this.groove.getEnabled ().addValueObserver (Config.maxParameterValue, doObject (this, function (enabled)
-    {
-        this.enabled = enabled == 127;
-    }));
+    this.groove.getEnabled ().addValueObserver (Config.maxParameterValue, doObject (this, GrooveProxy.prototype.handleEnabled));
 }
 
 //--------------------------------------
@@ -126,6 +123,15 @@ GrooveProxy.prototype.addValue = function (kind)
     {
         this.values[kind].valueString = value;
     }));
+};
+
+//--------------------------------------
+// Callback Handlers
+//--------------------------------------
+
+GrooveProxy.prototype.handleEnabled = function (enabled)
+{
+    this.enabled = enabled == 127;
 };
 
 //--------------------------------------

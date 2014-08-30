@@ -1,7 +1,7 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
 // (c) 2014
-// Licensed under GPLv3 - http://www.gnu.org/licenses/gpl.html
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 function CursorDeviceProxy ()
 {
@@ -22,56 +22,22 @@ function CursorDeviceProxy ()
 
     this.cursorDevice = host.createCursorDevice ();
 
-    this.cursorDevice.addIsEnabledObserver (doObject (this, function (isEnabled)
-    {
-        this.selectedDevice.enabled = isEnabled;
-    }));
-    this.cursorDevice.addNameObserver (34, 'None', doObject (this, function (name)
-    {
-        this.selectedDevice.name = name;
-    }));
-
-    this.cursorDevice.addPreviousParameterPageEnabledObserver (doObject (this, function (isEnabled)
-    {
-        this.hasPreviousParamPage = isEnabled;
-    }));
-    this.cursorDevice.addNextParameterPageEnabledObserver (doObject (this, function (isEnabled)
-    {
-        this.hasNextParamPage = isEnabled;
-    }));
-    this.cursorDevice.addSelectedPageObserver (-1, doObject (this, function (page)
-    {
-        this.selectedParameterPage = page;
-    }));
-    this.cursorDevice.addPageNamesObserver(doObject (this,  function ()
-    {
-        this.parameterPageNames = arguments;
-    }));
+    this.cursorDevice.addIsEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handleIsEnabled));
+    this.cursorDevice.addNameObserver (34, 'None', doObject (this, CursorDeviceProxy.prototype.handleName));
+    this.cursorDevice.addPreviousParameterPageEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handlePreviousParameterPageEnabled));
+    this.cursorDevice.addNextParameterPageEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handleNextParameterPageEnabled));
+    this.cursorDevice.addSelectedPageObserver (-1, doObject (this, CursorDeviceProxy.prototype.handleSelectedPage));
+    this.cursorDevice.addPageNamesObserver(doObject (this,  CursorDeviceProxy.prototype.handlePageNames));
 
     for (var i = 0; i < 8; i++)
     {
         var p = this.getParameter (i);
+        p.addNameObserver (8, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleParameterName));
+        p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleValue));
+        p.addValueDisplayObserver (8, '',  doObjectIndex (this, i, CursorDeviceProxy.prototype.handleValueDisplay));
 
-        // Parameter name
-        p.addNameObserver (8, '', doObjectIndex (this, i, function (index, name)
-        {
-            this.fxparams[index].name = name;
-        }));
-        p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, function (index, value)
-        {
-            this.fxparams[index].value = value;
-        }));
-        // Parameter value text
-        p.addValueDisplayObserver (8, '',  doObjectIndex (this, i, function (index, value)
-        {
-            this.fxparams[index].valueStr = value;
-        }));
-
-        var m = this.getMacro(i).getModulationSource();
-        m.addIsMappingObserver (doObjectIndex (this, i, function (index, value)
-        {
-            this.isMacroMappings[index] = value;
-        }));
+        var m = this.getMacro (i).getModulationSource ();
+        m.addIsMappingObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleIsMapping));
     }
 
     //----------------------------------
@@ -297,6 +263,60 @@ CursorDeviceProxy.prototype.createFXParams = function (count)
         });
     }
     return fxparams;
+};
+
+//--------------------------------------
+// Callback Handlers
+//--------------------------------------
+
+CursorDeviceProxy.prototype.handleIsEnabled = function (isEnabled)
+{
+    this.selectedDevice.enabled = isEnabled;
+};
+
+CursorDeviceProxy.prototype.handleName = function (name)
+{
+    this.selectedDevice.name = name;
+};
+
+CursorDeviceProxy.prototype.handlePreviousParameterPageEnabled = function (isEnabled)
+{
+    this.hasPreviousParamPage = isEnabled;
+};
+
+CursorDeviceProxy.prototype.handleNextParameterPageEnabled = function (isEnabled)
+{
+    this.hasNextParamPage = isEnabled;
+};
+
+CursorDeviceProxy.prototype.handleSelectedPage = function (page)
+{
+    this.selectedParameterPage = page;
+};
+
+CursorDeviceProxy.prototype.handlePageNames = function ()
+{
+    this.parameterPageNames = arguments;
+};
+
+CursorDeviceProxy.prototype.handleParameterName = function (index, name)
+{
+    this.fxparams[index].name = name;
+};
+
+CursorDeviceProxy.prototype.handleValue = function (index, value)
+{
+    this.fxparams[index].value = value;
+};
+
+CursorDeviceProxy.prototype.handleValueDisplay = function (index, value)
+{
+    this.fxparams[index].valueStr = value;
+};
+
+CursorDeviceProxy.prototype.handleIsMapping = function (index, value)
+{
+    this.isMacroMappings[index] = value;
 };
 
 //--------------------------------------

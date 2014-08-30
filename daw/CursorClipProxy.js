@@ -1,7 +1,7 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
 // (c) 2014
-// Licensed under GPLv3 - http://www.gnu.org/licenses/gpl.html
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 function CursorClipProxy (stepSize, rowSize, clip)
 {
@@ -14,16 +14,8 @@ function CursorClipProxy (stepSize, rowSize, clip)
         this.data[y] = initArray (false, this.stepSize);
 
     this.clip = host.createCursorClip (this.stepSize, this.rowSize);
-
-    this.clip.addPlayingStepObserver (doObject (this, function (step)
-    {
-        this.step = step;
-    }));
-    
-    this.clip.addStepDataObserver (doObject (this, function (column, row, state)
-    {
-        this.data[column][row] = state;
-    }));
+    this.clip.addPlayingStepObserver (doObject (this, CursorClipProxy.prototype.handlePlayingStep));
+    this.clip.addStepDataObserver (doObject (this, CursorClipProxy.prototype.handleStepData));
 }
 
 CursorClipProxy.prototype.getStepSize = function ()
@@ -78,4 +70,18 @@ CursorClipProxy.prototype.scrollStepsPageBackwards = function ()
 CursorClipProxy.prototype.scrollStepsPageForward = function ()
 {
     this.clip.scrollStepsPageForward ();
+};
+
+//--------------------------------------
+// Callback Handlers
+//--------------------------------------
+
+CursorClipProxy.prototype.handlePlayingStep = function (step)
+{
+    this.step = step;
+};
+    
+CursorClipProxy.prototype.handleStepData = function (column, row, state)
+{
+    this.data[column][row] = state;
 };

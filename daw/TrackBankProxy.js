@@ -1,7 +1,7 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
 // (c) 2014
-// Licensed under GPLv3 - http://www.gnu.org/licenses/gpl.html
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 TrackBankProxy.COLORS =
 [
@@ -33,9 +33,19 @@ TrackBankProxy.COLORS =
     [ 0.2666666805744171 , 0.7843137383460999 , 1                  , 41]    // Blue
 ];
 
+TrackBankProxy.TrackState =
+{
+    NONE: 0,
+    MUTE: 1,
+    SOLO: 2
+};
+
+TrackBankProxy.OBSERVED_TRACKS = 512;
+
 function TrackBankProxy ()
 {
     this.trackBank = host.createMainTrackBank (8, 6, 8);
+    this.trackSelectionBank = host.createMainTrackBank (TrackBankProxy.OBSERVED_TRACKS, 0, 0);
     
     this.canScrollTracksUpFlag   = false;
     this.canScrollTracksDownFlag = false;
@@ -49,6 +59,14 @@ function TrackBankProxy ()
     this.listeners = [];
 
     this.tracks = this.createTracks (8);
+    
+    // Monitor 'all' tracks for selection to move the 'window' of the main
+    // track bank to the selected track
+    for (var i = 0; i < TrackBankProxy.OBSERVED_TRACKS; i++)
+    {
+        var t = this.trackSelectionBank.getTrack (i);
+        t.addIsSelectedObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleTrackSelection));
+    }
 
     for (var i = 0; i < 8; i++)
     {
@@ -61,130 +79,48 @@ function TrackBankProxy ()
             //println(note);
         }));*/
 
-        // Track name
-        t.addNameObserver (8, '', doObjectIndex (this, i, function (index, name)
-        {
-            this.tracks[index].name = name;
-        }));
-        // Track selection
-        t.addIsSelectedObserver (doObjectIndex (this, i, function (index, isSelected)
-        {
-            this.tracks[index].selected = isSelected;
-            for (var l = 0; l < this.listeners.length; l++)
-                this.listeners[l].call (null, index, isSelected);
-        }));
-        t.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, function (index, value)
-        {
-            this.tracks[index].vu = value;
-        }));
+        t.addNameObserver (8, '', doObjectIndex (this, i, TrackBankProxy.prototype.handleName));
+        t.addIsSelectedObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleBankTrackSelection));
+        t.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, TrackBankProxy.prototype.handleVUMeters));
 
-        // Track Mute
-        t.getMute ().addValueObserver (doObjectIndex (this, i, function (index, isMuted)
-        {
-            this.tracks[index].mute = isMuted;
-        }));
-        // Track Solo
-        t.getSolo ().addValueObserver (doObjectIndex (this, i, function (index, isSoloed)
-        {
-            this.tracks[index].solo = isSoloed;
-        }));
-        // Track Arm
-        t.getArm ().addValueObserver (doObjectIndex (this, i, function (index, isArmed)
-        {
-            this.tracks[index].recarm = isArmed;
-        }));
+        t.getMute ().addValueObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleMute));
+        t.getSolo ().addValueObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleSolo));
+        t.getArm ().addValueObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleRecArm));
+        t.getCanHoldNoteData ().addValueObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleCanHoldNotes));
 
         // Track volume value & text
         var v = t.getVolume ();
-        v.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, function (index, value)
-        {
-            this.tracks[index].volume = value;
-        }));
-        v.addValueDisplayObserver (8, '', doObjectIndex (this, i, function (index, text)
-        {
-            this.tracks[index].volumeStr = text;
-        }));
+        v.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, TrackBankProxy.prototype.handleVolume));
+        v.addValueDisplayObserver (8, '', doObjectIndex (this, i, TrackBankProxy.prototype.handleVolumeStr));
 
         // Track Pan value & text
         var p = t.getPan ();
-        p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, function (index, value)
-        {
-            this.tracks[index].pan = value;
-        }));
-        p.addValueDisplayObserver (8, '', doObjectIndex (this, i, function (index, text)
-        {
-            this.tracks[index].panStr = text;
-        }));
-
-        // Can hold note data?
-        t.getCanHoldNoteData ().addValueObserver (doObjectIndex (this, i, function (index, canHoldNotes)
-        {
-            this.tracks[index].canHoldNotes = canHoldNotes;
-        }));
+        p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, TrackBankProxy.prototype.handlePan));
+        p.addValueDisplayObserver (8, '', doObjectIndex (this, i, TrackBankProxy.prototype.handlePanStr));
 
         // Slot content changes
         var cs = t.getClipLauncherSlots ();
-        cs.addIsSelectedObserver (doObjectIndex (this, i, function (index, slot, isSelected)
-        {
-            this.tracks[index].slots[slot].isSelected = isSelected;
-        }));
-        cs.addHasContentObserver (doObjectIndex (this, i, function (index, slot, hasContent)
-        {
-            this.tracks[index].slots[slot].hasContent = hasContent;
-        }));
-        cs.addColorObserver (doObjectIndex (this, i, function (index, slot, red, green, blue)
-        {
-            this.tracks[index].slots[slot].color = this.getColorIndex (red, green, blue);
-        }));
-        cs.addIsPlayingObserver (doObjectIndex (this, i, function (index, slot, isPlaying)
-        {
-            this.tracks[index].slots[slot].isPlaying = isPlaying;
-        }));
-        cs.addIsRecordingObserver (doObjectIndex (this, i, function (index, slot, isRecording)
-        {
-            this.recCount = this.recCount + (isRecording ? 1 : -1);
-            this.tracks[index].slots[slot].isRecording = isRecording;
-        }));
-        cs.addIsQueuedObserver (doObjectIndex (this, i, function (index, slot, isQueued)
-        {
-            this.tracks[index].slots[slot].isQueued = isQueued;
-        }));
+        cs.addIsSelectedObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleSlotSelection));
+        cs.addHasContentObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleSlotHasContent));
+        cs.addColorObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleSlotColor));
+        cs.addIsPlayingObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleSlotIsPlaying));
+        cs.addIsRecordingObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleSlotIsRecording));
+        cs.addIsQueuedObserver (doObjectIndex (this, i, TrackBankProxy.prototype.handleSlotIsQueued));
 
         // 6 Sends values & texts
         for (var j = 0; j < 6; j++)
         {
             var s = t.getSend (j);
-            s.addNameObserver (8, '', doObjectDoubleIndex (this, i, j, function (index1, index2, text)
-            {
-                this.tracks[index1].sends[index2].name = text;
-            }));
-            s.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, function (index1, index2, value)
-            {
-                this.tracks[index1].sends[index2].volume = value;
-            }));
-            s.addValueDisplayObserver (8, '', doObjectDoubleIndex (this, i, j, function (index1, index2, text)
-            {
-                this.tracks[index1].sends[index2].volumeStr = text;
-            }));
+            s.addNameObserver (8, '', doObjectDoubleIndex (this, i, j, TrackBankProxy.prototype.handleSendName));
+            s.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, TrackBankProxy.prototype.handleSendVolume));
+            s.addValueDisplayObserver (8, '', doObjectDoubleIndex (this, i, j, TrackBankProxy.prototype.handleSendVolumeStr));
         }
     }
 
-    this.trackBank.addCanScrollTracksUpObserver (doObject (this, function (canScroll)
-    {
-        this.canScrollTracksUpFlag = canScroll;
-    }));
-    this.trackBank.addCanScrollTracksDownObserver (doObject (this, function (canScroll)
-    {
-        this.canScrollTracksDownFlag = canScroll;
-    }));
-    this.trackBank.addCanScrollScenesUpObserver (doObject (this, function (canScroll)
-    {
-        this.canScrollScenesUpFlag = canScroll;
-    }));
-    this.trackBank.addCanScrollScenesDownObserver (doObject (this, function (canScroll)
-    {
-        this.canScrollScenesDownFlag = canScroll;
-    }));
+    this.trackBank.addCanScrollTracksUpObserver (doObject (this, TrackBankProxy.prototype.handleCanScrollTracksUp));
+    this.trackBank.addCanScrollTracksDownObserver (doObject (this, TrackBankProxy.prototype.handleCanScrollTracksDown));
+    this.trackBank.addCanScrollScenesUpObserver (doObject (this, TrackBankProxy.prototype.handleCanScrollScenesUp));
+    this.trackBank.addCanScrollScenesDownObserver (doObject (this, TrackBankProxy.prototype.handleCanScrollScenesDown));
 }
 
 TrackBankProxy.prototype.isMuteState = function ()
@@ -457,9 +393,135 @@ TrackBankProxy.prototype.createTracks = function (count)
     return tracks;
 };
 
-TrackBankProxy.TrackState =
+//--------------------------------------
+// Callback Handlers
+//--------------------------------------
+
+TrackBankProxy.prototype.handleTrackSelection = function (index, isSelected)
 {
-    NONE: 0,
-    MUTE: 1,
-    SOLO: 2
+    if (isSelected)
+        this.trackBank.scrollToTrack (Math.floor (index / 8) * 8);
+};
+
+TrackBankProxy.prototype.handleBankTrackSelection = function (index, isSelected)
+{
+    this.tracks[index].selected = isSelected;
+    for (var l = 0; l < this.listeners.length; l++)
+        this.listeners[l].call (null, index, isSelected);
+};
+
+TrackBankProxy.prototype.handleName = function (index, name)
+{
+    this.tracks[index].name = name;
+};
+
+TrackBankProxy.prototype.handleVUMeters = function (index, value)
+{
+    this.tracks[index].vu = value;
+};
+
+TrackBankProxy.prototype.handleMute = function (index, isMuted)
+{
+    this.tracks[index].mute = isMuted;
+};
+
+TrackBankProxy.prototype.handleSolo = function (index, isSoloed)
+{
+    this.tracks[index].solo = isSoloed;
+};
+
+TrackBankProxy.prototype.handleRecArm = function (index, isArmed)
+{
+    this.tracks[index].recarm = isArmed;
+};
+
+TrackBankProxy.prototype.handleVolume = function (index, value)
+{
+    this.tracks[index].volume = value;
+};
+
+TrackBankProxy.prototype.handleVolumeStr = function (index, text)
+{
+    this.tracks[index].volumeStr = text;
+};
+
+TrackBankProxy.prototype.handlePan = function (index, value)
+{
+    this.tracks[index].pan = value;
+};
+
+TrackBankProxy.prototype.handlePanStr = function (index, text)
+{
+    this.tracks[index].panStr = text;
+};
+
+TrackBankProxy.prototype.handleCanHoldNotes = function (index, canHoldNotes)
+{
+    this.tracks[index].canHoldNotes = canHoldNotes;
+};
+
+TrackBankProxy.prototype.handleSlotSelection = function (index, slot, isSelected)
+{
+    this.tracks[index].slots[slot].isSelected = isSelected;
+};
+
+TrackBankProxy.prototype.handleSlotHasContent = function (index, slot, hasContent)
+{
+    this.tracks[index].slots[slot].hasContent = hasContent;
+};
+
+TrackBankProxy.prototype.handleSlotColor = function (index, slot, red, green, blue)
+{
+    this.tracks[index].slots[slot].color = this.getColorIndex (red, green, blue);
+};
+
+TrackBankProxy.prototype.handleSlotIsPlaying = function (index, slot, isPlaying)
+{
+    this.tracks[index].slots[slot].isPlaying = isPlaying;
+};
+
+TrackBankProxy.prototype.handleSlotIsRecording = function (index, slot, isRecording)
+{
+    this.recCount = this.recCount + (isRecording ? 1 : -1);
+    this.tracks[index].slots[slot].isRecording = isRecording;
+};
+
+TrackBankProxy.prototype.handleSlotIsQueued = function (index, slot, isQueued)
+{
+    this.tracks[index].slots[slot].isQueued = isQueued;
+};
+
+TrackBankProxy.prototype.handleSendName = function (index1, index2, text)
+{
+    this.tracks[index1].sends[index2].name = text;
+};
+
+TrackBankProxy.prototype.handleSendVolume = function (index1, index2, value)
+{
+    this.tracks[index1].sends[index2].volume = value;
+};
+
+TrackBankProxy.prototype.handleSendVolumeStr = function (index1, index2, text)
+{
+    this.tracks[index1].sends[index2].volumeStr = text;
+};
+
+TrackBankProxy.prototype.handleCanScrollTracksUp = function (canScroll)
+{
+    this.canScrollTracksUpFlag = canScroll;
+};
+
+TrackBankProxy.prototype.handleCanScrollTracksDown = function (canScroll)
+{
+    this.canScrollTracksDownFlag = canScroll;
+};
+
+TrackBankProxy.prototype.handleCanScrollScenesUp = function (canScroll)
+{
+    this.canScrollScenesUpFlag = canScroll;
+};
+
+TrackBankProxy.prototype.handleCanScrollScenesDown = function (canScroll)
+{
+    this.canScrollScenesDownFlag = canScroll;
 };
