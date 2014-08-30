@@ -38,9 +38,14 @@ CursorClipProxy.prototype.getStep = function (step, row)
     return this.data[step][row];
 };
 
-CursorClipProxy.prototype.setStep = function (step, row, velocity)
+CursorClipProxy.prototype.toggleStep = function (step, row, velocity)
 {
     this.clip.toggleStep (step, row, velocity);
+};
+
+CursorClipProxy.prototype.setStep = function (step, row, velocity, duration)
+{
+    this.clip.setStep (step, row, velocity, duration);
 };
 
 CursorClipProxy.prototype.clearRow = function (row)
