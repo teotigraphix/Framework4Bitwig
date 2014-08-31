@@ -40,7 +40,7 @@ TrackState =
     SOLO: 2
 };
 
-AbstractTrackBankProxy.OBSERVED_TRACKS = 512;
+AbstractTrackBankProxy.OBSERVED_TRACKS = 256;
 
 
 function AbstractTrackBankProxy ()
@@ -55,6 +55,7 @@ function AbstractTrackBankProxy ()
     this.newClipLength = 2; // 1 Bar
     this.recCount = 64;
     this.listeners = [];
+    this.noteListeners = [];
 
     this.tracks = this.createTracks (8);
 }
@@ -73,12 +74,13 @@ AbstractTrackBankProxy.prototype.init = function ()
     {
         var t = this.trackBank.getTrack (i);
 
-        /* Test for note observer
         t.addNoteObserver (doObjectIndex (this, i, function (index, pressed, note, velocity)
         {
-            // on/off bool, key [0..127], velocity [0...1]
-            //println(note);
-        }));*/
+            // velocity [float: 0..1]
+            var sel = this.getSelectedTrack ();
+            if (sel != null && sel.index == index)
+                this.notifyListeners (pressed, note, Math.round (velocity * 127.0));
+        }));
 
         t.addNameObserver (8, '', doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleName));
         t.addIsSelectedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleBankTrackSelection));
@@ -365,6 +367,17 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
     }
     return tracks;
 };
+
+AbstractTrackBankProxy.prototype.addNoteListener = function (listener)
+{
+    this.noteListeners.push (listener);
+};
+
+AbstractTrackBankProxy.prototype.notifyListeners = function (pressed, note, velocity)
+{
+    for (var i = 0; i < this.noteListeners.length; i++)
+        this.noteListeners[i].call (null, pressed, note, velocity);
+}
 
 //--------------------------------------
 // Callback Handlers
