@@ -10,6 +10,8 @@ load ("CursorClipProxy.js");
 load ("CursorDeviceProxy.js");
 load ("GrooveProxy.js");
 load ("MasterTrackProxy.js");
+load ("AbstractTrackBankProxy.js");
 load ("TrackBankProxy.js");
+load ("EffectTrackBankProxy.js");
 load ("UserControlBankProxy.js");
 load ("Model.js");

@@ -28,7 +28,7 @@ AbstractMode.prototype.onValueKnobTouch = function (index, isTouched) {};
 
 AbstractMode.prototype.onFirstRow = function (index)
 {
-    this.model.getTrackBank ().select (index);
+    this.model.getCurrentTrackBank ().select (index);
 };
 
 AbstractMode.prototype.onSecondRow = function (index) {};
@@ -41,7 +41,7 @@ AbstractMode.prototype.updateSecondRow = function () {};
 
 AbstractMode.prototype.drawTrackNames = function ()
 {
-    var tb = this.model.getTrackBank ();
+    var tb = this.model.getCurrentTrackBank ();
     var selTrack = tb.getSelectedTrack ();
     
     // Format track names

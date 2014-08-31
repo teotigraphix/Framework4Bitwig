@@ -10,8 +10,11 @@ function Model (userCCStart, scales)
     this.groove = new GrooveProxy ();
     this.masterTrack = new MasterTrackProxy ();
     this.trackBank = new TrackBankProxy ();
+    this.effectTrackBank = new EffectTrackBankProxy ();
     this.userControlBank = new UserControlBankProxy (userCCStart);
     this.cursorDevice = new CursorDeviceProxy ();
+    
+    this.currentTrackBank = this.trackBank;
 
     this.scales = scales;
 }
@@ -49,10 +52,28 @@ Model.prototype.getGroove = function () { return this.groove; };
  */
 Model.prototype.getMasterTrack = function () { return this.masterTrack; };
 
+Model.prototype.toggleCurrentTrackBank = function ()
+{
+    this.currentTrackBank = this.currentTrackBank === this.trackBank ? this.effectTrackBank : this.trackBank;
+};
+
+/**
+ * @returns {AbstractTrackBankProxy}
+ */
+Model.prototype.getCurrentTrackBank = function ()
+{
+    return this.currentTrackBank;
+};
+
 /**
  * @returns {TrackBankProxy}
  */
 Model.prototype.getTrackBank = function () { return this.trackBank; };
+
+/**
+ * @returns {EffectTrackBankProxy}
+ */
+Model.prototype.getEffectTrackBank = function () { return this.effectTrackBank; };
 
 /**
  * @returns {CursorDeviceProxy}
