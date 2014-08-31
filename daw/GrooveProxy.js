@@ -71,7 +71,7 @@ GrooveProxy.prototype.getValue = function (kind)
     return this.values[kind];
 };
 
-// This majic exists for controller modes that use lists for execution
+// This magic exists for controller modes that use lists for execution
 GrooveProxy.prototype.getRangedValue = function (kind)
 {
     switch (kind)

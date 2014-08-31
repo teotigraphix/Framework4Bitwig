@@ -84,6 +84,7 @@ AbstractTrackBankProxy.prototype.init = function ()
         t.addIsSelectedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleBankTrackSelection));
         t.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleVUMeters));
 
+        t.exists ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleExists));
         t.getMute ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleMute));
         t.getSolo ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSolo));
         t.getArm ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleRecArm));
@@ -347,6 +348,7 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
         tracks.push (
             {
                 index: i,
+                exists: false,
                 selected: false,
                 name: '',
                 volumeStr: '',
@@ -389,6 +391,11 @@ AbstractTrackBankProxy.prototype.handleName = function (index, name)
 AbstractTrackBankProxy.prototype.handleVUMeters = function (index, value)
 {
     this.tracks[index].vu = value;
+};
+
+AbstractTrackBankProxy.prototype.handleExists = function (index, exists)
+{
+    this.tracks[index].exists = exists;
 };
 
 AbstractTrackBankProxy.prototype.handleMute = function (index, isMuted)
