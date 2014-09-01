@@ -4,7 +4,7 @@
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 TransportProxy.INC_FRACTION_TIME      = 1.0;        // 1 beat
-TransportProxy.INC_FRACTION_TIME_SLOW = 1.0 / 20;    // 1/20th of a beat
+TransportProxy.INC_FRACTION_TIME_SLOW = 1.0 / 20;   // 1/20th of a beat
 TransportProxy.TEMPO_RESOLUTION       = 647;
 
 function TransportProxy ()

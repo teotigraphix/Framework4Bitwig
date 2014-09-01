@@ -7,17 +7,26 @@ AbstractDisplay.FORMAT_RAW   = 0;
 AbstractDisplay.FORMAT_VALUE = 1;
 AbstractDisplay.FORMAT_PAN   = 2;
 
+AbstractDisplay.NOTIFICATION_TIME = 1000; // ms
 
-function AbstractDisplay (output, noOfLines, noOfBlocks, noOfCells)
+
+function AbstractDisplay (output, noOfLines, noOfBlocks, noOfCells, noOfCharacters)
 {
     if (typeof (output) == 'undefined')
         return;
 
     this.output = output;
     
-    this.noOfLines  = noOfLines;
-    this.noOfBlocks = noOfBlocks;
-    this.noOfCells  = noOfCells;
+    this.noOfLines      = noOfLines;
+    this.noOfBlocks     = noOfBlocks;
+    this.noOfCells      = noOfCells;
+    this.noOfCharacters = noOfCharacters;
+    
+    this.emptyLine = "";
+    for (var i = 0; i < this.noOfCharacters; i++)
+        this.emptyLine += " ";
+    this.notificationMessage = this.emptyLine;
+    this.isNotificationActive = false;
 
     this.currentMessage = initArray (null, this.noOfLines);
     this.message = initArray (null, this.noOfLines);
@@ -37,6 +46,20 @@ AbstractDisplay.prototype.writeLine = function (row, text) {};
 
 //////////////////////////////////////////////////
 // Public methods
+
+// Displays a notification message on the display for 3 seconds
+AbstractDisplay.prototype.showNotification = function (message)
+{
+    var padding = this.emptyLine.substr (0, Math.round ((this.noOfCharacters - message.length) / 2));
+    this.notificationMessage = (padding + message + padding).substr (0, this.noOfCharacters);
+    this.isNotificationActive = true;
+    this.flush ();
+    scheduleTask (function (object)
+    {
+        object.isNotificationActive = false;
+        object.forceFlush ();
+    }, [this], AbstractDisplay.NOTIFICATION_TIME);
+};
 
 AbstractDisplay.prototype.clear = function ()
 {
@@ -89,8 +112,22 @@ AbstractDisplay.prototype.allDone = function ()
     return this;
 };
 
+AbstractDisplay.prototype.forceFlush = function (row)
+{
+    for (var row = 0; row < this.noOfLines; row++)
+        this.currentMessage[row] = '';
+};
+
 AbstractDisplay.prototype.flush = function (row)
 {
+    if (this.isNotificationActive)
+    {
+        this.writeLine (0, this.notificationMessage);
+        for (var row = 1; row < this.noOfLines; row++)
+            this.writeLine (row, this.emptyLine);
+        return;
+    }
+
     for (var row = 0; row < this.noOfLines; row++)
     {
         // Has anything changed?
