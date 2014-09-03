@@ -5,7 +5,7 @@
 
 TransportProxy.INC_FRACTION_TIME      = 1.0;        // 1 beat
 TransportProxy.INC_FRACTION_TIME_SLOW = 1.0 / 20;   // 1/20th of a beat
-TransportProxy.TEMPO_RESOLUTION       = 647;
+TransportProxy.TEMPO_RESOLUTION       = 64600;
 
 function TransportProxy ()
 {
@@ -241,15 +241,22 @@ TransportProxy.prototype.tapTempo = function ()
     }
 };
 
-TransportProxy.prototype.changeTempo = function (increase)
+TransportProxy.prototype.changeTempo = function (increase, fine)
 {
-    this.tempo = increase ? Math.min (this.tempo + 1, TransportProxy.TEMPO_RESOLUTION) : Math.max (0, this.tempo - 1);
+    var offset = fine ? 1 : 100;
+    this.tempo = increase ? Math.min (this.tempo + offset, TransportProxy.TEMPO_RESOLUTION) : Math.max (0, this.tempo - offset);
     this.transport.getTempo ().set (this.tempo, TransportProxy.TEMPO_RESOLUTION);
 };
 
 TransportProxy.prototype.setTempo = function (bpm)
 {
-    this.transport.getTempo ().set (Math.min (Math.max (0, bpm - 20), TransportProxy.TEMPO_RESOLUTION), TransportProxy.TEMPO_RESOLUTION);
+    this.transport.getTempo ().set (Math.min (Math.max (0, bpm - 20) * 100, TransportProxy.TEMPO_RESOLUTION), TransportProxy.TEMPO_RESOLUTION);
+};
+
+// in bpm
+TransportProxy.prototype.getTempo = function ()
+{
+    return (this.tempo / 100) + 20;
 };
 
 TransportProxy.prototype.setTempoIndication = function (isTouched)

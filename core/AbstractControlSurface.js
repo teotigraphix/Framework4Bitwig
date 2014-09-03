@@ -240,7 +240,7 @@ AbstractControlSurface.prototype.isActiveMode = function (modeId)
 
 AbstractControlSurface.prototype.getMode = function (modeId)
 {
-    return this.modes[modeId];
+    return this.modes[modeId] ? this.modes[modeId] : this.modes[this.defaultMode];
 };
 
 //--------------------------------------
