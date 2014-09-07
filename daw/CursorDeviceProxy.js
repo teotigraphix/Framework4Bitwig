@@ -5,6 +5,8 @@
 
 function CursorDeviceProxy ()
 {
+    this.canSelectPrevious = false;
+    this.canSelectNext = false;
     this.hasNextParamPage = false;
     this.hasPreviousParamPage = false;
 
@@ -24,6 +26,8 @@ function CursorDeviceProxy ()
 
     this.cursorDevice.addIsEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handleIsEnabled));
     this.cursorDevice.addNameObserver (34, 'None', doObject (this, CursorDeviceProxy.prototype.handleName));
+    this.cursorDevice.addCanSelectPreviousObserver (doObject (this, CursorDeviceProxy.prototype.handleCanSelectPrevious));
+    this.cursorDevice.addCanSelectNextObserver (doObject (this, CursorDeviceProxy.prototype.handleCanSelectNext));
     this.cursorDevice.addPreviousParameterPageEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handlePreviousParameterPageEnabled));
     this.cursorDevice.addNextParameterPageEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handleNextParameterPageEnabled));
     this.cursorDevice.addSelectedPageObserver (-1, doObject (this, CursorDeviceProxy.prototype.handleSelectedPage));
@@ -225,6 +229,16 @@ CursorDeviceProxy.prototype.getFXParam = function (index)
     return this.fxparams[index];
 };
 
+CursorDeviceProxy.prototype.canSelectPreviousFX = function ()
+{
+    return this.canSelectPrevious;
+};
+
+CursorDeviceProxy.prototype.canSelectNextFX = function ()
+{
+    return this.canSelectNext;
+};
+
 CursorDeviceProxy.prototype.hasPreviousParameterPage = function ()
 {
     // TODO When working this.hasPreviousParamPage is correctly updated replace
@@ -277,6 +291,16 @@ CursorDeviceProxy.prototype.handleIsEnabled = function (isEnabled)
 CursorDeviceProxy.prototype.handleName = function (name)
 {
     this.selectedDevice.name = name;
+};
+
+CursorDeviceProxy.prototype.handleCanSelectPrevious = function (isEnabled)
+{
+    this.canSelectPrevious = isEnabled;
+};
+
+CursorDeviceProxy.prototype.handleCanSelectNext = function (isEnabled)
+{
+    this.canSelectNext = isEnabled;
 };
 
 CursorDeviceProxy.prototype.handlePreviousParameterPageEnabled = function (isEnabled)

@@ -180,8 +180,6 @@ AbstractControlSurface.prototype.addModeListener = function (listener)
 AbstractControlSurface.prototype.setDefaultMode = function (mode)
 {
     this.defaultMode = mode;
-    if (this.currentMode == null)
-        this.currentMode = this.defaultMode;
     if (this.previousMode == null)
         this.previousMode = this.defaultMode;
 };

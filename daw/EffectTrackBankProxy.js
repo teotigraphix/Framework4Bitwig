@@ -3,9 +3,11 @@
 // (c) 2014
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function EffectTrackBankProxy ()
+function EffectTrackBankProxy (numTracks, numScenes)
 {
-    this.trackBank = host.createEffectTrackBank (8, 8);
+    AbstractTrackBankProxy.call (this, numTracks, numScenes, 0);
+
+    this.trackBank = host.createEffectTrackBank (numTracks, numScenes);
     this.trackSelectionBank = host.createEffectTrackBank (AbstractTrackBankProxy.OBSERVED_TRACKS, 0);
     
     this.init ();

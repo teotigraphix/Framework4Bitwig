@@ -3,14 +3,14 @@
 // (c) 2014
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function Model (userCCStart, scales)
+function Model (userCCStart, scales, numTracks, numScenes, numSends)
 {
     this.application = new ApplicationProxy ();
     this.transport = new TransportProxy ();
     this.groove = new GrooveProxy ();
     this.masterTrack = new MasterTrackProxy ();
-    this.trackBank = new TrackBankProxy ();
-    this.effectTrackBank = new EffectTrackBankProxy ();
+    this.trackBank = new TrackBankProxy (numTracks ? numTracks : 8, numScenes ? numScenes : 8, numSends ? numSends : 6);
+    this.effectTrackBank = new EffectTrackBankProxy (numTracks ? numTracks : 8, numScenes ? numScenes : 8);
     this.userControlBank = new UserControlBankProxy (userCCStart);
     this.cursorDevice = new CursorDeviceProxy ();
     
@@ -55,6 +55,11 @@ Model.prototype.getMasterTrack = function () { return this.masterTrack; };
 Model.prototype.toggleCurrentTrackBank = function ()
 {
     this.currentTrackBank = this.currentTrackBank === this.trackBank ? this.effectTrackBank : this.trackBank;
+};
+
+Model.prototype.isEffectTrackBankActive = function ()
+{
+    return this.currentTrackBank === this.effectTrackBank;
 };
 
 /**

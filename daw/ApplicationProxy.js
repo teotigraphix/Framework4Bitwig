@@ -6,6 +6,10 @@
 function ApplicationProxy ()
 {
     this.application = host.createApplication ();
+    
+    this.perspective = 'ARRANGE';
+    
+    this.application.addSelectedModeObserver (doObject (this, ApplicationProxy.prototype.handlePerspective), 10, "");
 }
 
 ApplicationProxy.prototype.setPerspective = function (perspective)
@@ -105,4 +109,13 @@ ApplicationProxy.prototype.arrowKeyRight = function ()
 ApplicationProxy.prototype.arrowKeyDown = function ()
 {
     this.application.arrowKeyDown ();
+};
+
+//--------------------------------------
+// Callback Handlers
+//--------------------------------------
+
+ApplicationProxy.prototype.handlePerspective = function (perspective)
+{
+    this.perspective = perspective;
 };

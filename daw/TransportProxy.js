@@ -11,10 +11,11 @@ function TransportProxy ()
 {
     this.transport = host.createTransport ();
 
-    this.isClickOn   = false;
-    this.isPlaying   = false;
-    this.isRecording = false;
-    this.isLooping   = false;
+    this.isClickOn         = false;
+    this.isPlaying         = false;
+    this.isRecording       = false;
+    this.isLooping         = false;
+    this.isLauncherOverdub = false;
     
     // For tap tempo calculation
     this.ttLastMillis = -1;
@@ -28,6 +29,7 @@ function TransportProxy ()
     this.transport.addIsPlayingObserver (doObject (this, TransportProxy.prototype.handleIsPlaying));
     this.transport.addIsRecordingObserver (doObject (this, TransportProxy.prototype.handleIsRecording));
     this.transport.addIsLoopActiveObserver (doObject (this, TransportProxy.prototype.handleIsLoopActive));
+    this.transport.addLauncherOverdubObserver (doObject (this, TransportProxy.prototype.handleLauncherOverdub));
     this.transport.getTempo ().addValueObserver (TransportProxy.TEMPO_RESOLUTION, doObject (this, TransportProxy.prototype.handleTempo));
 }
 
@@ -297,6 +299,11 @@ TransportProxy.prototype.handleIsRecording = function (isRec)
 TransportProxy.prototype.handleIsLoopActive = function (isLoop)
 {
     this.isLooping = isLoop;
+};
+
+TransportProxy.prototype.handleLauncherOverdub = function (isOverdub)
+{
+    this.isLauncherOverdub = isOverdub;
 };
 
 TransportProxy.prototype.handleTempo = function (value)
