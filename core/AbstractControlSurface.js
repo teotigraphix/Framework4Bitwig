@@ -148,6 +148,11 @@ AbstractControlSurface.prototype.setActiveView = function (viewId)
 
 AbstractControlSurface.prototype.updateButtons = function () {};
 
+AbstractControlSurface.prototype.getView = function (viewId)
+{
+    return this.views[viewId];
+};
+
 AbstractControlSurface.prototype.getActiveView = function ()
 {
     if (this.activeViewId < 0)

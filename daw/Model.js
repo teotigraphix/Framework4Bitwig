@@ -105,3 +105,14 @@ Model.prototype.createCursorClip = function (cols, rows)
 {
     return new CursorClipProxy (cols, rows);
 };
+
+/**
+ * Returns true if session recording is enabled, a clip is recording 
+ * or overdub is enabled.
+ */
+Model.prototype.hasRecordingState = function ()
+{
+    return this.transport.isRecording ||
+           this.transport.isLauncherOverdub ||
+           this.currentTrackBank.isClipRecording ();
+};

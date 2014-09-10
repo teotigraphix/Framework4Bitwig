@@ -17,3 +17,17 @@ AbstractController.prototype.flush = function ()
 {
     this.surface.flush ();
 };
+
+function createDeviceDiscoveryPairs (deviceName)
+{
+    host.addDeviceNameBasedDiscoveryPair (deviceName, deviceName);
+    for (var i = 1; i < 20; i++)
+    {
+        var name = i + "- " + deviceName;
+        host.addDeviceNameBasedDiscoveryPair ([name], [name]);
+        name = deviceName + " MIDI " + i;
+        host.addDeviceNameBasedDiscoveryPair ([name], [name]);
+        name = deviceName + " " + i + " MIDI 1"
+        host.addDeviceNameBasedDiscoveryPair ([name], [name]);
+    }
+};

@@ -59,6 +59,12 @@ Scales.LAYOUT_NAMES  = [ '4th ^', '4th >', '3rd ^', '3rd >', 'Seqent^', 'Seqent>
 Scales.ORIENT_UP     = 0;
 Scales.ORIENT_RIGHT  = 1;
 
+Scales.SCALE_COLOR_OFF          = 0;
+Scales.SCALE_COLOR_OCTAVE       = 1;
+Scales.SCALE_COLOR_NOTE         = 2;
+Scales.SCALE_COLOR_OUT_OF_SCALE = 3;
+
+
 function Scales (startNote, endNote, numColumns, numRows)
 {
     this.startNote     = startNote;
@@ -214,44 +220,22 @@ Scales.prototype.getColor = function (noteMap, note)
 {
     var midiNote = noteMap[note];
     if (midiNote == -1)
-        return PUSH_COLOR_BLACK;
+        return Scales.SCALE_COLOR_OFF;
     var n = (midiNote - Scales.OFFSETS[this.scaleOffset]) % 12;
     if (n == 0)
-        return PUSH_COLOR2_OCEAN_HI;
+        return Scales.SCALE_COLOR_OCTAVE;
     if (this.isChromatic ())
     {
         var notes = Scales.INTERVALS[this.selectedScale].notes;
         for (var i = 0; i < notes.length; i++)
         {
             if (notes[i] == n)
-                return PUSH_COLOR2_WHITE;
+                return Scales.SCALE_COLOR_NOTE;
         }
-        return PUSH_COLOR_BLACK;
+        return Scales.SCALE_COLOR_OUT_OF_SCALE;
     }
-    return PUSH_COLOR2_WHITE;
+    return Scales.SCALE_COLOR_NOTE;
 };
-
-Scales.prototype.getSequencerColor = function (noteMap, note)
-{
-    var midiNote = noteMap[note];
-    if (midiNote == -1)
-        return PUSH_COLOR_BLACK;
-    var n = (midiNote - Scales.OFFSETS[this.scaleOffset]) % 12;
-    if (n == 0)
-        return PUSH_COLOR2_OCEAN_HI;
-    if (this.isChromatic ())
-    {
-        var notes = Scales.INTERVALS[this.selectedScale].notes;
-        for (var i = 0; i < notes.length; i++)
-        {
-            if (notes[i] == n)
-                return PUSH_COLOR2_WHITE;
-        }
-        return PUSH_COLOR_BLACK;
-    }
-    return PUSH_COLOR2_WHITE;
-};
-
 
 Scales.prototype.getNoteMatrix = function ()
 {
