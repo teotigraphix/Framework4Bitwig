@@ -285,9 +285,30 @@ Scales.prototype.getRangeText = function ()
     return this.formatNote (offset + matrix[0]) + ' to ' + this.formatNote (offset + matrix[matrix.length - 1]);
 };
 
+Scales.prototype.getSequencerRangeText = function (from, to)
+{
+    return this.formatNoteAndOctave (from, -2) + ' to ' + this.formatDrumNote (to, -2);
+};
+
+Scales.prototype.getDrumRangeText = function ()
+{
+    var s = this.startNote + this.drumOctave * 16;
+    return this.formatDrumNote (s) + ' to ' + this.formatDrumNote (s + 15);
+};
+
+Scales.prototype.formatDrumNote = function (note)
+{
+    return this.formatNoteAndOctave (note, -2);
+};
+
 Scales.prototype.formatNote = function (note)
 {
-    return Scales.NOTE_NAMES[note % 12] + (2 + Math.floor (note / 12) + this.octave);
+    return this.formatNoteAndOctave (note, this.octave);
+};
+
+Scales.prototype.formatNoteAndOctave = function (note, octaveOffset)
+{
+    return Scales.NOTE_NAMES[Math.abs(note % 12)] + (Math.floor (note / 12) + octaveOffset);
 };
 
 Scales.prototype.createScale = function (scale)
