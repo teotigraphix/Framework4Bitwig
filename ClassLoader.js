@@ -11,3 +11,4 @@ load ("helper/ClassLoader.js");
 load ("midi/ClassLoader.js");
 load ("daw/ClassLoader.js");
 load ("core/ClassLoader.js");
+load ("view/ClassLoader.js");

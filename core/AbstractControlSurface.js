@@ -262,7 +262,14 @@ AbstractControlSurface.prototype.isShiftPressed = function ()
 
 AbstractControlSurface.prototype.isPressed = function (button)
 {
-    return this.buttonStates[button] != ButtonEvent.UP;
+    switch (this.buttonStates[button])
+    {
+        case ButtonEvent.DOWN:
+        case ButtonEvent.LONG:
+            return true;
+        default:
+            return false;
+    }
 };
 
 //--------------------------------------
