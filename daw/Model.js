@@ -13,7 +13,9 @@ function Model (userCCStart, scales, numTracks, numScenes, numSends)
     this.effectTrackBank = new EffectTrackBankProxy (numTracks ? numTracks : 8, numScenes ? numScenes : 8);
     this.userControlBank = new UserControlBankProxy (userCCStart);
     this.cursorDevice = new CursorDeviceProxy ();
-    
+
+    this.preferences = new PreferencesProxy ();
+
     this.currentTrackBank = this.trackBank;
 
     this.scales = scales;
