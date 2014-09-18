@@ -3,11 +3,9 @@
 // (c) 2014
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-// Experimental class, Bitwig API seems unfinished and crashy
-
 function ArrangerProxy ()
 {
-    this.arranger = host.createArranger (0 /* screenIndex ??? */);
+    this.arranger = host.createArranger ();
     
     this.isCueMarkeVisible = false;
     this.followsPlayback = false;
