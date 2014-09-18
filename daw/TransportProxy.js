@@ -33,9 +33,9 @@ function TransportProxy ()
     this.transport.getTempo ().addValueObserver (TransportProxy.TEMPO_RESOLUTION, doObject (this, TransportProxy.prototype.handleTempo));
 }
 
-//--------------------------------------
-// Bitwig Transport API
-//--------------------------------------
+//------------------------------------------------------------------------------
+// Bitwig Transport API 1.0
+//------------------------------------------------------------------------------
 
 TransportProxy.prototype.fastForward = function ()
 {
@@ -185,6 +185,30 @@ TransportProxy.prototype.toggleWriteArrangerAutomation = function ()
 TransportProxy.prototype.toggleWriteClipLauncherAutomation = function ()
 {
     this.transport.toggleWriteClipLauncherAutomation ();
+};
+
+//------------------------------------------------------------------------------
+// Bitwig Transport API 1.1
+//------------------------------------------------------------------------------
+
+/**
+ * Returns an object that provides access to the selected device of the track
+ * in Bitwig Studio.
+ * @param isSingleSelection
+ * @returns {DeviceSelection}
+ */
+TransportProxy.prototype.createEditorDeviceSelection = function (isSingleSelection)
+{
+    return this.transport.createEditorDeviceSelection (isSingleSelection);
+};
+
+/**
+ * When calling this function multiple times, the timing of those calls gets
+ * evaluated and causes adjustments to the project tempo.
+ */
+TransportProxy.prototype.tapTempo = function ()
+{
+    this.transport.tapTempo ();
 };
 
 //--------------------------------------
