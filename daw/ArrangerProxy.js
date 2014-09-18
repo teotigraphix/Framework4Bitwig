@@ -18,9 +18,9 @@ function ArrangerProxy ()
     this.arranger.addTrackRowHeightObserver (doObject (this, ArrangerProxy.prototype.handleTrackRowHeight));
 }
 
-//--------------------------------------
-// Bitwig Arranger API
-//--------------------------------------
+//------------------------------------------------------------------------------
+// Bitwig Arranger API 1.0
+//------------------------------------------------------------------------------
 
 ArrangerProxy.prototype.toggleCueMarkerVisibility = function ()
 {
@@ -35,6 +35,37 @@ ArrangerProxy.prototype.togglePlaybackFollow = function ()
 ArrangerProxy.prototype.toggleTrackRowHeight = function ()
 {
     this.arranger.toggleTrackRowHeight ();
+};
+
+//------------------------------------------------------------------------------
+// Bitwig Arranger API 1.1
+//------------------------------------------------------------------------------
+
+/**
+ * Gets an object that allows to show/hide the cue markers in the arranger panel.
+ * @returns {BooleanValue}
+ */
+ArrangerProxy.prototype.areCueMarkersVisible = function ()
+{
+    return this.arranger.areCueMarkersVisible ();
+};
+
+/**
+ *Gets an object that allows to control the arranger track height.
+ * @returns {BooleanValue}
+ */
+ArrangerProxy.prototype.hasDoubleRowTrackHeight = function ()
+{
+    return this.arranger.hasDoubleRowTrackHeight ();
+};
+
+/**
+ * Gets an object that allows to enable/disable arranger playback follow.
+ * @returns {BooleanValue}
+ */
+ArrangerProxy.prototype.isPlaybackFollowEnabled = function ()
+{
+    return this.arranger.isPlaybackFollowEnabled ();
 };
 
 //--------------------------------------

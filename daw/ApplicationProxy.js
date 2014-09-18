@@ -16,6 +16,10 @@ function ApplicationProxy ()
     this.application.addSelectedModeObserver (doObject (this, ApplicationProxy.prototype.handlePerspective), 10, "");
 }
 
+//--------------------------------------
+// Bitwig Application API 1.0
+//--------------------------------------
+
 ApplicationProxy.prototype.setPerspective = function (perspective)
 {
     this.application.setPerspective (perspective);
@@ -116,7 +120,7 @@ ApplicationProxy.prototype.arrowKeyDown = function ()
 };
 
 //------------------------------------------------------------------------------
-// 1.1
+// Bitwig Application API 1.1
 //------------------------------------------------------------------------------
 
 //--------------------------------------
