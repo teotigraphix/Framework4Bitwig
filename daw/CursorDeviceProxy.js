@@ -33,6 +33,13 @@ function CursorDeviceProxy ()
     this.cursorDevice.addSelectedPageObserver (-1, doObject (this, CursorDeviceProxy.prototype.handleSelectedPage));
     this.cursorDevice.addPageNamesObserver(doObject (this,  CursorDeviceProxy.prototype.handlePageNames));
 
+    // TODO Implement 1.1 observers
+    // addDirectParameterIdObserver (callback:function):void
+    // addDirectParameterNameObserver (maxChars:int, callback:function):void
+    // addDirectParameterNormalizedValueObserver (callback:function):void
+    // addDirectParameterValueDisplayObserver (maxChars:int, callback:function):void
+    // addSlotsObserver (callback:function):void
+
     for (var i = 0; i < 8; i++)
     {
         var p = this.getParameter (i);
@@ -97,9 +104,9 @@ function CursorDeviceProxy ()
     }));
 }
 
-//--------------------------------------
-// Bitwig Device API
-//--------------------------------------
+//------------------------------------------------------------------------------
+// Bitwig Device API 1.0
+//------------------------------------------------------------------------------
 
 CursorDeviceProxy.prototype.getCommonParameter = function (index)
 {
@@ -201,9 +208,9 @@ CursorDeviceProxy.prototype.toggleEnabledState = function ()
     return this.cursorDevice.toggleEnabledState ();
 };
 
-//--------------------------------------
-// Bitwig CursorDevice API
-//--------------------------------------
+//------------------------------------------------------------------------------
+// Bitwig CursorDevice API 1.0
+//------------------------------------------------------------------------------
 
 CursorDeviceProxy.prototype.selectNext = function ()
 {
@@ -213,6 +220,80 @@ CursorDeviceProxy.prototype.selectNext = function ()
 CursorDeviceProxy.prototype.selectPrevious = function ()
 {
     return this.cursorDevice.selectPrevious ();
+};
+
+//------------------------------------------------------------------------------
+// Bitwig Device API 1.1
+//------------------------------------------------------------------------------
+
+/**
+ * Create a bank for navigating the nested layers of the device using a fixed-size
+ * window.
+ * @param numPads {int}
+ * @returns {DrumPadBank}
+ */
+CursorDeviceProxy.prototype.createDrumPadBank = function (numPads)
+{
+    return this.cursorDevice.createDrumPadBank (numPads);
+};
+
+/**
+ * Create a bank for navigating the nested layers of the device using a fixed-size
+ * window.
+ * @param numChannels {int}
+ * @returns {DeviceLayerBank}
+ */
+CursorDeviceProxy.prototype.createLayerBank = function (numChannels)
+{
+    return this.cursorDevice.createLayerBank (numChannels);
+};
+
+/**
+ * Indicates if the device has individual device chains for each note value.
+ * @returns {Value}
+ */
+CursorDeviceProxy.prototype.hasDrumPads = function ()
+{
+    return this.cursorDevice.hasDrumPads ();
+};
+
+/**
+ * Indicates if the device supports nested layers.
+ * @returns {Value}
+ */
+CursorDeviceProxy.prototype.hasLayers = function ()
+{
+    return this.cursorDevice.hasLayers ();
+};
+
+/**
+ * Indicates if the device has nested device chains in FX slots.
+ * @returns {Value}
+ */
+CursorDeviceProxy.prototype.hasSlots = function ()
+{
+    return this.cursorDevice.hasSlots ();
+};
+
+/**
+ * @param id {string}
+ * @param increment {number}
+ * @param resolution {number}
+ */
+CursorDeviceProxy.prototype.incDirectParameterValueNormalized = function (id, increment, resolution)
+{
+    this.cursorDevice.incDirectParameterValueNormalized (id, increment, resolution);
+};
+
+/**
+ *
+ * @param id {string}
+ * @param value {number}
+ * @param resolution {number}
+ */
+CursorDeviceProxy.prototype.setDirectParameterValueNormalized = function (id, value, resolution)
+{
+    this.cursorDevice.setDirectParameterValueNormalized (id, value, resolution);
 };
 
 //--------------------------------------
@@ -273,7 +354,7 @@ CursorDeviceProxy.prototype.createFXParams = function (count)
             index: i,
             name: '',
             valueStr: '',
-            value: 0,
+            value: 0
         });
     }
     return fxparams;
