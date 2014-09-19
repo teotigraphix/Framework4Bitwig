@@ -295,6 +295,11 @@ TransportProxy.prototype.setInternalTempo = function (t)
     this.tempo = t;
 };
 
+TransportProxy.prototype.setCrossfade = function (value)
+{
+    this.transport.getCrossfade ().set (value, Config.maxParameterValue);
+};
+
 TransportProxy.prototype.setLauncherOverdub = function (on)
 {
     // Note: This is a bug: On and off are switched

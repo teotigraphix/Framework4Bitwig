@@ -99,6 +99,7 @@ AbstractTrackBankProxy.prototype.init = function ()
         t.getMute ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleMute));
         t.getSolo ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSolo));
         t.getArm ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleRecArm));
+        t.getCrossFadeMode ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleCrossfadeMode));
         t.getCanHoldNoteData ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleCanHoldNotes));
 
         // Track volume value & text
@@ -260,6 +261,32 @@ AbstractTrackBankProxy.prototype.toggleArm = function (index)
     this.setArm (index, !this.getTrack (index).recarm);
 };
 
+AbstractTrackBankProxy.prototype.getCrossfadeMode = function (index)
+{
+    return this.tracks[index].crossfadeMode;
+};
+
+AbstractTrackBankProxy.prototype.setCrossfadeMode = function (index, mode)
+{
+    this.trackBank.getTrack (index).getCrossFadeMode ().set (mode);
+};
+
+AbstractTrackBankProxy.prototype.toggleCrossfadeMode = function (index)
+{
+    switch (this.getCrossfadeMode (index))
+    {
+        case 'A':
+            this.setCrossfadeMode (index, 'B');
+            break;
+        case 'B':
+            this.setCrossfadeMode (index, 'AB');
+            break;
+        case 'AB':
+            this.setCrossfadeMode (index, 'A');
+            break;
+    }
+};
+
 AbstractTrackBankProxy.prototype.stop = function (index)
 {
     this.trackBank.getTrack (index).stop ();
@@ -371,7 +398,8 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             panStr: '',
             pan: 0,
             sends: [],
-            slots: []
+            slots: [],
+            crossfadeMode: 'AB'
         };
         for (var j = 0; j < this.numScenes; j++)
             t.slots.push ({ index: j });
@@ -438,6 +466,11 @@ AbstractTrackBankProxy.prototype.handleSolo = function (index, isSoloed)
 AbstractTrackBankProxy.prototype.handleRecArm = function (index, isArmed)
 {
     this.tracks[index].recarm = isArmed;
+};
+
+AbstractTrackBankProxy.prototype.handleCrossfadeMode = function (index, mode)
+{
+    this.tracks[index].crossfadeMode = mode;
 };
 
 AbstractTrackBankProxy.prototype.handleVolume = function (index, value)
