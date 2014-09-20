@@ -289,6 +289,13 @@ AbstractControlSurface.prototype.handleMidi = function (status, data1, data2)
                 this.handleTouch (data1, code == 0x80 ? 0 : data2);
             break;
 
+        // Polyphonic Aftertouch
+        case 0xA0:
+            var view = this.getActiveView ();
+            if (view != null)
+                view.onPolyAftertouch (data1, data2);
+            break;
+
         case 0xB0:
             this.handleCC (data1, data2);
             break;

@@ -45,6 +45,8 @@ AbstractView.prototype.onActivate = function ()
     this.updateNoteMapping ();
 };
 
+AbstractView.prototype.onPolyAftertouch = function (note, value) {};
+
 AbstractView.prototype.updateDevice = function ()
 {
     var m = this.surface.getActiveMode ();
