@@ -13,7 +13,8 @@ function Model (userCCStart, scales, numTracks, numScenes, numSends)
     this.effectTrackBank = new EffectTrackBankProxy (numTracks ? numTracks : 8, numScenes ? numScenes : 8);
     this.userControlBank = new UserControlBankProxy (userCCStart);
     this.cursorDevice = new CursorDeviceProxy ();
-
+    this.arranger = new ArrangerProxy ();
+    this.mixer = new MixerProxy ();
     this.preferences = new PreferencesProxy ();
 
     this.currentTrackBank = this.trackBank;
@@ -40,7 +41,18 @@ Model.prototype.getSelectedDevice = function ()
 };
 
 /**
- * @returns {TransportProxy|
+ * @returns {ArrangerProxy}
+ */
+Model.prototype.getArranger = function () { return this.arranger; };
+
+
+/**
+ * @returns {MixerProxy}
+ */
+Model.prototype.getMixer = function () { return this.mixer; };
+
+/**
+ * @returns {TransportProxy}
  */
 Model.prototype.getTransport = function () { return this.transport; };
 

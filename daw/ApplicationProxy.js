@@ -7,23 +7,25 @@ function ApplicationProxy ()
 {
     this.application = host.createApplication ();
     
-    this.perspective = 'ARRANGE';
+    this.panelLayout = 'ARRANGE';
 
-    // TODO implement 1.1 observers
-    // addDisplayProfileObserver (callable:function, maxChars:int):void
-    // addPanelLayoutObserver (callable:function, maxChars:int):void
-
-    this.application.addSelectedModeObserver (doObject (this, ApplicationProxy.prototype.handlePerspective), 10, "");
+    this.application.addPanelLayoutObserver (doObject (this, ApplicationProxy.prototype.handlePanelLayout), 10, "");
 }
 
-//--------------------------------------
-// Bitwig Application API 1.0
-//--------------------------------------
-
-ApplicationProxy.prototype.setPerspective = function (perspective)
+/**
+ * Switches the Bitwig Studio user interface to the panel layout with the given name.
+ *
+ * @param panelLayout {string} the name of the new panel layout
+ */
+ApplicationProxy.prototype.setPanelLayout = function (panelLayout)
 {
-    this.application.setPerspective (perspective);
+    this.application.setPanelLayout (panelLayout);
 };
+
+ApplicationProxy.prototype.getPanelLayout = function ()
+{
+    return this.panelLayout;
+}
 
 ApplicationProxy.prototype.toggleNoteEditor = function ()
 {
@@ -38,6 +40,14 @@ ApplicationProxy.prototype.toggleAutomationEditor = function ()
 ApplicationProxy.prototype.toggleDevices = function ()
 {
     this.application.toggleDevices ();
+};
+
+/**
+ * Toggles the visibility of the inspector panel.
+ */
+ApplicationProxy.prototype.toggleInspector = function ()
+{
+    this.application.toggleInspector ();
 };
 
 ApplicationProxy.prototype.toggleMixer = function ()
@@ -118,10 +128,6 @@ ApplicationProxy.prototype.arrowKeyDown = function ()
 {
     this.application.arrowKeyDown ();
 };
-
-//------------------------------------------------------------------------------
-// Bitwig Application API 1.1
-//------------------------------------------------------------------------------
 
 //--------------------------------------
 // Actions
@@ -205,48 +211,10 @@ ApplicationProxy.prototype.createInstrumentTrack = function (position, selection
 };
 
 //--------------------------------------
-// Panels
-//--------------------------------------
-
-/**
- * Switches to the next panel layout of the active display profile in Bitwig Studio.
- */
-ApplicationProxy.prototype.nextPanelLayout = function ()
-{
-    this.application.nextPanelLayout ();
-};
-
-/**
- * Switches to the previous panel layout of the active display profile in Bitwig Studio.
- */
-ApplicationProxy.prototype.previousPanelLayout = function ()
-{
-    this.application.previousPanelLayout ();
-};
-
-/**
- * Switches the Bitwig Studio user interface to the panel layout with the given name.
- *
- * @param panelLayout {string} the name of the new panel layout
- */
-ApplicationProxy.prototype.setPanelLayout = function (panelLayout)
-{
-    this.application.setPanelLayout (panelLayout);
-};
-
-/**
- * Toggles the visibility of the inspector panel.
- */
-ApplicationProxy.prototype.toggleInspector = function ()
-{
-    this.application.toggleInspector ();
-};
-
-//--------------------------------------
 // Callback Handlers
 //--------------------------------------
 
-ApplicationProxy.prototype.handlePerspective = function (perspective)
+ApplicationProxy.prototype.handlePanelLayout = function (panelLayout)
 {
-    this.perspective = perspective;
+    this.panelLayout = panelLayout;
 };
