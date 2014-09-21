@@ -79,9 +79,7 @@ ApplicationProxy.prototype.doubleClip = function ()
 
 ApplicationProxy.prototype.deleteSelection = function ()
 {
-    // Weird workaround as 'delete' is a reserved word in JS
-    var deleteFunction = this.application['delete'];
-    deleteFunction.call (this.application);
+    this.application.remove ();
 };
 
 ApplicationProxy.prototype.redo = function ()
