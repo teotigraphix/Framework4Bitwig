@@ -345,7 +345,7 @@ AbstractTrackBankProxy.prototype.scrollScenesPageDown = function ()
 AbstractTrackBankProxy.prototype.setIndication = function (enable)
 {
     for (var index = 0; index < this.numTracks; index++)
-        this.trackBank.getChannel (index).getClipLauncherSlots ().setIndication (enable);
+        this.getClipLauncherSlots (index).setIndication (enable);
 };
 
 /**
@@ -355,6 +355,26 @@ AbstractTrackBankProxy.prototype.setIndication = function (enable)
 AbstractTrackBankProxy.prototype.getClipLauncherSlots = function (index)
 {
     return this.trackBank.getChannel (index).getClipLauncherSlots ();
+};
+
+/**
+ * Returns an array with the selected slots. The array is empty if none is selected.
+ */
+AbstractTrackBankProxy.prototype.getSelectedSlots = function (trackIndex)
+{
+    var track = this.getTrack (trackIndex);
+    var selection = [];
+    for (var i = 0; i < track.slots.length; i++)
+    {
+        if (track.slots[i].isSelected)
+            selection.push (track.slots[i]);
+    }
+    return selection;
+};
+
+AbstractTrackBankProxy.prototype.showClipInEditor = function (trackIndex, slotIndex)
+{
+    this.trackBank.getChannel (trackIndex).getClipLauncherSlots ().showInEditor (slotIndex);
 };
 
 /**
