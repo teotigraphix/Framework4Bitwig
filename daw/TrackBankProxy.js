@@ -15,7 +15,7 @@ function TrackBankProxy (numTracks, numScenes, numSends)
     // Sends values & texts
     for (var i = 0; i < numTracks; i++)
     {
-        var t = this.trackBank.getTrack (i);
+        var t = this.trackBank.getChannel (i);
         for (var j = 0; j < this.numSends; j++)
         {
             var s = t.getSend (j);
@@ -32,7 +32,7 @@ TrackBankProxy.prototype.changeSend = function (index, sendIndex, value, fractio
     var t = this.getTrack (index);
     var send = t.sends[sendIndex];
     send.volume = changeValue (value, send.volume, fractionValue, Config.maxParameterValue);
-    this.trackBank.getTrack (t.index).getSend (sendIndex).set (send.volume, Config.maxParameterValue);
+    this.trackBank.getChannel (t.index).getSend (sendIndex).set (send.volume, Config.maxParameterValue);
 };
 
 TrackBankProxy.prototype.setSend = function (index, sendIndex, value)
@@ -40,12 +40,12 @@ TrackBankProxy.prototype.setSend = function (index, sendIndex, value)
     var t = this.getTrack (index);
     var send = t.sends[sendIndex];
     send.volume = value;
-    this.trackBank.getTrack (t.index).getSend (sendIndex).set (send.volume, Config.maxParameterValue);
+    this.trackBank.getChannel (t.index).getSend (sendIndex).set (send.volume, Config.maxParameterValue);
 };
 
 TrackBankProxy.prototype.setSendIndication = function (index, sendIndex, indicate)
 {
-    this.trackBank.getTrack (index).getSend (sendIndex).setIndication (indicate);
+    this.trackBank.getChannel (index).getSend (sendIndex).setIndication (indicate);
 };
 
 //--------------------------------------

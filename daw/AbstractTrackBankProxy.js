@@ -75,13 +75,13 @@ AbstractTrackBankProxy.prototype.init = function ()
     // track bank to the selected track
     for (var i = 0; i < AbstractTrackBankProxy.OBSERVED_TRACKS; i++)
     {
-        var t = this.trackSelectionBank.getTrack (i);
+        var t = this.trackSelectionBank.getChannel (i);
         t.addIsSelectedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleTrackSelection));
     }
 
     for (var i = 0; i < this.numTracks; i++)
     {
-        var t = this.trackBank.getTrack (i);
+        var t = this.trackBank.getChannel (i);
 
         t.addNoteObserver (doObjectIndex (this, i, function (index, pressed, note, velocity)
         {
@@ -122,8 +122,8 @@ AbstractTrackBankProxy.prototype.init = function ()
         cs.addIsQueuedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsQueued));
     }
 
-    this.trackBank.addCanScrollTracksUpObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollTracksUp));
-    this.trackBank.addCanScrollTracksDownObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollTracksDown));
+    this.trackBank.addCanScrollChannelsUpObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollTracksUp));
+    this.trackBank.addCanScrollChannelsDownObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollTracksDown));
     this.trackBank.addCanScrollScenesUpObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollScenesUp));
     this.trackBank.addCanScrollScenesDownObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollScenesDown));
 };
@@ -185,7 +185,7 @@ AbstractTrackBankProxy.prototype.getSelectedTrack = function ()
 
 AbstractTrackBankProxy.prototype.select = function (index)
 {
-    var t = this.trackBank.getTrack (index);
+    var t = this.trackBank.getChannel (index);
     if (t != null)
         t.select ();
 };
@@ -194,56 +194,56 @@ AbstractTrackBankProxy.prototype.changeVolume = function (index, value, fraction
 {
     var t = this.getTrack (index);
     t.volume = changeValue (value, t.volume, fractionValue, Config.maxParameterValue);
-    this.trackBank.getTrack (t.index).getVolume ().set (t.volume, Config.maxParameterValue);
+    this.trackBank.getChannel (t.index).getVolume ().set (t.volume, Config.maxParameterValue);
 };
 
 AbstractTrackBankProxy.prototype.setVolume = function (index, value)
 {
     var t = this.getTrack (index);
     t.volume = value;
-    this.trackBank.getTrack (t.index).getVolume ().set (t.volume, Config.maxParameterValue);
+    this.trackBank.getChannel (t.index).getVolume ().set (t.volume, Config.maxParameterValue);
 };
 
 AbstractTrackBankProxy.prototype.setVolumeIndication = function (index, indicate)
 {
-    this.trackBank.getTrack (index).getVolume ().setIndication (indicate);
+    this.trackBank.getChannel (index).getVolume ().setIndication (indicate);
 };
 
 AbstractTrackBankProxy.prototype.changePan = function (index, value, fractionValue)
 {
     var t = this.getTrack (index);
     t.pan = changeValue (value, t.pan, fractionValue, Config.maxParameterValue);
-    this.trackBank.getTrack (t.index).getPan ().set (t.pan, Config.maxParameterValue);
+    this.trackBank.getChannel (t.index).getPan ().set (t.pan, Config.maxParameterValue);
 };
 
 AbstractTrackBankProxy.prototype.setPan = function (index, value, fractionValue)
 {
     var t = this.getTrack (index);
     t.pan = value;
-    this.trackBank.getTrack (t.index).getPan ().set (t.pan, Config.maxParameterValue);
+    this.trackBank.getChannel (t.index).getPan ().set (t.pan, Config.maxParameterValue);
 };
 
 AbstractTrackBankProxy.prototype.setPanIndication = function (index, indicate)
 {
-    this.trackBank.getTrack (index).getPan ().setIndication (indicate);
+    this.trackBank.getChannel (index).getPan ().setIndication (indicate);
 };
 
 AbstractTrackBankProxy.prototype.setMute = function (index, value)
 {
     this.getTrack (index).mute = value;
-    this.trackBank.getTrack (index).getMute ().set (value);
+    this.trackBank.getChannel (index).getMute ().set (value);
 };
 
 AbstractTrackBankProxy.prototype.setSolo = function (index, value)
 {
     this.getTrack (index).solo = value;
-    this.trackBank.getTrack (index).getSolo ().set (value);
+    this.trackBank.getChannel (index).getSolo ().set (value);
 };
 
 AbstractTrackBankProxy.prototype.setArm = function (index, value)
 {
     this.getTrack (index).recarm = value;
-    this.trackBank.getTrack (index).getArm ().set (value);
+    this.trackBank.getChannel (index).getArm ().set (value);
 };
 
 AbstractTrackBankProxy.prototype.toggleMute = function (index)
@@ -268,7 +268,7 @@ AbstractTrackBankProxy.prototype.getCrossfadeMode = function (index)
 
 AbstractTrackBankProxy.prototype.setCrossfadeMode = function (index, mode)
 {
-    this.trackBank.getTrack (index).getCrossFadeMode ().set (mode);
+    this.trackBank.getChannel (index).getCrossFadeMode ().set (mode);
 };
 
 AbstractTrackBankProxy.prototype.toggleCrossfadeMode = function (index)
@@ -289,7 +289,7 @@ AbstractTrackBankProxy.prototype.toggleCrossfadeMode = function (index)
 
 AbstractTrackBankProxy.prototype.stop = function (index)
 {
-    this.trackBank.getTrack (index).stop ();
+    this.trackBank.getChannel (index).stop ();
 };
 
 AbstractTrackBankProxy.prototype.launchScene = function (scene)
@@ -299,7 +299,7 @@ AbstractTrackBankProxy.prototype.launchScene = function (scene)
 
 AbstractTrackBankProxy.prototype.returnToArrangement = function (index)
 {
-    this.trackBank.getTrack (index).returnToArrangement ();
+    this.trackBank.getChannel (index).returnToArrangement ();
 };
 
 AbstractTrackBankProxy.prototype.scrollTracksUp = function ()
@@ -345,7 +345,7 @@ AbstractTrackBankProxy.prototype.scrollScenesPageDown = function ()
 AbstractTrackBankProxy.prototype.setIndication = function (enable)
 {
     for (var index = 0; index < this.numTracks; index++)
-        this.trackBank.getTrack (index).getClipLauncherSlots ().setIndication (enable);
+        this.trackBank.getChannel (index).getClipLauncherSlots ().setIndication (enable);
 };
 
 /**
@@ -354,7 +354,7 @@ AbstractTrackBankProxy.prototype.setIndication = function (enable)
  */
 AbstractTrackBankProxy.prototype.getClipLauncherSlots = function (index)
 {
-    return this.trackBank.getTrack (index).getClipLauncherSlots ();
+    return this.trackBank.getChannel (index).getClipLauncherSlots ();
 };
 
 /**
