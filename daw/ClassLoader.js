@@ -16,5 +16,4 @@ load ("AbstractTrackBankProxy.js");
 load ("TrackBankProxy.js");
 load ("EffectTrackBankProxy.js");
 load ("UserControlBankProxy.js");
-load ("PreferencesProxy.js");
 load ("Model.js");

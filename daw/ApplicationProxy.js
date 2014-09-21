@@ -105,9 +105,30 @@ ApplicationProxy.prototype.addEffect = function ()
     displayNotification ("Add Effect: Function not supported (yet).");
 };
 
-ApplicationProxy.prototype.addTrack = function ()
+/**
+ * Creates a new audio track.
+ */
+ApplicationProxy.prototype.addAudioTrack = function (position, selection)
 {
-    displayNotification ("Add Track: Function not supported (yet).");
+    // TODO change position to -1 when fixed (currently does not work with -1)
+    this.application.createAudioTrack (0, null);
+};
+
+/**
+ * Creates a new effect track.
+ */
+ApplicationProxy.prototype.addEffectTrack = function (position, selection)
+{
+    this.application.createEffectTrack (-1, null);
+};
+
+/**
+ * Creates a new instrument track.
+ */
+ApplicationProxy.prototype.addInstrumentTrack = function ()
+{
+    // TODO change position to -1 when fixed (currently does not work with -1)
+    this.application.createInstrumentTrack  (0, null);
 };
 
 ApplicationProxy.prototype.arrowKeyLeft = function ()
@@ -175,40 +196,6 @@ ApplicationProxy.prototype.getActionCategory   = function (id)
 ApplicationProxy.prototype.getActions  = function ()
 {
     return this.application.getActions ();
-};
-
-//--------------------------------------
-// Creation
-//--------------------------------------
-
-/**
- * Creates a new audio track at the given position.
- * @param position {int}
- * @param selection {TrackSelection}
- */
-ApplicationProxy.prototype.createAudioTrack = function (position, selection)
-{
-    this.application.createAudioTrack (position, selection);
-};
-
-/**
- * Creates a new effect track at the given position.
- * @param position {int}
- * @param selection {TrackSelection}
- */
-ApplicationProxy.prototype.createEffectTrack = function (position, selection)
-{
-    this.application.createEffectTrack (position, selection);
-};
-
-/**
- * Creates a new instrument track at the given position.
- * @param position {int}
- * @param selection {TrackSelection}
- */
-ApplicationProxy.prototype.createInstrumentTrack = function (position, selection)
-{
-    this.application.createInstrumentTrack  (position, selection);
 };
 
 //--------------------------------------
