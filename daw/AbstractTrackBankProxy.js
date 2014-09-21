@@ -304,22 +304,22 @@ AbstractTrackBankProxy.prototype.returnToArrangement = function (index)
 
 AbstractTrackBankProxy.prototype.scrollTracksUp = function ()
 {
-    this.trackBank.scrollTracksUp ();
+    this.trackBank.scrollChannelsUp ();
 };
 
 AbstractTrackBankProxy.prototype.scrollTracksDown = function ()
 {
-    this.trackBank.scrollTracksDown ();
+    this.trackBank.scrollChannelsDown ();
 };
 
 AbstractTrackBankProxy.prototype.scrollTracksPageUp = function ()
 {
-    this.trackBank.scrollTracksPageUp ();
+    this.trackBank.scrollChannelsPageUp ();
 };
 
 AbstractTrackBankProxy.prototype.scrollTracksPageDown = function ()
 {
-    this.trackBank.scrollTracksPageDown ();
+    this.trackBank.scrollChannelsPageDown ();
 };
 
 AbstractTrackBankProxy.prototype.scrollScenesUp = function ()
@@ -428,7 +428,7 @@ AbstractTrackBankProxy.prototype.notifyListeners = function (pressed, note, velo
 AbstractTrackBankProxy.prototype.handleTrackSelection = function (index, isSelected)
 {
     if (isSelected)
-        this.trackBank.scrollToTrack (Math.floor (index / this.numTracks) * this.numTracks);
+        this.trackBank.scrollToChannel (Math.floor (index / this.numTracks) * this.numTracks);
 };
 
 AbstractTrackBankProxy.prototype.handleBankTrackSelection = function (index, isSelected)
