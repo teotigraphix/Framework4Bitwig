@@ -108,7 +108,7 @@ ApplicationProxy.prototype.addEffect = function ()
 /**
  * Creates a new audio track.
  */
-ApplicationProxy.prototype.addAudioTrack = function (position, selection)
+ApplicationProxy.prototype.addAudioTrack = function ()
 {
     // TODO change position to -1 when fixed (currently does not work with -1)
     this.application.createAudioTrack (0, null);
@@ -117,7 +117,7 @@ ApplicationProxy.prototype.addAudioTrack = function (position, selection)
 /**
  * Creates a new effect track.
  */
-ApplicationProxy.prototype.addEffectTrack = function (position, selection)
+ApplicationProxy.prototype.addEffectTrack = function ()
 {
     this.application.createEffectTrack (-1, null);
 };

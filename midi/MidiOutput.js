@@ -23,6 +23,11 @@ MidiOutput.prototype.sendNoteEx = function (channel, note, velocity)
     this.port.sendMidi (0x90 + channel, note, velocity);
 };
 
+MidiOutput.prototype.sendPitchbend = function (data1, data2)
+{
+    this.port.sendMidi (0xE0, data1, data2);
+};
+
 MidiOutput.prototype.sendSysex = function (data)
 {
     this.port.sendSysex (data);

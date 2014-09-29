@@ -266,9 +266,28 @@ AbstractTrackBankProxy.prototype.getCrossfadeMode = function (index)
     return this.tracks[index].crossfadeMode;
 };
 
+AbstractTrackBankProxy.prototype.getCrossfadeModeAsNumber = function (index)
+{
+    switch (this.getCrossfadeMode (index))
+    {
+        case 'A':
+            return 0;
+        case 'AB':
+            return 1;
+        case 'B':
+            return 2;
+    }
+    return -1;
+};
+
 AbstractTrackBankProxy.prototype.setCrossfadeMode = function (index, mode)
 {
     this.trackBank.getChannel (index).getCrossFadeMode ().set (mode);
+};
+
+AbstractTrackBankProxy.prototype.setCrossfadeModeAsNumber = function (index, modeValue)
+{
+    this.setCrossfadeMode (index, modeValue == 0 ? 'A' : (modeValue == 1 ? 'AB' : 'B'));
 };
 
 AbstractTrackBankProxy.prototype.toggleCrossfadeMode = function (index)

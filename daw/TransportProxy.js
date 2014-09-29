@@ -5,7 +5,8 @@
 
 TransportProxy.INC_FRACTION_TIME      = 1.0;        // 1 beat
 TransportProxy.INC_FRACTION_TIME_SLOW = 1.0 / 20;   // 1/20th of a beat
-TransportProxy.TEMPO_RESOLUTION       = 64600;
+TransportProxy.TEMPO_MIN              = 20;
+TransportProxy.TEMPO_MAX              = 666;
 
 function TransportProxy ()
 {
@@ -16,16 +17,15 @@ function TransportProxy ()
     this.isRecording       = false;
     this.isLooping         = false;
     this.isLauncherOverdub = false;
+    this.crossfade         = 0;
     
-    // Note: For real BPM add 20
-    this.setInternalTempo (100);
-
     this.transport.addClickObserver (doObject (this, TransportProxy.prototype.handleClick));
     this.transport.addIsPlayingObserver (doObject (this, TransportProxy.prototype.handleIsPlaying));
     this.transport.addIsRecordingObserver (doObject (this, TransportProxy.prototype.handleIsRecording));
     this.transport.addIsLoopActiveObserver (doObject (this, TransportProxy.prototype.handleIsLoopActive));
     this.transport.addLauncherOverdubObserver (doObject (this, TransportProxy.prototype.handleLauncherOverdub));
-    this.transport.getTempo ().addValueObserver (TransportProxy.TEMPO_RESOLUTION, doObject (this, TransportProxy.prototype.handleTempo));
+    this.transport.getTempo ().addRawValueObserver (doObject (this, TransportProxy.prototype.handleTempo));
+    this.transport.getCrossfade ().addValueObserver (Config.maxParameterValue, doObject (this, TransportProxy.prototype.handleCrossfade));
 }
 
 TransportProxy.prototype.fastForward = function ()
@@ -197,20 +197,20 @@ TransportProxy.prototype.tapTempo = function ()
 
 TransportProxy.prototype.changeTempo = function (increase, fine)
 {
-    var offset = fine ? 1 : 100;
-    this.tempo = increase ? Math.min (this.tempo + offset, TransportProxy.TEMPO_RESOLUTION) : Math.max (0, this.tempo - offset);
-    this.transport.getTempo ().set (this.tempo, TransportProxy.TEMPO_RESOLUTION);
+    var offset = fine ? 0.01 : 1;
+    this.tempo = increase ? Math.min (this.tempo + offset, TransportProxy.TEMPO_MAX) : Math.max (TransportProxy.TEMPO_MIN, this.tempo - offset);
+    this.transport.getTempo ().setRaw (this.tempo);
 };
 
 TransportProxy.prototype.setTempo = function (bpm)
 {
-    this.transport.getTempo ().set (Math.min (Math.max (0, bpm - 20) * 100, TransportProxy.TEMPO_RESOLUTION), TransportProxy.TEMPO_RESOLUTION);
+    this.transport.getTempo ().setRaw (bpm);
 };
 
 // in bpm
 TransportProxy.prototype.getTempo = function ()
 {
-    return (this.tempo / 100) + 20;
+    return this.tempo;
 };
 
 TransportProxy.prototype.setTempoIndication = function (isTouched)
@@ -218,14 +218,14 @@ TransportProxy.prototype.setTempoIndication = function (isTouched)
     this.transport.getTempo ().setIndication (isTouched);
 };
 
-TransportProxy.prototype.setInternalTempo = function (t)
-{
-    this.tempo = t;
-};
-
 TransportProxy.prototype.setCrossfade = function (value)
 {
     this.transport.getCrossfade ().set (value, Config.maxParameterValue);
+};
+
+TransportProxy.prototype.getCrossfade = function ()
+{
+    return this.crossfade;
 };
 
 TransportProxy.prototype.setLauncherOverdub = function (on)
@@ -265,5 +265,10 @@ TransportProxy.prototype.handleLauncherOverdub = function (isOverdub)
 
 TransportProxy.prototype.handleTempo = function (value)
 {
-    this.setInternalTempo (value);
+    this.tempo = Math.min (TransportProxy.TEMPO_MAX, Math.max (TransportProxy.TEMPO_MIN, value));
+};
+
+TransportProxy.prototype.handleCrossfade = function (value)
+{
+    this.crossfade = value;
 };
