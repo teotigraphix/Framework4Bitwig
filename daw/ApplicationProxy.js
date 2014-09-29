@@ -25,7 +25,7 @@ ApplicationProxy.prototype.setPanelLayout = function (panelLayout)
 ApplicationProxy.prototype.getPanelLayout = function ()
 {
     return this.panelLayout;
-}
+};
 
 ApplicationProxy.prototype.toggleNoteEditor = function ()
 {

@@ -113,12 +113,12 @@ CursorDeviceProxy.prototype.getEnvelopeParameter = function (index)
 
 CursorDeviceProxy.prototype.getMacro = function (index)
 {
-    return this.cursorDevice.getMacro (index)
+    return this.cursorDevice.getMacro (index);
 };
 
 CursorDeviceProxy.prototype.getModulationSource = function (index)
 {
-    return this.cursorDevice.getModulationSource (index)
+    return this.cursorDevice.getModulationSource (index);
 };
 
 CursorDeviceProxy.prototype.getParameter = function (indexInPage)
@@ -158,12 +158,12 @@ CursorDeviceProxy.prototype.getCurrentPreset = function ()
 
 CursorDeviceProxy.prototype.setPresetCategory = function (index)
 {
-    return this.cursorDevice.setPresetCategory (index)
+    return this.cursorDevice.setPresetCategory (index);
 };
 
 CursorDeviceProxy.prototype.setPresetCreator = function (index)
 {
-    return this.cursorDevice.setPresetCreator (index)
+    return this.cursorDevice.setPresetCreator (index);
 };
 
 CursorDeviceProxy.prototype.switchToNextPreset = function ()

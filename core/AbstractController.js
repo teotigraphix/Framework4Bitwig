@@ -1,4 +1,4 @@
-// Written by Jürgen Moßgraber - mossgrabers.de
+// Written by Jï¿½rgen Moï¿½graber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
 // (c) 2014
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
@@ -27,7 +27,7 @@ function createDeviceDiscoveryPairs (deviceName)
         host.addDeviceNameBasedDiscoveryPair ([ name ], [ name ]);
         name = deviceName + " MIDI " + i;
         host.addDeviceNameBasedDiscoveryPair ([ name ], [ name ]);
-        name = deviceName + " " + i + " MIDI 1"
+        name = deviceName + " " + i + " MIDI 1";
         host.addDeviceNameBasedDiscoveryPair ([ name ], [ name ]);
     }
 };

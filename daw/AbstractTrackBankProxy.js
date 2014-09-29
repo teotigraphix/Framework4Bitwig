@@ -458,7 +458,7 @@ AbstractTrackBankProxy.prototype.notifyListeners = function (pressed, note, velo
 {
     for (var i = 0; i < this.noteListeners.length; i++)
         this.noteListeners[i].call (null, pressed, note, velocity);
-}
+};
 
 //--------------------------------------
 // Callback Handlers
