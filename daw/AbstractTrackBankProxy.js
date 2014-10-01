@@ -73,11 +73,8 @@ AbstractTrackBankProxy.prototype.init = function ()
 {
     // Monitor 'all' tracks for selection to move the 'window' of the main
     // track bank to the selected track
-    for (var i = 0; i < AbstractTrackBankProxy.OBSERVED_TRACKS; i++)
-    {
-        var t = this.trackSelectionBank.getChannel (i);
-        t.addIsSelectedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleTrackSelection));
-    }
+    var trackSelectionMonitor = host.createEditorTrackSelection (true, 0, 0);
+    trackSelectionMonitor.addPositionObserver (doObject (this, AbstractTrackBankProxy.prototype.handleTrackSelection));
 
     for (var i = 0; i < this.numTracks; i++)
     {
@@ -462,10 +459,9 @@ AbstractTrackBankProxy.prototype.notifyListeners = function (pressed, note, velo
 // Callback Handlers
 //--------------------------------------
 
-AbstractTrackBankProxy.prototype.handleTrackSelection = function (index, isSelected)
+AbstractTrackBankProxy.prototype.handleTrackSelection = function (index)
 {
-    if (isSelected)
-        this.trackBank.scrollToChannel (Math.floor (index / this.numTracks) * this.numTracks);
+    this.trackBank.scrollToChannel (Math.floor (index / this.numTracks) * this.numTracks);
 };
 
 AbstractTrackBankProxy.prototype.handleBankTrackSelection = function (index, isSelected)

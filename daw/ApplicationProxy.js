@@ -110,8 +110,7 @@ ApplicationProxy.prototype.addEffect = function ()
  */
 ApplicationProxy.prototype.addAudioTrack = function ()
 {
-    // TODO change position to -1 when fixed (currently does not work with -1)
-    this.application.createAudioTrack (0, null);
+    this.application.createAudioTrack (-1, null);
 };
 
 /**
@@ -127,8 +126,7 @@ ApplicationProxy.prototype.addEffectTrack = function ()
  */
 ApplicationProxy.prototype.addInstrumentTrack = function ()
 {
-    // TODO change position to -1 when fixed (currently does not work with -1)
-    this.application.createInstrumentTrack  (0, null);
+    this.application.createInstrumentTrack (-1, null);
 };
 
 ApplicationProxy.prototype.arrowKeyLeft = function ()
