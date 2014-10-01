@@ -96,6 +96,8 @@ AbstractTrackBankProxy.prototype.init = function ()
         t.getMute ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleMute));
         t.getSolo ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSolo));
         t.getArm ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleRecArm));
+        t.getMonitor ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleMonitor));
+        t.getAutoMonitor ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleAutoMonitor));
         t.getCrossFadeMode ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleCrossfadeMode));
         t.getCanHoldNoteData ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleCanHoldNotes));
 
@@ -254,6 +256,16 @@ AbstractTrackBankProxy.prototype.toggleSolo = function (index)
 AbstractTrackBankProxy.prototype.toggleArm = function (index)
 {
     this.setArm (index, !this.getTrack (index).recarm);
+};
+
+AbstractTrackBankProxy.prototype.toggleMonitor = function (index)
+{
+    this.trackBank.getTrack (index).getMonitor ().toggle ();
+};
+
+AbstractTrackBankProxy.prototype.toggleAutoMonitor = function (index)
+{
+    this.trackBank.getTrack (index).getAutoMonitor ().toggle ();
 };
 
 AbstractTrackBankProxy.prototype.getCrossfadeMode = function (index)
@@ -429,6 +441,8 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             mute: false,
             solo: false,
             recarm: false,
+            monitor: false,
+            autoMonitor: false,
             panStr: '',
             pan: 0,
             sends: [],
@@ -499,6 +513,16 @@ AbstractTrackBankProxy.prototype.handleSolo = function (index, isSoloed)
 AbstractTrackBankProxy.prototype.handleRecArm = function (index, isArmed)
 {
     this.tracks[index].recarm = isArmed;
+};
+
+AbstractTrackBankProxy.prototype.handleMonitor = function (index, on)
+{
+    this.tracks[index].monitor = on;
+};
+
+AbstractTrackBankProxy.prototype.handleAutoMonitor = function (index, on)
+{
+    this.tracks[index].autoMonitor = on;
 };
 
 AbstractTrackBankProxy.prototype.handleCrossfadeMode = function (index, mode)
