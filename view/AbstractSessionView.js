@@ -183,20 +183,38 @@ AbstractSessionView.prototype.drawPad = function (slot, x, y, isArmed)
 {
     var color;
     if (slot.isRecording)
-        color = slot.isQueued ? AbstractSessionView.CLIP_COLOR_IS_RECORDING_QUEUED : AbstractSessionView.CLIP_COLOR_IS_RECORDING;
+    {
+        if (slot.isQueued)
+        {
+            if (AbstractSessionView.USE_CLIP_COLOR && slot.color)
+                color = AbstractSessionView.CLIP_COLOR_IS_RECORDING_QUEUED;
+            else
+                color = AbstractSessionView.CLIP_COLOR_IS_RECORDING_QUEUED;
+        }
+        else
+        {
+            if (AbstractSessionView.USE_CLIP_COLOR && slot.color)
+                color = { color: slot.color, blink: AbstractSessionView.CLIP_COLOR_IS_RECORDING.blink, fast: AbstractSessionView.CLIP_COLOR_IS_RECORDING.fast };
+            else
+                color = AbstractSessionView.CLIP_COLOR_IS_RECORDING;
+        }
+    }
     else if (slot.isPlaying)
     {
-        if (AbstractSessionView.USE_CLIP_COLOR && slot.color)
-            color = { color: slot.color, blink: AbstractSessionView.CLIP_COLOR_IS_PLAYING.blink, fast: AbstractSessionView.CLIP_COLOR_IS_PLAYING.fast };
+        if (slot.isQueued)
+        {
+            if (AbstractSessionView.USE_CLIP_COLOR && slot.color)
+                color = AbstractSessionView.CLIP_COLOR_IS_PLAYING_QUEUED;
+            else
+                color = AbstractSessionView.CLIP_COLOR_IS_PLAYING_QUEUED;
+        }
         else
-            color = AbstractSessionView.CLIP_COLOR_IS_PLAYING;
-    }
-    else if (slot.isQueued)
-    {
-        if (AbstractSessionView.USE_CLIP_COLOR && slot.color)
-            color = { color: slot.color, blink: AbstractSessionView.CLIP_COLOR_IS_PLAYING_QUEUED.blink, fast: AbstractSessionView.CLIP_COLOR_IS_PLAYING_QUEUED.fast };
-        else
-            color = AbstractSessionView.CLIP_COLOR_IS_PLAYING_QUEUED;
+        {
+            if (AbstractSessionView.USE_CLIP_COLOR && slot.color)
+                color = { color: slot.color, blink: AbstractSessionView.CLIP_COLOR_IS_PLAYING.blink, fast: AbstractSessionView.CLIP_COLOR_IS_PLAYING.fast };
+            else
+                color = AbstractSessionView.CLIP_COLOR_IS_PLAYING;
+        }
     }
     else if (slot.hasContent)
     {

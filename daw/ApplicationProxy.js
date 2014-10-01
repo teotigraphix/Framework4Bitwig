@@ -9,7 +9,7 @@ function ApplicationProxy ()
     
     this.panelLayout = 'ARRANGE';
 
-    this.application.addPanelLayoutObserver (doObject (this, ApplicationProxy.prototype.handlePanelLayout), 10, "");
+    this.application.addPanelLayoutObserver (doObject (this, ApplicationProxy.prototype.handlePanelLayout), 10);
 }
 
 /**

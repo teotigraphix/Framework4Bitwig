@@ -117,9 +117,7 @@ AbstractTrackBankProxy.prototype.init = function ()
         cs.addIsSelectedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotSelection));
         cs.addHasContentObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotHasContent));
         cs.addColorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotColor));
-        cs.addIsPlayingObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsPlaying));
-        cs.addIsRecordingObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsRecording));
-        cs.addIsQueuedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsQueued));
+        cs.addPlaybackStateObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePlaybackState));
     }
 
     this.trackBank.addCanScrollChannelsUpObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollTracksUp));
@@ -552,20 +550,20 @@ AbstractTrackBankProxy.prototype.handleSlotColor = function (index, slot, red, g
     this.tracks[index].slots[slot].color = this.getColorIndex (red, green, blue);
 };
 
-AbstractTrackBankProxy.prototype.handleSlotIsPlaying = function (index, slot, isPlaying)
+AbstractTrackBankProxy.prototype.handlePlaybackState = function (index, slot, state, isQueued)
 {
-    this.tracks[index].slots[slot].isPlaying = isPlaying;
-};
+    var wasRecording = this.tracks[index].slots[slot].isRecording;
 
-AbstractTrackBankProxy.prototype.handleSlotIsRecording = function (index, slot, isRecording)
-{
-    this.recCount = this.recCount + (isRecording ? 1 : -1);
-    this.tracks[index].slots[slot].isRecording = isRecording;
-};
-
-AbstractTrackBankProxy.prototype.handleSlotIsQueued = function (index, slot, isQueued)
-{
+    this.tracks[index].slots[slot].isPlaying = state == 1;
+    this.tracks[index].slots[slot].isRecording = state == 2;
     this.tracks[index].slots[slot].isQueued = isQueued;
+
+    if (wasRecording === this.tracks[index].slots[slot].isRecording)
+        return;
+    if (wasRecording)
+        this.recCount--;
+    else
+        this.recCount++;
 };
 
 AbstractTrackBankProxy.prototype.handleCanScrollTracksUp = function (canScroll)
