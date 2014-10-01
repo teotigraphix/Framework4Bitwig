@@ -21,8 +21,7 @@ function CursorDeviceProxy ()
     };
 
     this.isMacroMappings = initArray(false, 8);
-// TODO Replace with  createEditorDeviceSelection(true)
-    this.cursorDevice = host.createCursorDevice ();
+    this.cursorDevice = host.createEditorDeviceSelection (true);
 
     this.cursorDevice.addIsEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handleIsEnabled));
     this.cursorDevice.addNameObserver (34, 'None', doObject (this, CursorDeviceProxy.prototype.handleName));
@@ -241,16 +240,12 @@ CursorDeviceProxy.prototype.canSelectNextFX = function ()
 
 CursorDeviceProxy.prototype.hasPreviousParameterPage = function ()
 {
-    // TODO When working this.hasPreviousParamPage is correctly updated replace
-    // return this.hasPreviousParamPage;
-    return this.selectedParameterPage > 0;
+    return this.hasPreviousParamPage;
 };
 
 CursorDeviceProxy.prototype.hasNextParameterPage = function ()
 {
-    // TODO When working this.hasNextParamPage is correctly updated replace
-    // return this.hasNextParamPage;
-    return true;
+    return this.hasNextParamPage;
 };
 
 CursorDeviceProxy.prototype.getSelectedParameterPageName = function ()
@@ -295,11 +290,15 @@ CursorDeviceProxy.prototype.handleName = function (name)
 
 CursorDeviceProxy.prototype.handleCanSelectPrevious = function (isEnabled)
 {
+    // TODO Never called
+    println ("CanSelectPrevious: " + isEnabled);
     this.canSelectPrevious = isEnabled;
 };
 
 CursorDeviceProxy.prototype.handleCanSelectNext = function (isEnabled)
 {
+    // TODO Never called
+    println ("CanSelectNext:" + isEnabled);
     this.canSelectNext = isEnabled;
 };
 

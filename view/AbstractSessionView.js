@@ -39,8 +39,8 @@ AbstractSessionView.prototype.onActivate = function ()
 AbstractSessionView.prototype.updateArrows = function ()
 {
     var tb = this.model.getCurrentTrackBank ();
-    this.canScrollUp = this.flip ? tb.canScrollTracksUp () : tb.canScrollScenesDown ();
-    this.canScrollDown = this.flip ? tb.canScrollTracksDown () : tb.canScrollScenesUp ();
+    this.canScrollUp = this.flip ? tb.canScrollTracksDown () : tb.canScrollScenesUp ();
+    this.canScrollDown = this.flip ? tb.canScrollTracksUp () : tb.canScrollScenesDown ();
     this.canScrollLeft = this.flip ? tb.canScrollScenesDown () : tb.canScrollTracksUp ();
     this.canScrollRight = this.flip ? tb.canScrollScenesUp () : tb.canScrollTracksDown ();
     AbstractView.prototype.updateArrows.call (this);
