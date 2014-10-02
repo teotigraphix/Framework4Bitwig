@@ -129,3 +129,8 @@ Model.prototype.hasRecordingState = function ()
            this.transport.isLauncherOverdub ||
            this.currentTrackBank.isClipRecording ();
 };
+
+Model.prototype.getQuartersPerMeasure = function ()
+{
+    return 4 * this.transport.getNumerator () / this.transport.getDenominator ();
+};

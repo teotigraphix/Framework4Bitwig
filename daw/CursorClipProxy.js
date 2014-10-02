@@ -5,13 +5,14 @@
 
 function CursorClipProxy (stepSize, rowSize, clip)
 {
-    this.stepSize = stepSize;
-    this.rowSize = rowSize;
-    this.step = -1;
-    this.playStart  = 0.0;
-    this.playEnd    = 4.0;
-    this.loopStart  = 0.0;
-    this.loopLength = 4.0;
+    this.stepSize    = stepSize;
+    this.rowSize     = rowSize;
+    this.step        = -1;
+    this.playStart   = 0.0;
+    this.playEnd     = 4.0;
+    this.loopStart   = 0.0;
+    this.loopLength  = 4.0;
+    this.loopEnabled = true;
 
     this.data = [];
     for (var y = 0; y < this.rowSize; y++)
@@ -25,6 +26,7 @@ function CursorClipProxy (stepSize, rowSize, clip)
     this.clip.getPlayStop ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handlePlayStop));
     this.clip.getLoopStart ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopStart));
     this.clip.getLoopLength ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopLength));
+    this.clip.isLoopEnabled ().addValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopEnabled));
 }
 
 CursorClipProxy.prototype.getPlayStart = function ()
@@ -34,7 +36,13 @@ CursorClipProxy.prototype.getPlayStart = function ()
 
 CursorClipProxy.prototype.setPlayStart = function (start)
 {
-    return this.clip.getPlayStart ().setRaw (start);
+    this.clip.getPlayStart ().setRaw (start);
+};
+
+CursorClipProxy.prototype.changePlayStart = function (value, fractionValue)
+{
+    this.playStart = Math.min (this.playEnd, changeValue (value, this.playStart, fractionValue, Number.MAX_VALUE));
+    this.setPlayStart (this.playStart);
 };
 
 CursorClipProxy.prototype.getPlayEnd = function ()
@@ -44,7 +52,15 @@ CursorClipProxy.prototype.getPlayEnd = function ()
 
 CursorClipProxy.prototype.setPlayEnd = function (end)
 {
-    return this.clip.getPlayStop ().setRaw (end);
+    this.clip.getPlayStop ().setRaw (end);
+};
+
+CursorClipProxy.prototype.changePlayEnd = function (value, fractionValue)
+{
+    this.playEnd = Math.max (this.playStart, changeValue (value, this.playEnd, fractionValue, Number.MAX_VALUE));
+    if (this.loopEnabled)
+        this.playEnd = Math.min (this.loopStart + this.loopLength, this.playEnd);
+    this.setPlayEnd (this.playEnd);
 };
 
 CursorClipProxy.prototype.getLoopStart = function ()
@@ -54,7 +70,13 @@ CursorClipProxy.prototype.getLoopStart = function ()
 
 CursorClipProxy.prototype.setLoopStart = function (start)
 {
-    return this.clip.getLoopStart ().setRaw (start);
+    this.clip.getLoopStart ().setRaw (start);
+};
+
+CursorClipProxy.prototype.changeLoopStart = function (value, fractionValue)
+{
+    this.loopStart = changeValue (value, this.loopStart, fractionValue, Number.MAX_VALUE);
+    this.setLoopStart (this.loopStart);
 };
 
 CursorClipProxy.prototype.getLoopLength = function ()
@@ -64,7 +86,23 @@ CursorClipProxy.prototype.getLoopLength = function ()
 
 CursorClipProxy.prototype.setLoopLength = function (length)
 {
-    return this.clip.getLoopLength ().setRaw (length);
+    this.clip.getLoopLength ().setRaw (length);
+};
+
+CursorClipProxy.prototype.changeLoopLength = function (value, fractionValue)
+{
+    this.loopLength = changeValue (value, this.loopLength, fractionValue, Number.MAX_VALUE);
+    this.setLoopLength (this.loopLength);
+};
+
+CursorClipProxy.prototype.isLoopEnabled = function ()
+{
+    return this.loopEnabled;
+};
+
+CursorClipProxy.prototype.setLoopEnabled = function (enable)
+{
+    this.clip.isLoopEnabled ().set (enable);
 };
 
 CursorClipProxy.prototype.getStepSize = function ()
@@ -158,4 +196,9 @@ CursorClipProxy.prototype.handleLoopStart = function (position)
 CursorClipProxy.prototype.handleLoopLength = function (position)
 {
     this.loopLength = position;
+};
+
+CursorClipProxy.prototype.handleLoopEnabled = function (enabled)
+{
+    this.loopEnabled = enabled;
 };
