@@ -8,6 +8,10 @@ function CursorClipProxy (stepSize, rowSize, clip)
     this.stepSize = stepSize;
     this.rowSize = rowSize;
     this.step = -1;
+    this.playStart  = 0.0;
+    this.playEnd    = 4.0;
+    this.loopStart  = 0.0;
+    this.loopLength = 4.0;
 
     this.data = [];
     for (var y = 0; y < this.rowSize; y++)
@@ -16,7 +20,52 @@ function CursorClipProxy (stepSize, rowSize, clip)
     this.clip = host.createCursorClip (this.stepSize, this.rowSize);
     this.clip.addPlayingStepObserver (doObject (this, CursorClipProxy.prototype.handlePlayingStep));
     this.clip.addStepDataObserver (doObject (this, CursorClipProxy.prototype.handleStepData));
+    
+    this.clip.getPlayStart ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handlePlayStart));
+    this.clip.getPlayStop ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handlePlayStop));
+    this.clip.getLoopStart ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopStart));
+    this.clip.getLoopLength ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopLength));
 }
+
+CursorClipProxy.prototype.getPlayStart = function ()
+{
+    return this.playStart;
+};
+
+CursorClipProxy.prototype.setPlayStart = function (start)
+{
+    return this.clip.getPlayStart ().setRaw (start);
+};
+
+CursorClipProxy.prototype.getPlayEnd = function ()
+{
+    return this.playEnd;
+};
+
+CursorClipProxy.prototype.setPlayEnd = function (end)
+{
+    return this.clip.getPlayStop ().setRaw (end);
+};
+
+CursorClipProxy.prototype.getLoopStart = function ()
+{
+    return this.loopStart;
+};
+
+CursorClipProxy.prototype.setLoopStart = function (start)
+{
+    return this.clip.getLoopStart ().setRaw (start);
+};
+
+CursorClipProxy.prototype.getLoopLength = function ()
+{
+    return this.loopLength;
+};
+
+CursorClipProxy.prototype.setLoopLength = function (length)
+{
+    return this.clip.getLoopLength ().setRaw (length);
+};
 
 CursorClipProxy.prototype.getStepSize = function ()
 {
@@ -89,4 +138,24 @@ CursorClipProxy.prototype.handlePlayingStep = function (step)
 CursorClipProxy.prototype.handleStepData = function (column, row, state)
 {
     this.data[column][row] = state;
+};
+
+CursorClipProxy.prototype.handlePlayStart = function (position)
+{
+    this.playStart = position;
+};
+
+CursorClipProxy.prototype.handlePlayStop = function (position)
+{
+    this.playEnd = position;
+};
+
+CursorClipProxy.prototype.handleLoopStart = function (position)
+{
+    this.loopStart = position;
+};
+
+CursorClipProxy.prototype.handleLoopLength = function (position)
+{
+    this.loopLength = position;
 };

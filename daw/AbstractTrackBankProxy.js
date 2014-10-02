@@ -581,9 +581,9 @@ AbstractTrackBankProxy.prototype.handlePlaybackState = function (index, slot, st
     if (wasRecording === this.tracks[index].slots[slot].isRecording)
         return;
     if (wasRecording)
-        this.recCount--;
-    else
         this.recCount++;
+    else
+        this.recCount--;
 };
 
 AbstractTrackBankProxy.prototype.handleCanScrollTracksUp = function (canScroll)

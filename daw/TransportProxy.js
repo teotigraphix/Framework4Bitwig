@@ -18,6 +18,8 @@ function TransportProxy ()
     this.isLooping         = false;
     this.isLauncherOverdub = false;
     this.crossfade         = 0;
+    this.numerator         = 4;
+    this.denominator       = 4;
     
     this.transport.addClickObserver (doObject (this, TransportProxy.prototype.handleClick));
     this.transport.addIsPlayingObserver (doObject (this, TransportProxy.prototype.handleIsPlaying));
@@ -26,6 +28,10 @@ function TransportProxy ()
     this.transport.addLauncherOverdubObserver (doObject (this, TransportProxy.prototype.handleLauncherOverdub));
     this.transport.getTempo ().addRawValueObserver (doObject (this, TransportProxy.prototype.handleTempo));
     this.transport.getCrossfade ().addValueObserver (Config.maxParameterValue, doObject (this, TransportProxy.prototype.handleCrossfade));
+
+    var ts = this.transport.getTimeSignature ();
+    ts.getNumerator ().addValueObserver (doObject (this, TransportProxy.prototype.handleNumerator));
+    ts.getDenominator ().addValueObserver (doObject (this, TransportProxy.prototype.handleDenominator));
 }
 
 TransportProxy.prototype.fastForward = function ()
@@ -234,6 +240,16 @@ TransportProxy.prototype.setLauncherOverdub = function (on)
     this.transport.setLauncherOverdub (!on);
 };
 
+TransportProxy.prototype.getNumerator = function ()
+{
+    return this.numerator;
+};
+
+TransportProxy.prototype.getDenominator = function ()
+{
+    return this.denominator;
+};
+
 //--------------------------------------
 // Callback Handlers
 //--------------------------------------
@@ -271,4 +287,14 @@ TransportProxy.prototype.handleTempo = function (value)
 TransportProxy.prototype.handleCrossfade = function (value)
 {
     this.crossfade = value;
+};
+
+TransportProxy.prototype.handleNumerator = function (value)
+{
+    this.numerator = value;
+};
+
+TransportProxy.prototype.handleDenominator = function (value)
+{
+    this.denominator = value;
 };
