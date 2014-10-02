@@ -13,6 +13,7 @@ function CursorClipProxy (stepSize, rowSize, clip)
     this.loopStart   = 0.0;
     this.loopLength  = 4.0;
     this.loopEnabled = true;
+    this.shuffle     = true;
 
     this.data = [];
     for (var y = 0; y < this.rowSize; y++)
@@ -27,6 +28,9 @@ function CursorClipProxy (stepSize, rowSize, clip)
     this.clip.getLoopStart ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopStart));
     this.clip.getLoopLength ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopLength));
     this.clip.isLoopEnabled ().addValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopEnabled));
+    this.clip.getShuffle ().addValueObserver (doObject (this, CursorClipProxy.prototype.handleShuffle));
+    // TODO FIX: getAccent () always returns null
+    // this.clip.getAccent ().addValueObserver (Config.maxParameterValue, doObject (this, CursorClipProxy.prototype.handleAccent));
 }
 
 CursorClipProxy.prototype.getPlayStart = function ()
@@ -103,6 +107,22 @@ CursorClipProxy.prototype.isLoopEnabled = function ()
 CursorClipProxy.prototype.setLoopEnabled = function (enable)
 {
     this.clip.isLoopEnabled ().set (enable);
+};
+
+CursorClipProxy.prototype.isShuffleEnabled = function ()
+{
+    return this.shuffle;
+};
+
+CursorClipProxy.prototype.setShuffleEnabled = function (enable)
+{
+    // TODO FIX broken
+    this.clip.getShuffle ().set (enable);
+};
+
+CursorClipProxy.prototype.getAccent = function ()
+{
+    return "TODO";
 };
 
 CursorClipProxy.prototype.getStepSize = function ()
@@ -201,4 +221,14 @@ CursorClipProxy.prototype.handleLoopLength = function (position)
 CursorClipProxy.prototype.handleLoopEnabled = function (enabled)
 {
     this.loopEnabled = enabled;
+};
+
+CursorClipProxy.prototype.handleShuffle = function (enabled)
+{
+    this.shuffle = enabled;
+};
+
+CursorClipProxy.prototype.handleAccent = function (value)
+{
+    // Implement when bug fixed
 };
