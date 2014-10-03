@@ -218,6 +218,11 @@ CursorDeviceProxy.prototype.selectPrevious = function ()
 // Public API
 //--------------------------------------
 
+CursorDeviceProxy.prototype.hasSelectedDevice = function ()
+{
+    return this.selectedDevice.name != 'None';
+};
+
 CursorDeviceProxy.prototype.getSelectedDevice = function ()
 {
     return this.selectedDevice;

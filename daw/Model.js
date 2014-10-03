@@ -31,7 +31,7 @@ Model.prototype.getScales = function ()
 
 Model.prototype.hasSelectedDevice = function ()
 {
-    return this.cursorDevice.getSelectedDevice ().name != 'None';
+    return this.cursorDevice.hasSelectedDevice ();
 };
 
 Model.prototype.getSelectedDevice = function ()
