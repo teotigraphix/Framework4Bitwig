@@ -65,6 +65,15 @@ Scales.SCALE_COLOR_NOTE         = 2;
 Scales.SCALE_COLOR_OUT_OF_SCALE = 3;
 
 
+Scales.getNames = function ()
+{
+    var scaleNames = [];
+    for (var i = 0; i < Scales.INTERVALS.length; i++)
+        scaleNames.push (Scales.INTERVALS[i].name);
+    return scaleNames;
+};
+
+
 function Scales (startNote, endNote, numColumns, numRows)
 {
     this.startNote     = startNote;
@@ -104,6 +113,18 @@ Scales.prototype.setScale = function (scale)
     this.selectedScale = Math.max (0, Math.min (scale, this.scales.length - 1));
 };
 
+Scales.prototype.setScaleByName = function (scaleName)
+{
+    for (var i = 0; i < Scales.INTERVALS.length; i++)
+    {
+        if (Scales.INTERVALS[i].name == scaleName)
+        {
+            this.selectedScale = i;
+            break;
+        }
+    }
+};
+
 Scales.prototype.nextScale = function ()
 {
     this.setScale (this.selectedScale + 1);
@@ -124,9 +145,33 @@ Scales.prototype.setScaleOffset = function (scaleOffset)
     this.scaleOffset = Math.max (0, Math.min (scaleOffset, Scales.OFFSETS.length - 1));
 };
 
+Scales.prototype.setScaleOffsetByName = function (scaleOffsetName)
+{
+    for (var i = 0; i < Scales.BASES.length; i++)
+    {
+        if (Scales.BASES[i] == scaleOffsetName)
+        {
+            this.scaleOffset = i;
+            break;
+        }
+    }
+};
+
 Scales.prototype.getScaleLayout = function ()
 {
     return this.scaleLayout;
+};
+
+Scales.prototype.setScaleLayoutByName = function (scaleLayoutName)
+{
+    for (var i = 0; i < Scales.LAYOUT_NAMES.length; i++)
+    {
+        if (Scales.LAYOUT_NAMES[i] == scaleLayoutName)
+        {
+            this.setScaleLayout (i);
+            break;
+        }
+    }
 };
 
 Scales.prototype.setScaleLayout = function (scaleLayout)
