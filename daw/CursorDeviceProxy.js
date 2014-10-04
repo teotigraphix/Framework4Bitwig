@@ -30,7 +30,7 @@ function CursorDeviceProxy ()
     this.cursorDevice.addPreviousParameterPageEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handlePreviousParameterPageEnabled));
     this.cursorDevice.addNextParameterPageEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handleNextParameterPageEnabled));
     this.cursorDevice.addSelectedPageObserver (-1, doObject (this, CursorDeviceProxy.prototype.handleSelectedPage));
-    this.cursorDevice.addPageNamesObserver(doObject (this,  CursorDeviceProxy.prototype.handlePageNames));
+    this.cursorDevice.addPageNamesObserver(doObject (this, CursorDeviceProxy.prototype.handlePageNames));
 
     for (var i = 0; i < 8; i++)
     {
@@ -42,6 +42,11 @@ function CursorDeviceProxy ()
         var m = this.getMacro (i).getModulationSource ();
         m.addIsMappingObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleIsMapping));
     }
+    
+    this.cursorDevice.addDirectParameterIdObserver (doObject (this, CursorDeviceProxy.prototype.handleDirectParameterIds));
+    this.cursorDevice.addDirectParameterNameObserver (8, doObject (this, CursorDeviceProxy.prototype.handleDirectParameterNames));
+    this.cursorDevice.addDirectParameterValueDisplayObserver (8, doObject (this, CursorDeviceProxy.prototype.handleDirectParameterValueDisplay));
+    this.cursorDevice.addDirectParameterNormalizedValueObserver (doObject (this, CursorDeviceProxy.prototype.handleDirectParameterValue));
 
     //----------------------------------
     // Presets
@@ -331,6 +336,36 @@ CursorDeviceProxy.prototype.handleParameterName = function (index, name)
 {
     this.fxparams[index].name = name;
 };
+
+CursorDeviceProxy.prototype.handleDirectParameterIds = function (ids)
+{
+//    println ("ID: "+ typeof (ids) +":"+ ids);
+//    for (var i = 0; i < ids.length; i++)
+  //      println(ids[i]);
+};
+
+CursorDeviceProxy.prototype.handleDirectParameterNames = function (id, name)
+{
+    //println (id +":"+ name);
+//    for (var i = 0; i < ids.length; i++)
+  //      println(ids[i]);
+};
+
+CursorDeviceProxy.prototype.handleDirectParameterValueDisplay = function (id, value)
+{
+  //  println (id +":"+ value);
+//    for (var i = 0; i < ids.length; i++)
+  //      println(ids[i]);
+};
+
+CursorDeviceProxy.prototype.handleDirectParameterValue = function (id, value)
+{
+//    println (id +":"+ value);
+//    for (var i = 0; i < ids.length; i++)
+  //      println(ids[i]);
+};
+
+
 
 CursorDeviceProxy.prototype.handleValue = function (index, value)
 {
