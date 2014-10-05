@@ -43,6 +43,11 @@ TrackBankProxy.prototype.setSend = function (index, sendIndex, value)
     this.trackBank.getChannel (t.index).getSend (sendIndex).set (send.volume, Config.maxParameterValue);
 };
 
+TrackBankProxy.prototype.resetSend = function (index, sendIndex)
+{
+    this.trackBank.getChannel (index).getSend (sendIndex).reset ();
+};
+
 TrackBankProxy.prototype.setSendIndication = function (index, sendIndex, indicate)
 {
     this.trackBank.getChannel (index).getSend (sendIndex).setIndication (indicate);

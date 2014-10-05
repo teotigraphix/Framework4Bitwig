@@ -201,6 +201,11 @@ AbstractTrackBankProxy.prototype.setVolume = function (index, value)
     this.trackBank.getChannel (t.index).getVolume ().set (t.volume, Config.maxParameterValue);
 };
 
+AbstractTrackBankProxy.prototype.resetVolume = function (index)
+{
+    this.trackBank.getChannel (index).getVolume ().reset ();
+};
+
 AbstractTrackBankProxy.prototype.setVolumeIndication = function (index, indicate)
 {
     this.trackBank.getChannel (index).getVolume ().setIndication (indicate);
@@ -218,6 +223,11 @@ AbstractTrackBankProxy.prototype.setPan = function (index, value, fractionValue)
     var t = this.getTrack (index);
     t.pan = value;
     this.trackBank.getChannel (t.index).getPan ().set (t.pan, Config.maxParameterValue);
+};
+
+AbstractTrackBankProxy.prototype.resetPan = function (index)
+{
+    this.trackBank.getChannel (index).getPan ().reset ();
 };
 
 AbstractTrackBankProxy.prototype.setPanIndication = function (index, indicate)
