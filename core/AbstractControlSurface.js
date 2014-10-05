@@ -1,4 +1,4 @@
-// Written by J�rgen Mo�graber - mossgrabers.de
+// Written by Jürgen Moßgraber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
 // (c) 2014
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
@@ -31,6 +31,7 @@ function AbstractControlSurface (output, input, buttons)
     // View related
     this.activeViewId = -1;
     this.views = [];
+    this.viewChangeListeners = [];
 
     this.gridNotes = [];
     this.pads = null;
@@ -132,6 +133,7 @@ AbstractControlSurface.prototype.addView = function (viewId, view)
 
 AbstractControlSurface.prototype.setActiveView = function (viewId)
 {
+    var prevView = this.activeViewId;
     this.activeViewId = viewId;
 
     var view = this.getActiveView ();
@@ -144,6 +146,10 @@ AbstractControlSurface.prototype.setActiveView = function (viewId)
     this.updateButtons ();
 
     view.onActivate ();
+    
+    // Notify all view change listeners
+    for (var i = 0; i < this.viewChangeListeners.length; i++)
+        this.viewChangeListeners[i].call (null, prevView, this.activeViewId);
 };
 
 AbstractControlSurface.prototype.updateButtons = function () {};
@@ -164,6 +170,11 @@ AbstractControlSurface.prototype.getActiveView = function ()
 AbstractControlSurface.prototype.isActiveView = function (viewId)
 {
     return this.activeViewId == viewId;
+};
+
+AbstractControlSurface.prototype.addViewChangeListener = function (listener)
+{
+    this.viewChangeListeners.push (listener);
 };
 
 //--------------------------------------

@@ -88,6 +88,7 @@ AbstractTrackBankProxy.prototype.init = function ()
                 this.notifyListeners (pressed, note, Math.round (velocity * 127.0));
         }));
 
+        t.addPositionObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePosition));
         t.addNameObserver (this.textLength, '', doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleName));
         t.addIsSelectedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleBankTrackSelection));
         t.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleVUMeters));
@@ -408,9 +409,26 @@ AbstractTrackBankProxy.prototype.getSelectedSlots = function (trackIndex)
     return selection;
 };
 
+/**
+ * Returns the first selected slot or null if none is selected.
+ */
+AbstractTrackBankProxy.prototype.getSelectedSlot = function (trackIndex)
+{
+    var track = this.getTrack (trackIndex);
+    var selection = [];
+    for (var i = 0; i < track.slots.length; i++)
+    {
+        if (track.slots[i].isSelected)
+            return track.slots[i];
+    }
+    return null;
+};
+
 AbstractTrackBankProxy.prototype.showClipInEditor = function (trackIndex, slotIndex)
 {
-    this.trackBank.getChannel (trackIndex).getClipLauncherSlots ().showInEditor (slotIndex);
+    var cs = this.trackBank.getChannel (trackIndex).getClipLauncherSlots ();
+    cs.select (slotIndex);
+    cs.showInEditor (slotIndex);
 };
 
 /**
@@ -442,6 +460,7 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
         var t =
         {
             index: i,
+            position: i,
             exists: false,
             selected: false,
             name: '',
@@ -493,6 +512,11 @@ AbstractTrackBankProxy.prototype.handleBankTrackSelection = function (index, isS
     this.tracks[index].selected = isSelected;
     for (var l = 0; l < this.listeners.length; l++)
         this.listeners[l].call (null, index, isSelected);
+};
+
+AbstractTrackBankProxy.prototype.handlePosition = function (index, position)
+{
+    this.tracks[index].position = position;
 };
 
 AbstractTrackBankProxy.prototype.handleName = function (index, name)
