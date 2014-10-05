@@ -65,6 +65,7 @@ function AbstractTrackBankProxy (numTracks, numScenes, numSends)
     this.recCount = numTracks * numScenes;
     this.listeners = [];
     this.noteListeners = [];
+    this.prefferedViews = [];
 
     this.tracks = this.createTracks (this.numTracks);
 }
@@ -451,6 +452,24 @@ AbstractTrackBankProxy.prototype.getColorIndex = function (red, green, blue)
     }
     return null;
 };
+
+// Stores the given view for the currently selected track
+AbstractTrackBankProxy.prototype.setPreferredView = function (view)
+{
+    var sel = this.getSelectedTrack ();
+    if (sel == null)
+        return;
+    var pos = this.getTrack (sel.index).position;
+    if (pos != -1)
+        this.prefferedViews[pos] = view;
+};
+
+// Get the stored view for the currently selected track or null
+AbstractTrackBankProxy.prototype.getPreferredView = function (index)
+{
+    var pos = this.getTrack (index).position;
+    return typeof (this.prefferedViews[pos]) == 'undefined' ? null : this.prefferedViews[pos];
+}
 
 AbstractTrackBankProxy.prototype.createTracks = function (count)
 {
