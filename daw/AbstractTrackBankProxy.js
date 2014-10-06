@@ -416,7 +416,6 @@ AbstractTrackBankProxy.prototype.getSelectedSlots = function (trackIndex)
 AbstractTrackBankProxy.prototype.getSelectedSlot = function (trackIndex)
 {
     var track = this.getTrack (trackIndex);
-    var selection = [];
     for (var i = 0; i < track.slots.length; i++)
     {
         if (track.slots[i].isSelected)
@@ -469,7 +468,7 @@ AbstractTrackBankProxy.prototype.getPreferredView = function (index)
 {
     var pos = this.getTrack (index).position;
     return typeof (this.prefferedViews[pos]) == 'undefined' ? null : this.prefferedViews[pos];
-}
+};
 
 AbstractTrackBankProxy.prototype.createTracks = function (count)
 {
