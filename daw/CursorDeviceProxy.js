@@ -19,6 +19,8 @@ function CursorDeviceProxy ()
         name: 'None',
         enabled: false
     };
+    
+    this.directParameters = [];
 
     this.isMacroMappings = initArray(false, 8);
     this.cursorDevice = host.createEditorDeviceSelection (true);
@@ -263,6 +265,21 @@ CursorDeviceProxy.prototype.getSelectedParameterPageName = function ()
     return this.selectedParameterPage >= 0 ? this.parameterPageNames[this.selectedParameterPage] : "";
 };
 
+CursorDeviceProxy.prototype.getDirectParameters = function ()
+{
+    return this.directParameters;
+};
+
+CursorDeviceProxy.prototype.getDirectParameter = function (id)
+{
+    for (var i = 0; i < this.directParameters.length; i++)
+    {
+        if (this.directParameters[i].id == id)
+            return this.directParameters[i];
+    }
+    return null;
+};
+
 CursorDeviceProxy.prototype.isMacroMapping = function (index)
 {
     return this.isMacroMappings[index];
@@ -337,35 +354,43 @@ CursorDeviceProxy.prototype.handleParameterName = function (index, name)
     this.fxparams[index].name = name;
 };
 
-CursorDeviceProxy.prototype.handleDirectParameterIds = function (ids)
+CursorDeviceProxy.prototype.handleDirectParameterIds = function ()
 {
-//    println ("ID: "+ typeof (ids) +":"+ ids);
-//    for (var i = 0; i < ids.length; i++)
-  //      println(ids[i]);
+    this.directParameters.length = 0;
+    for (var i = 0; i < arguments.length; i++)
+        this.directParameters.push ({ id: arguments[i], name: '', valueStr: '', value: '' });
 };
 
 CursorDeviceProxy.prototype.handleDirectParameterNames = function (id, name)
 {
-    //println (id +":"+ name);
-//    for (var i = 0; i < ids.length; i++)
-  //      println(ids[i]);
+    var dp = this.getDirectParameter (id);
+    if (dp == null)
+        errorln ("Direct parameter '" + id + "' not found.");
+    else
+        dp.name = name;
 };
 
 CursorDeviceProxy.prototype.handleDirectParameterValueDisplay = function (id, value)
 {
-  //  println (id +":"+ value);
-//    for (var i = 0; i < ids.length; i++)
-  //      println(ids[i]);
+    var dp = this.getDirectParameter (id);
+    if (dp == null)
+        errorln ("Direct parameter '" + id + "' not found.");
+    else
+        dp.valueStr = value;
+//TODO FIX REQUIRED
+//  println("Display "+id+": "+value);
 };
 
 CursorDeviceProxy.prototype.handleDirectParameterValue = function (id, value)
 {
-//    println (id +":"+ value);
-//    for (var i = 0; i < ids.length; i++)
-  //      println(ids[i]);
+    var dp = this.getDirectParameter (id);
+    if (dp == null)
+        errorln ("Direct parameter '" + id + "' not found.");
+    else
+        dp.value = value;
+//TODO FIX REQUIRED
+//    println("Value "+id+": "+value);
 };
-
-
 
 CursorDeviceProxy.prototype.handleValue = function (index, value)
 {
