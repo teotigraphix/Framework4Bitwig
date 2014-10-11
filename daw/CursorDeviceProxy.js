@@ -23,7 +23,7 @@ function CursorDeviceProxy ()
     this.directParameters = [];
 
     this.isMacroMappings = initArray(false, 8);
-    this.cursorDevice = host.createEditorDeviceSelection (true);
+    this.cursorDevice = host.createEditorCursorDevice ();
 
     this.cursorDevice.addIsEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handleIsEnabled));
     this.cursorDevice.addNameObserver (34, 'None', doObject (this, CursorDeviceProxy.prototype.handleName));

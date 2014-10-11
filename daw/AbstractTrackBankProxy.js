@@ -74,7 +74,7 @@ AbstractTrackBankProxy.prototype.init = function ()
 {
     // Monitor 'all' tracks for selection to move the 'window' of the main
     // track bank to the selected track
-    var trackSelectionMonitor = host.createEditorTrackSelection (true, 0, 0);
+    var trackSelectionMonitor = host.createArrangerCursorTrack (0, 0);
     trackSelectionMonitor.addPositionObserver (doObject (this, AbstractTrackBankProxy.prototype.handleTrackSelection));
 
     for (var i = 0; i < this.numTracks; i++)
