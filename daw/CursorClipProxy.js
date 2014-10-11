@@ -14,6 +14,7 @@ function CursorClipProxy (stepSize, rowSize, clip)
     this.loopLength  = 4.0;
     this.loopEnabled = true;
     this.shuffle     = true;
+    this.accent      = 100;
 
     this.data = [];
     for (var y = 0; y < this.rowSize; y++)
@@ -29,8 +30,7 @@ function CursorClipProxy (stepSize, rowSize, clip)
     this.clip.getLoopLength ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopLength));
     this.clip.isLoopEnabled ().addValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopEnabled));
     this.clip.getShuffle ().addValueObserver (doObject (this, CursorClipProxy.prototype.handleShuffle));
-    // TODO FIX: getAccent () always returns null
-    // this.clip.getAccent ().addValueObserver (Config.maxParameterValue, doObject (this, CursorClipProxy.prototype.handleAccent));
+    this.clip.getAccent ().addValueObserver (200, doObject (this, CursorClipProxy.prototype.handleAccent));
 }
 
 CursorClipProxy.prototype.getPlayStart = function ()
@@ -116,13 +116,20 @@ CursorClipProxy.prototype.isShuffleEnabled = function ()
 
 CursorClipProxy.prototype.setShuffleEnabled = function (enable)
 {
-    // TODO FIX broken
     this.clip.getShuffle ().set (enable);
 };
 
 CursorClipProxy.prototype.getAccent = function ()
 {
-    return "TODO";
+    var value = (this.accent + 100) / 2 - 100;
+    value = Math.round (value * 100) / 100;
+    return value + "%";
+};
+
+CursorClipProxy.prototype.changeAccent = function (value, fractionValue)
+{
+    this.accent = Math.min (-100, changeValue (value, this.accent, fractionValue, 300));
+    this.clip.getAccent ().set (this.accent, 100);
 };
 
 CursorClipProxy.prototype.getStepSize = function ()
@@ -230,5 +237,7 @@ CursorClipProxy.prototype.handleShuffle = function (enabled)
 
 CursorClipProxy.prototype.handleAccent = function (value)
 {
-    // Implement when bug fixed
+    // Currently with range above set to 200 receives values in the range of 
+    // -100 .. 300 where -100% = -100, 0% = 100, 100% = 300
+    this.accent = value;
 };

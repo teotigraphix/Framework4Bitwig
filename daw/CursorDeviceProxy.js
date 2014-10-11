@@ -365,7 +365,7 @@ CursorDeviceProxy.prototype.handleDirectParameterNames = function (id, name)
 {
     var dp = this.getDirectParameter (id);
     if (dp == null)
-        errorln ("Direct parameter '" + id + "' not found.");
+        host.errorln ("Direct parameter '" + id + "' not found.");
     else
         dp.name = name;
 };
@@ -374,7 +374,7 @@ CursorDeviceProxy.prototype.handleDirectParameterValueDisplay = function (id, va
 {
     var dp = this.getDirectParameter (id);
     if (dp == null)
-        errorln ("Direct parameter '" + id + "' not found.");
+        host.errorln ("Direct parameter '" + id + "' not found.");
     else
         dp.valueStr = value;
 //TODO FIX REQUIRED
@@ -385,7 +385,7 @@ CursorDeviceProxy.prototype.handleDirectParameterValue = function (id, value)
 {
     var dp = this.getDirectParameter (id);
     if (dp == null)
-        errorln ("Direct parameter '" + id + "' not found.");
+        host.errorln ("Direct parameter '" + id + "' not found.");
     else
         dp.value = value;
 //TODO FIX REQUIRED

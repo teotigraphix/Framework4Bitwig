@@ -20,7 +20,7 @@ function TransportProxy ()
     this.crossfade         = 0;
     this.numerator         = 4;
     this.denominator       = 4;
-    this.metroVolume       = 127;
+    this.metroVolume       = 95;
     
     this.transport.addClickObserver (doObject (this, TransportProxy.prototype.handleClick));
     this.transport.addIsPlayingObserver (doObject (this, TransportProxy.prototype.handleIsPlaying));
@@ -245,8 +245,7 @@ TransportProxy.prototype.setLauncherOverdub = function (on)
 TransportProxy.prototype.changeMetronomeVolume = function (value, fractionValue)
 {
     this.metroVolume = changeValue (value, this.metroVolume, fractionValue, Config.maxParameterValue);
-    // TODO FIX: setMetronomeValue method completely buggy
-    // this.transport.setMetronomeValue (this.metroVolume, Config.maxParameterValue);
+    this.transport.setMetronomeValue (this.metroVolume, Config.maxParameterValue);
 };
 
 TransportProxy.prototype.getNumerator = function ()
@@ -290,10 +289,8 @@ TransportProxy.prototype.handleLauncherOverdub = function (isOverdub)
 
 TransportProxy.prototype.handleMetronomeVolume = function (volume)
 {
-    // TODO FIX: volume is a string, but in the docs it is a numeric
     // volume is in the range of -48.0 to 0.0, scale to 0 to 127
-    this.metroVolume = Math.round ((48.0 + parseFloat (volume)) * 127 / 48.0);
-    // println ("R:"+this.metroVolume);
+    this.metroVolume = Math.round ((48.0 + volume) * 127 / 48.0);
 };
 
 TransportProxy.prototype.handleTempo = function (value)
