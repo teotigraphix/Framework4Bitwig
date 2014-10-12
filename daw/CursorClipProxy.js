@@ -43,6 +43,27 @@ CursorClipProxy.prototype.setPlayStart = function (start)
     this.clip.getPlayStart ().setRaw (start);
 };
 
+CursorClipProxy.prototype.setPlayEnd = function (end)
+{
+    this.clip.getPlayStop ().setRaw (end);
+};
+
+CursorClipProxy.prototype.setPlayRange = function (start, end)
+{
+    // Need to distinguish if we move left or right since the start and 
+    // end cannot be the same value
+    if (this.getPlayStart () < start)
+    {
+        this.setPlayEnd (end);
+        this.setPlayStart (start);
+    }
+    else
+    {
+        this.setPlayStart (start);
+        this.setPlayEnd (end);
+    }
+};
+
 CursorClipProxy.prototype.changePlayStart = function (value, fractionValue)
 {
     this.playStart = Math.min (this.playEnd, changeValue (value, this.playStart, fractionValue, Number.MAX_VALUE));
@@ -52,11 +73,6 @@ CursorClipProxy.prototype.changePlayStart = function (value, fractionValue)
 CursorClipProxy.prototype.getPlayEnd = function ()
 {
     return this.playEnd;
-};
-
-CursorClipProxy.prototype.setPlayEnd = function (end)
-{
-    this.clip.getPlayStop ().setRaw (end);
 };
 
 CursorClipProxy.prototype.changePlayEnd = function (value, fractionValue)
