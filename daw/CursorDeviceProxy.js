@@ -106,13 +106,11 @@ function CursorDeviceProxy ()
     // Presets
     //----------------------------------
 
-    this.currentPreset = null;
-
     this.categoryProvider = new PresetProvider (PresetProvider.Kind.CATEGORY);
     this.creatorProvider = new PresetProvider (PresetProvider.Kind.CREATOR);
-    //this.presetProvider = new PresetProvider (PresetProvider.Kind.PRESET);
+    this.presetProvider = new PresetProvider (PresetProvider.Kind.PRESET);
 
-    // - Category
+    // All categories
     this.cursorDevice.addPresetCategoriesObserver (doObject (this, function ()
     {
         this.categoryProvider.setItems (arguments);
@@ -130,28 +128,38 @@ function CursorDeviceProxy ()
         this.categoryProvider.setSelectedItem (name);
     }));
 
-    // - Creator
+    // All creators
     this.cursorDevice.addPresetCreatorsObserver (doObject (this, function ()
     {
-        this.creatorProvider.setItems(arguments);
+        this.creatorProvider.setItems (arguments);
     }));
 
     // This allows matching from selection made in DAW (full name)
     this.cursorDevice.addPresetCreatorObserver (100, '', doObject (this, function (name)
     {
-        this.creatorProvider.setSelectedItemVerbose(name);
+        this.creatorProvider.setSelectedItemVerbose (name);
     }));
 
     // Character display
     this.cursorDevice.addPresetCreatorObserver (this.presetWidth, '', doObject (this, function (name)
     {
-        this.creatorProvider.setSelectedItem(name);
+        this.creatorProvider.setSelectedItem (name);
     }));
 
-    // - Preset
+    // All presets
+    this.cursorDevice.addPresetNamesObserver (doObject (this, function ()
+    {
+        this.presetProvider.setItems (arguments);
+    }));
+    
+    this.cursorDevice.addPresetNameObserver (100, '', doObject (this, function (name)
+    {
+        this.presetProvider.setSelectedItemVerbose (name);
+    }));
+    
     this.cursorDevice.addPresetNameObserver (this.presetWidth, '', doObject (this, function (name)
     {
-        this.currentPreset = name;
+        this.presetProvider.setSelectedItem (name);
     }));
 }
 
@@ -207,11 +215,6 @@ CursorDeviceProxy.prototype.previousParameterPage = function ()
 CursorDeviceProxy.prototype.setParameterPage = function (index)
 {
     return this.cursorDevice.setParameterPage (index);
-};
-
-CursorDeviceProxy.prototype.getCurrentPreset = function ()
-{
-    return this.currentPreset;
 };
 
 CursorDeviceProxy.prototype.setPresetCategory = function (index)

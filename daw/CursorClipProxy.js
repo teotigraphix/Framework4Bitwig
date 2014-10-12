@@ -17,8 +17,8 @@ function CursorClipProxy (stepSize, rowSize, clip)
     this.accent      = 100;
 
     this.data = [];
-    for (var y = 0; y < this.rowSize; y++)
-        this.data[y] = initArray (false, this.stepSize);
+    for (var step = 0; step < this.stepSize; step++)
+        this.data[step] = initArray (false, this.rowSize);
 
     this.clip = host.createCursorClip (this.stepSize, this.rowSize);
     this.clip.addPlayingStepObserver (doObject (this, CursorClipProxy.prototype.handlePlayingStep));
@@ -165,6 +165,11 @@ CursorClipProxy.prototype.getCurrentStep = function ()
 
 CursorClipProxy.prototype.getStep = function (step, row)
 {
+    if (typeof (this.data[step][row]) == 'undefined')
+    {
+        host.errorln ("Attempt to get undefined step data: " + step + " : " + row);
+        return false;
+    }
     return this.data[step][row];
 };
 
@@ -180,10 +185,20 @@ CursorClipProxy.prototype.setStep = function (step, row, velocity, duration)
 
 CursorClipProxy.prototype.clearRow = function (row)
 {
+    // TODO Can be calculated in 1.1
+    
     // Since there is no dedicated function, we suggest a maximum of 32 tracks 
     // with a resolution of 64 steps each
     for (var step = 0; step < 64 * 32; step++)
         this.clip.clearStep (step, row);
+};
+
+CursorClipProxy.prototype.hasRowData = function (row)
+{
+    for (var step = 0; step < this.stepSize; step++)
+        if (this.data[step][row])
+            return true;
+    return false;
 };
 
 CursorClipProxy.prototype.setStepLength = function (length)
@@ -216,9 +231,9 @@ CursorClipProxy.prototype.handlePlayingStep = function (step)
     this.step = step;
 };
     
-CursorClipProxy.prototype.handleStepData = function (column, row, state)
+CursorClipProxy.prototype.handleStepData = function (col, row, state)
 {
-    this.data[column][row] = state;
+    this.data[col][row] = state; // true/false
 };
 
 CursorClipProxy.prototype.handlePlayStart = function (position)

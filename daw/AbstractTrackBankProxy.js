@@ -673,5 +673,5 @@ AbstractTrackBankProxy.prototype.handleCanScrollScenesDown = function (canScroll
 AbstractTrackBankProxy.prototype.handleDeviceName = function (index, device, name)
 {
     // TODO
-    println(index+":"+ device+":"+ name);
+    // println(index+":"+ device+":"+ name);
 };
