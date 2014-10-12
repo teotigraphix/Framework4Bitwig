@@ -128,7 +128,7 @@ MasterTrackProxy.prototype.toggleArm = function ()
 
 MasterTrackProxy.prototype.select = function ()
 {
-    this.masterTrack.select ();
+    this.masterTrack.selectInEditor ();
 };
 
 //--------------------------------------

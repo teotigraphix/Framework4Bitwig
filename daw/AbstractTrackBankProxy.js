@@ -52,6 +52,9 @@ function AbstractTrackBankProxy (numTracks, numScenes, numSends)
     this.numScenes = numScenes;
     this.numSends = numSends;
 
+    this.numDevices = 8;
+    this.deviceBanks = [];
+
     this.textLength = 8;
 
     this.canScrollTracksUpFlag   = false;
@@ -119,6 +122,15 @@ AbstractTrackBankProxy.prototype.init = function ()
         cs.addHasContentObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotHasContent));
         cs.addColorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotColor));
         cs.addPlaybackStateObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePlaybackState));
+        
+        // Devices on the track
+        var bank = t.createDeviceBank (this.numDevices);
+        // TODO this.deviceBanks.push (bank);
+        for (var j = 0; j < this.numDevices; j++)
+        {
+            var device = bank.getDevice (j);
+            device.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, AbstractTrackBankProxy.prototype.handleDeviceName));
+        }
     }
 
     this.trackBank.addCanScrollChannelsUpObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollTracksUp));
@@ -186,7 +198,7 @@ AbstractTrackBankProxy.prototype.select = function (index)
 {
     var t = this.trackBank.getChannel (index);
     if (t != null)
-        t.select ();
+        t.selectInEditor ();
 };
 
 AbstractTrackBankProxy.prototype.changeVolume = function (index, value, fractionValue)
@@ -484,14 +496,14 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             name: '',
             volumeStr: '',
             volume: 0,
+            panStr: '',
+            pan: 0,
             vu: 0,
             mute: false,
             solo: false,
             recarm: false,
             monitor: false,
             autoMonitor: false,
-            panStr: '',
-            pan: 0,
             sends: [],
             slots: [],
             crossfadeMode: 'AB'
@@ -656,4 +668,10 @@ AbstractTrackBankProxy.prototype.handleCanScrollScenesUp = function (canScroll)
 AbstractTrackBankProxy.prototype.handleCanScrollScenesDown = function (canScroll)
 {
     this.canScrollScenesDownFlag = canScroll;
+};
+
+AbstractTrackBankProxy.prototype.handleDeviceName = function (index, device, name)
+{
+    // TODO
+    println(index+":"+ device+":"+ name);
 };
