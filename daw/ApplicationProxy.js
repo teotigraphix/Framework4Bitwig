@@ -110,7 +110,7 @@ ApplicationProxy.prototype.addEffect = function ()
  */
 ApplicationProxy.prototype.addAudioTrack = function ()
 {
-    this.application.createAudioTrack (-1, null);
+    this.application.createAudioTrack (-1);
 };
 
 /**
@@ -118,7 +118,7 @@ ApplicationProxy.prototype.addAudioTrack = function ()
  */
 ApplicationProxy.prototype.addEffectTrack = function ()
 {
-    this.application.createEffectTrack (-1, null);
+    this.application.createEffectTrack (-1);
 };
 
 /**
@@ -126,7 +126,7 @@ ApplicationProxy.prototype.addEffectTrack = function ()
  */
 ApplicationProxy.prototype.addInstrumentTrack = function ()
 {
-    this.application.createInstrumentTrack (-1, null);
+    this.application.createInstrumentTrack (-1);
 };
 
 ApplicationProxy.prototype.arrowKeyLeft = function ()
