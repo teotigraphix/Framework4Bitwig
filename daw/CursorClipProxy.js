@@ -165,7 +165,7 @@ CursorClipProxy.prototype.getCurrentStep = function ()
 
 CursorClipProxy.prototype.getStep = function (step, row)
 {
-    if (typeof (this.data[step][row]) == 'undefined')
+    if (typeof (this.data[step]) == 'undefined' || typeof (this.data[step][row]) == 'undefined')
     {
         host.errorln ("Attempt to get undefined step data: " + step + " : " + row);
         return false;
