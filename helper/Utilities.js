@@ -8,11 +8,13 @@ function toggleValue (value)
     return !value;
 }
 
-function changeValue (control, value, fractionValue, maxParameterValue)
+function changeValue (control, value, fractionValue, maxParameterValue, minParameterValue)
 {
+    if (typeof (minParameterValue) == 'undefined')
+        minParameterValue = 0;
     var isInc = control <= 61;
     var speed = Math.max ((isInc ? control : 127 - control) * fractionValue, fractionValue);
-    return isInc ? Math.min (value + speed, maxParameterValue) : Math.max (value - speed, 0);
+    return isInc ? Math.min (value + speed, maxParameterValue) : Math.max (value - speed, minParameterValue);
 }
 
 function doObject (object, f)

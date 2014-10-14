@@ -14,7 +14,7 @@ function CursorClipProxy (stepSize, rowSize, clip)
     this.loopLength  = 4.0;
     this.loopEnabled = true;
     this.shuffle     = true;
-    this.accent      = 100;
+    this.accent      = 0;
 
     this.data = [];
     for (var step = 0; step < this.stepSize; step++)
@@ -30,7 +30,7 @@ function CursorClipProxy (stepSize, rowSize, clip)
     this.clip.getLoopLength ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopLength));
     this.clip.isLoopEnabled ().addValueObserver (doObject (this, CursorClipProxy.prototype.handleLoopEnabled));
     this.clip.getShuffle ().addValueObserver (doObject (this, CursorClipProxy.prototype.handleShuffle));
-    this.clip.getAccent ().addValueObserver (200, doObject (this, CursorClipProxy.prototype.handleAccent));
+    this.clip.getAccent ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handleAccent));
 }
 
 CursorClipProxy.prototype.getPlayStart = function ()
@@ -137,15 +137,14 @@ CursorClipProxy.prototype.setShuffleEnabled = function (enable)
 
 CursorClipProxy.prototype.getAccent = function ()
 {
-    var value = (this.accent + 100) / 2 - 100;
-    value = Math.round (value * 100) / 100;
+    var value = Math.round (this.accent * 10000) / 100;
     return value + "%";
 };
 
 CursorClipProxy.prototype.changeAccent = function (value, fractionValue)
 {
-    this.accent = Math.min (-100, changeValue (value, this.accent, fractionValue, 300));
-    this.clip.getAccent ().set (this.accent, 100);
+    this.accent = Math.max (-1, changeValue (value, this.accent, fractionValue / 100, 1, -1));
+    this.clip.getAccent ().setRaw (this.accent);
 };
 
 CursorClipProxy.prototype.getStepSize = function ()
@@ -268,7 +267,6 @@ CursorClipProxy.prototype.handleShuffle = function (enabled)
 
 CursorClipProxy.prototype.handleAccent = function (value)
 {
-    // Currently with range above set to 200 receives values in the range of 
-    // -100 .. 300 where -100% = -100, 0% = 100, 100% = 300
+    // In the range of -1 .. 1
     this.accent = value;
 };
