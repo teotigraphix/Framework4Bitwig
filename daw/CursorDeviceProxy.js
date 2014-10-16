@@ -683,13 +683,11 @@ PresetProvider.Kind =
     PRESET:   2
 };
 
-// Not used
 PresetProvider.prototype.getSelectedIndex = function ()
 {
     return this.selectedIndex;
 };
 
-// Not used
 PresetProvider.prototype.getSelectedItem = function ()
 {
     return this.selectedItem;

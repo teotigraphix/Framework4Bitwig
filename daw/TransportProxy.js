@@ -16,6 +16,7 @@ function TransportProxy ()
     this.isPlaying         = false;
     this.isRecording       = false;
     this.isLooping         = false;
+    this.isOverdub         = false;
     this.isLauncherOverdub = false;
     this.crossfade         = 0;
     this.numerator         = 4;
@@ -26,6 +27,7 @@ function TransportProxy ()
     this.transport.addIsPlayingObserver (doObject (this, TransportProxy.prototype.handleIsPlaying));
     this.transport.addIsRecordingObserver (doObject (this, TransportProxy.prototype.handleIsRecording));
     this.transport.addIsLoopActiveObserver (doObject (this, TransportProxy.prototype.handleIsLoopActive));
+    this.transport.addOverdubObserver (doObject (this, TransportProxy.prototype.handleOverdub));
     this.transport.addLauncherOverdubObserver (doObject (this, TransportProxy.prototype.handleLauncherOverdub));
     this.transport.addMetronomeVolumeObserver (doObject (this, TransportProxy.prototype.handleMetronomeVolume));
     this.transport.getTempo ().addRawValueObserver (doObject (this, TransportProxy.prototype.handleTempo));
@@ -280,6 +282,11 @@ TransportProxy.prototype.handleIsRecording = function (isRec)
 TransportProxy.prototype.handleIsLoopActive = function (isLoop)
 {
     this.isLooping = isLoop;
+};
+
+TransportProxy.prototype.handleOverdub = function (isOverdub)
+{
+    this.isOverdub = isOverdub;
 };
 
 TransportProxy.prototype.handleLauncherOverdub = function (isOverdub)

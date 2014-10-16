@@ -10,6 +10,11 @@ function AbstractController ()
 
 AbstractController.prototype.shutdown = function ()
 {
+    if (Config.listeners)
+    {
+        for (var i = 0; i < Config.listeners.length; i++)
+            Config.listeners[i] = [];
+    }
     this.surface.shutdown ();
 };
 

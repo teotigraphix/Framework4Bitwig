@@ -122,6 +122,26 @@ MasterTrackProxy.prototype.toggleArm = function ()
     this.setArm (!this.recarm);
 };
 
+MasterTrackProxy.prototype.setMonitor = function (value)
+{
+    this.masterTrack.getMonitor ().set (value);
+};
+
+MasterTrackProxy.prototype.toggleMonitor = function ()
+{
+    this.masterTrack.getMonitor ().toggle ();
+};
+
+MasterTrackProxy.prototype.setAutoMonitor = function (value)
+{
+    this.masterTrack.getAutoMonitor ().set (value);
+};
+
+MasterTrackProxy.prototype.toggleAutoMonitor = function ()
+{
+    this.masterTrack.getAutoMonitor ().toggle ();
+};
+
 //--------------------------------------
 // Actions
 //--------------------------------------

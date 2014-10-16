@@ -282,9 +282,19 @@ AbstractTrackBankProxy.prototype.toggleArm = function (index)
     this.setArm (index, !this.getTrack (index).recarm);
 };
 
+AbstractTrackBankProxy.prototype.setMonitor = function (index, value)
+{
+    this.trackBank.getTrack (index).getMonitor ().set (value);
+};
+
 AbstractTrackBankProxy.prototype.toggleMonitor = function (index)
 {
     this.trackBank.getTrack (index).getMonitor ().toggle ();
+};
+
+AbstractTrackBankProxy.prototype.setAutoMonitor = function (index, value)
+{
+    this.trackBank.getTrack (index).getAutoMonitor ().set (value);
 };
 
 AbstractTrackBankProxy.prototype.toggleAutoMonitor = function (index)
