@@ -42,7 +42,8 @@ function CursorDeviceProxy ()
     this.cursorDevice.addSelectedPageObserver (-1, doObject (this, CursorDeviceProxy.prototype.handleSelectedPage));
     this.cursorDevice.addPageNamesObserver(doObject (this, CursorDeviceProxy.prototype.handlePageNames));
 
-    for (var i = 0; i < 8; i++)
+    var i = 0;
+    for (i = 0; i < 8; i++)
     {
         var p = this.getParameter (i);
         p.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleParameterName));
@@ -61,20 +62,24 @@ function CursorDeviceProxy ()
     this.cursorDevice.hasDrumPads ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleHasDrumPads));
     this.cursorDevice.hasLayers ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleHasLayers));
     this.cursorDevice.hasSlots ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleHasSlots));
+
+    var layer = null;
+    var v = null;
+    var p = null;
     
     // Monitor the layers of a container device (if any)
     this.layerBank = this.cursorDevice.createLayerBank (this.numDeviceLayers);
     this.deviceLayers = this.createDeviceLayers (this.numDeviceLayers);
-    for (var i = 0; i < this.numDeviceLayers; i++)
+    for (i = 0; i < this.numDeviceLayers; i++)
     {
-        var layer = this.layerBank.getChannel (i);
+        layer = this.layerBank.getChannel (i);
         layer.exists ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleExists));
         layer.addIsSelectedObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDeviceLayerSelection));
         layer.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDeviceLayerName));
-        var v = layer.getVolume ();
+        v = layer.getVolume ();
         v.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleVolume));
         v.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleVolumeStr));
-        var p = layer.getPan ();
+        p = layer.getPan ();
         p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handlePan));
         p.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handlePanStr));
         layer.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleVUMeters));
@@ -85,16 +90,16 @@ function CursorDeviceProxy ()
     // Monitor the drum pad layers of a container device (if any)
     this.drumPadBank = this.cursorDevice.createDrumPadBank (this.numDrumPadLayers);
     this.drumPadLayers = this.createDeviceLayers (this.numDrumPadLayers);
-    for (var i = 0; i < this.numDrumPadLayers; i++)
+    for (i = 0; i < this.numDrumPadLayers; i++)
     {
-        var layer = this.drumPadBank.getChannel (i);
+        layer = this.drumPadBank.getChannel (i);
         layer.exists ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadExists));
         layer.addIsSelectedObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadSelection));
         layer.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadName));
-        var v = layer.getVolume ();
+        v = layer.getVolume ();
         v.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadVolume));
         v.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadVolumeStr));
-        var p = layer.getPan ();
+        p = layer.getPan ();
         p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadPan));
         p.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadPanStr));
         layer.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadVUMeters));
@@ -318,7 +323,7 @@ CursorDeviceProxy.prototype.getSelectedDeviceLayer = function ()
             return this.deviceLayers[i];
     }
     return null;
-}
+};
 
 CursorDeviceProxy.prototype.getDeviceLayer = function (index)
 {
