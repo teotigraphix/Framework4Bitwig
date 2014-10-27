@@ -76,6 +76,11 @@ MasterTrackProxy.prototype.setVolumeIndication = function (indicate)
     this.masterTrack.getVolume ().setIndication (indicate);
 };
 
+MasterTrackProxy.prototype.resetVolume = function ()
+{
+    this.masterTrack.getVolume ().reset ();
+};
+
 MasterTrackProxy.prototype.changePan = function (value, fractionValue)
 {
     this.pan = changeValue (value, this.pan, fractionValue, Config.maxParameterValue);
@@ -91,6 +96,11 @@ MasterTrackProxy.prototype.setPan = function (value)
 MasterTrackProxy.prototype.setPanIndication = function (indicate)
 {
     this.masterTrack.getPan ().setIndication (indicate);
+};
+
+MasterTrackProxy.prototype.resetPan = function ()
+{
+    this.masterTrack.getPan ().reset ();
 };
 
 MasterTrackProxy.prototype.setMute = function (value)
