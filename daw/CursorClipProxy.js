@@ -3,7 +3,7 @@
 // (c) 2014
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function CursorClipProxy (stepSize, rowSize, clip)
+function CursorClipProxy (stepSize, rowSize)
 {
     this.stepSize    = stepSize;
     this.rowSize     = rowSize;

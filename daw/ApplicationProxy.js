@@ -70,13 +70,6 @@ ApplicationProxy.prototype.duplicate = function ()
     this.application.duplicate ();
 };
 
-ApplicationProxy.prototype.doubleClip = function ()
-{
-    // See Push manual, if we duplicate the Push functionality 
-    // this function must be somewhere else, e.g. in TrackBankProxy
-    displayNotification ("Duplicate: Function not supported (yet).");
-};
-
 ApplicationProxy.prototype.deleteSelection = function ()
 {
     this.application.remove ();
