@@ -8,6 +8,8 @@ Scales.NOTE_NAMES    = [ 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', '
 Scales.BASES   = [ 'C', 'G', 'D', 'A', 'E', 'B', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb' ];
 Scales.OFFSETS = [  0,   7,   2,   9,   4,   11,  5,   10,   3,    8,    1,    6 ];
 
+Scales.DRUM_NOTE_START = 36;
+Scales.DRUM_NOTE_END   = 100;
 Scales.DRUM_MATRIX =
 [
     0,   1,  2,  3, -1, -1, -1, -1, 
@@ -315,9 +317,9 @@ Scales.prototype.getDrumMatrix = function ()
 {
     var matrix = Scales.DRUM_MATRIX;
     var noteMap = this.getEmptyMatrix ();
-    for (var note = this.startNote; note < this.endNote; note++)
+    for (var note = Scales.DRUM_NOTE_START; note < Scales.DRUM_NOTE_END; note++)
     {
-        var n = matrix[note - this.startNote] == -1 ? -1 : matrix[note - this.startNote] + this.startNote + this.drumOctave * 16;
+        var n = matrix[note - Scales.DRUM_NOTE_START] == -1 ? -1 : matrix[note - Scales.DRUM_NOTE_START] + Scales.DRUM_NOTE_START + this.drumOctave * 16;
         noteMap[note] = n < 0 || n > 127 ? -1 : n;
     }
     return noteMap;
