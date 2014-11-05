@@ -10,7 +10,7 @@ function CursorDeviceProxy ()
     this.hasNextParamPage = false;
     this.hasPreviousParamPage = false;
     
-    this.textLength = 8;
+    this.textLength = GlobalConfig.CURSOR_DEVICE_TEXT_LENGTH;
     
     this.hasDrumPadsValue = false;
     this.hasLayersValue = false;

@@ -42,7 +42,6 @@ TrackState =
 
 AbstractTrackBankProxy.OBSERVED_TRACKS = 256;
 
-
 function AbstractTrackBankProxy (numTracks, numScenes, numSends)
 {
     if (!numTracks)
@@ -55,7 +54,7 @@ function AbstractTrackBankProxy (numTracks, numScenes, numSends)
     this.numDevices = 8;
     this.deviceBanks = [];
 
-    this.textLength = 8;
+    this.textLength = GlobalConfig.TRACK_BANK_TEXT_LENGTH;
 
     this.canScrollTracksUpFlag   = false;
     this.canScrollTracksDownFlag = false;

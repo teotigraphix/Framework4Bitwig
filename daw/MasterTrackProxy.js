@@ -19,7 +19,9 @@ function MasterTrackProxy ()
     this.volumeStr = null;
     this.selected = false;
 
-    this.masterTrack.addNameObserver (8, '', doObject (this, MasterTrackProxy.prototype.handleName));
+    this.textLength = GlobalConfig.MASTER_TRACK_TEXT_LENGTH;
+
+    this.masterTrack.addNameObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handleName));
     this.masterTrack.addIsSelectedObserver (doObject (this, MasterTrackProxy.prototype.handleIsSelected));
     this.masterTrack.addVuMeterObserver (Config.maxParameterValue, -1, true, doObject (this, MasterTrackProxy.prototype.handleVuMeter));
     this.masterTrack.getMute ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleMute));
@@ -31,12 +33,12 @@ function MasterTrackProxy ()
     // Master Track Pan value & text
     var p = this.masterTrack.getPan ();
     p.addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handlePan));
-    p.addValueDisplayObserver (8, '', doObject (this, MasterTrackProxy.prototype.handlePanStr));
+    p.addValueDisplayObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handlePanStr));
 
     // Master Track volume value & text
     var v = this.masterTrack.getVolume ();
     v.addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handleVolume));
-    v.addValueDisplayObserver (8, '', doObject (this, MasterTrackProxy.prototype.handleVolumeStr));
+    v.addValueDisplayObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handleVolumeStr));
 }
 
 // listener has 1 parameter: [boolean] isSelected
