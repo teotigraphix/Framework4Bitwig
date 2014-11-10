@@ -95,6 +95,7 @@ AbstractTrackBankProxy.prototype.init = function ()
         t.addNameObserver (this.textLength, '', doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleName));
         t.addIsSelectedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleBankTrackSelection));
         t.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleVUMeters));
+        t.addColorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleColor));
 
         t.exists ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleExists));
         t.getMute ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleMute));
@@ -460,7 +461,24 @@ AbstractTrackBankProxy.prototype.getClipLauncherScenes = function ()
     return this.trackBank.getClipLauncherScenes ();
 };
 
+// TODO remove out when sure its not used elsewhere
 AbstractTrackBankProxy.prototype.getColorIndex = function (red, green, blue)
+{
+    return AbstractTrackBankProxy.getColorIndex (red, green, blue);
+};
+
+AbstractTrackBankProxy.getColorEntry = function (colorId)
+{
+    for (var i = 0; i < AbstractTrackBankProxy.COLORS.length; i++)
+    {
+        var color = AbstractTrackBankProxy.COLORS[i];
+        if (color[3] == colorId)
+            return color;
+    }
+    return null;
+};
+
+AbstractTrackBankProxy.getColorIndex = function (red, green, blue)
 {
     for (var i = 0; i < AbstractTrackBankProxy.COLORS.length; i++)
     {
@@ -507,6 +525,7 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             volume: 0,
             panStr: '',
             pan: 0,
+            color: 0,
             vu: 0,
             mute: false,
             solo: false,
@@ -566,6 +585,11 @@ AbstractTrackBankProxy.prototype.handleName = function (index, name)
 AbstractTrackBankProxy.prototype.handleVUMeters = function (index, value)
 {
     this.tracks[index].vu = value;
+};
+
+AbstractTrackBankProxy.prototype.handleColor = function (index, red, green, blue)
+{
+    this.tracks[index].color = this.getColorIndex (red, green, blue);
 };
 
 AbstractTrackBankProxy.prototype.handleExists = function (index, exists)
@@ -640,7 +664,7 @@ AbstractTrackBankProxy.prototype.handleSlotHasContent = function (index, slot, h
 
 AbstractTrackBankProxy.prototype.handleSlotColor = function (index, slot, red, green, blue)
 {
-    this.tracks[index].slots[slot].color = this.getColorIndex (red, green, blue);
+    this.tracks[index].slots[slot].color = AbstractTrackBankProxy.getColorIndex (red, green, blue);
 };
 
 AbstractTrackBankProxy.prototype.handlePlaybackState = function (index, slot, state, isQueued)

@@ -105,6 +105,7 @@ function CursorDeviceProxy ()
         layer.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadVUMeters));
         layer.getMute ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadMute));
         layer.getSolo ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadSolo));
+        layer.addColorObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadColor));
     }
 
     //----------------------------------
@@ -572,7 +573,7 @@ CursorDeviceProxy.prototype.handleDrumPadExists = function (index, exists)
 CursorDeviceProxy.prototype.handleDrumPadSelection = function (index, isSelected)
 {
     this.drumPadLayers[index].selected = isSelected;
-//TODO println(index+" Selected:"+this.drumPadLayers[index].selected);    
+//TODO println(index+" Selected:"+this.drumPadLayers[index].selected);
 };
 
 CursorDeviceProxy.prototype.handleDrumPadName = function (index, name)
@@ -623,6 +624,11 @@ CursorDeviceProxy.prototype.handleDrumPadSolo = function (index, isSoloed)
 //TODO println(index+" solo:"+this.drumPadLayers[index].solo);
 };
 
+CursorDeviceProxy.prototype.handleDrumPadColor = function (index, red, green, blue)
+{
+    this.drumPadLayers[index].color = AbstractTrackBankProxy.getColorIndex (red, green, blue);
+// TODO println(index+" color:"+this.drumPadLayers[index].color);
+};
 
 //--------------------------------------
 // Private
