@@ -15,28 +15,41 @@ function ApplicationProxy ()
 /**
  * Switches the Bitwig Studio user interface to the panel layout with the given name.
  *
- * @param panelLayout {string} the name of the new panel layout
+ * @param panelLayout {string} the name of the new panel layout (ARRANGE, MIX, EDIT)
  */
 ApplicationProxy.prototype.setPanelLayout = function (panelLayout)
 {
     this.application.setPanelLayout (panelLayout);
 };
 
+/**
+ * Returns the active panel layout (ARRANGE, MIX or EDIT).
+ * @returns {string}
+ */
 ApplicationProxy.prototype.getPanelLayout = function ()
 {
     return this.panelLayout;
 };
 
+/**
+ * Toggles the visibility of the note editor panel.
+ */
 ApplicationProxy.prototype.toggleNoteEditor = function ()
 {
     this.application.toggleNoteEditor ();
 };
 
+/**
+ * Toggles the visibility of the automation editor panel.
+ */
 ApplicationProxy.prototype.toggleAutomationEditor = function ()
 {
     this.application.toggleAutomationEditor ();
 };
 
+/**
+ * Toggles the visibility of the device chain panel.
+ */
 ApplicationProxy.prototype.toggleDevices = function ()
 {
     this.application.toggleDevices ();
@@ -50,41 +63,65 @@ ApplicationProxy.prototype.toggleInspector = function ()
     this.application.toggleInspector ();
 };
 
+/**
+ * Toggles the visibility of the mixer panel.
+ */
 ApplicationProxy.prototype.toggleMixer = function ()
 {
     this.application.toggleMixer ();
 };
 
+/**
+ * Toggles between full screen and windowed user interface.
+ */
 ApplicationProxy.prototype.toggleFullScreen = function ()
 {
     this.application.toggleFullScreen ();
 };
 
+/**
+ * Toggles the visibility of the browser panel.
+ */
 ApplicationProxy.prototype.toggleBrowserVisibility = function()
 {
     this.application.toggleBrowserVisibility ();
 };
 
+/**
+ * Duplicates the active selection in Bitwig Studio if applicable.
+ */
 ApplicationProxy.prototype.duplicate = function ()
 {
     this.application.duplicate ();
 };
 
+/**
+ * Deletes the selected items in Bitwig Studio if applicable.
+ */
 ApplicationProxy.prototype.deleteSelection = function ()
 {
     this.application.remove ();
 };
 
+/**
+ * Sends a redo command to Bitwig Studio.
+ */
 ApplicationProxy.prototype.redo = function ()
 {
     this.application.redo ();
 };
 
+/**
+ * Sends an undo command to Bitwig Studio.
+ */
 ApplicationProxy.prototype.undo = function ()
 {
     this.application.undo ();
 };
 
+/**
+ * Quantizes all of the selected and focused clip's contents.
+ */
 ApplicationProxy.prototype.quantize = function ()
 {
     // TODO Clip must already be visible in editor and the editor must be focused
@@ -93,6 +130,9 @@ ApplicationProxy.prototype.quantize = function ()
     this.application.getAction ("Quantize").invoke ();
 };
 
+/**
+ * Not implemented.
+ */
 ApplicationProxy.prototype.addEffect = function ()
 {
     displayNotification ("Add Effect: Function not supported (yet).");
@@ -122,21 +162,37 @@ ApplicationProxy.prototype.addInstrumentTrack = function ()
     this.application.createInstrumentTrack (-1);
 };
 
+/**
+ * Equivalent to an Arrow-Left key stroke on the computer keyboard.
+ * The concrete functionality depends on the current keyboard focus in Bitwig Studio.
+ */
 ApplicationProxy.prototype.arrowKeyLeft = function ()
 {
     this.application.arrowKeyLeft ();
 };
 
+/**
+ * Equivalent to an Arrow-Up key stroke on the computer keyboard.
+ * The concrete functionality depends on the current keyboard focus in Bitwig Studio.
+ */
 ApplicationProxy.prototype.arrowKeyUp = function ()
 {
     this.application.arrowKeyUp ();
 };
 
+/**
+ * Equivalent to an Arrow-Right key stroke on the computer keyboard.
+ * The concrete functionality depends on the current keyboard focus in Bitwig Studio.
+ */
 ApplicationProxy.prototype.arrowKeyRight = function ()
 {
     this.application.arrowKeyRight ();
 };
 
+/**
+ * Equivalent to an Arrow-Down key stroke on the computer keyboard.
+ * The concrete functionality depends on the current keyboard focus in Bitwig Studio.
+ */
 ApplicationProxy.prototype.arrowKeyDown = function ()
 {
     this.application.arrowKeyDown ();
