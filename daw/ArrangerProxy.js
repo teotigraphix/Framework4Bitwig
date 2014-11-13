@@ -25,6 +25,9 @@ ArrangerProxy.prototype.areCueMarkersVisible = function ()
     return this.cueMarkersVisible;
 };
 
+/**
+ * Show/hide the cue markers in the arranger panel.
+ */
 ArrangerProxy.prototype.toggleCueMarkerVisibility = function ()
 {
     this.arranger.areCueMarkersVisible ().toggle ();
@@ -39,13 +42,16 @@ ArrangerProxy.prototype.isPlaybackFollowEnabled = function ()
     return this.followsPlayback;
 };
 
+/**
+ * Enable/disable arranger playback follow.
+ */
 ArrangerProxy.prototype.togglePlaybackFollow = function ()
 {
     this.arranger.isPlaybackFollowEnabled ().toggle ();
 };
 
 /**
- *Gets an object that allows to control the arranger track height.
+ * Gets an object that allows to control the arranger track height.
  * @returns {BooleanValue}
  */
 ArrangerProxy.prototype.hasDoubleRowTrackHeight = function ()
@@ -53,6 +59,9 @@ ArrangerProxy.prototype.hasDoubleRowTrackHeight = function ()
     return this.largeTrackHeight;
 };
 
+/**
+ * Toggles the double/single row height of the Arranger tracks.
+ */
 ArrangerProxy.prototype.toggleTrackRowHeight = function ()
 {
     this.arranger.hasDoubleRowTrackHeight ().toggle ();
