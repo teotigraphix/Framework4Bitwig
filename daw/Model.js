@@ -15,6 +15,7 @@ function Model (userCCStart, scales, numTracks, numScenes, numSends)
     this.cursorDevice = new CursorDeviceProxy ();
     this.arranger = new ArrangerProxy ();
     this.mixer = new MixerProxy ();
+    this.sceneBank = new SceneBankProxy (numScenes);
 
     this.currentTrackBank = this.trackBank;
 
@@ -109,6 +110,14 @@ Model.prototype.getUserControlBank = function () { return this.userControlBank; 
 Model.prototype.getApplication = function ()
 {
     return this.application;
+};
+
+/**
+ * @returns {SceneBankProxy}
+ */
+Model.prototype.getSceneBank = function ()
+{
+    return this.sceneBank;
 };
 
 /**
