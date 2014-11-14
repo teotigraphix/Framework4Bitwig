@@ -14,10 +14,10 @@ function SceneBankProxy (numScenes)
     this.sceneCount = -1;
     this.scrollPosition = -1;
 
-    this.sceneBank.addScrollPositionObserver (doObject (this, AbstractTrackBankProxy.prototype.handleScrollPosition), -1);
-    this.sceneBank.addCanScrollUpObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollUp));
-    this.sceneBank.addCanScrollDownObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollDown));
-    this.sceneBank.addSceneCountObserver (doObject (this, AbstractTrackBankProxy.prototype.handleSceneCount));
+    this.sceneBank.addScrollPositionObserver (doObject (this, SceneBankProxy.prototype.handleScrollPosition), -1);
+    this.sceneBank.addCanScrollUpObserver (doObject (this, SceneBankProxy.prototype.handleCanScrollUp));
+    this.sceneBank.addCanScrollDownObserver (doObject (this, SceneBankProxy.prototype.handleCanScrollDown));
+    this.sceneBank.addSceneCountObserver (doObject (this, SceneBankProxy.prototype.handleSceneCount));
 
     this.scenes = this.createScenes (this.numScenes);
 
