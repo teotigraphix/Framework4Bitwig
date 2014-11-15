@@ -118,10 +118,18 @@ AbstractTrackBankProxy.prototype.init = function ()
 
         // Slot content changes
         var cs = t.getClipLauncherSlots ();
+        cs.addNameObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotName));
         cs.addIsSelectedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotSelection));
         cs.addHasContentObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotHasContent));
-        cs.addColorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotColor));
         cs.addPlaybackStateObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePlaybackState));
+//        cs.addIsPlayingObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsPlaying));
+//        cs.addIsRecordingObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsRecording));
+        cs.addIsPlaybackQueuedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsPlaybackQueued));
+        cs.addIsRecordingQueuedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsRecordingQueued));
+        cs.addIsStopQueuedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsStopQueued));
+//        cs.addIsQueuedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsQueued));
+        cs.addColorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotColor));
+
         
         // Devices on the track
         var bank = t.createDeviceBank (this.numDevices);
@@ -650,6 +658,45 @@ AbstractTrackBankProxy.prototype.handlePanStr = function (index, text)
 AbstractTrackBankProxy.prototype.handleCanHoldNotes = function (index, canHoldNotes)
 {
     this.tracks[index].canHoldNotes = canHoldNotes;
+};
+
+//--------------------------------------
+// Slots Handlers
+//--------------------------------------
+
+//AbstractTrackBankProxy.prototype.handleSlotIsPlaying = function (index, slot, playing)
+//{
+//    this.tracks[index].slots[slot].isPlaying = playing;
+//};
+//
+//AbstractTrackBankProxy.prototype.handleSlotIsRecording = function (index, slot, recording)
+//{
+//    this.tracks[index].slots[slot].isRecording = recording;
+//};
+
+AbstractTrackBankProxy.prototype.handleSlotIsPlaybackQueued = function (index, slot, playbackQueued)
+{
+    this.tracks[index].slots[slot].isPlaybackQueued = playbackQueued;
+};
+
+AbstractTrackBankProxy.prototype.handleSlotIsRecordingQueued = function (index, slot, recordingQueued)
+{
+    this.tracks[index].slots[slot].isRecordingQueued = recordingQueued;
+};
+
+AbstractTrackBankProxy.prototype.handleSlotIsStopQueued = function (index, slot, stopQueued)
+{
+    this.tracks[index].slots[slot].isStopQueued = stopQueued;
+};
+
+//AbstractTrackBankProxy.prototype.handleSlotIsQueued = function (index, slot, queued)
+//{
+//    this.tracks[index].slots[slot].isQueued = queued;
+//};
+
+AbstractTrackBankProxy.prototype.handleSlotName = function (index, slot, name)
+{
+    this.tracks[index].slots[slot].name = name;
 };
 
 AbstractTrackBankProxy.prototype.handleSlotSelection = function (index, slot, isSelected)
