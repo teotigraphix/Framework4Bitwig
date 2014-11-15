@@ -390,6 +390,16 @@ CursorDeviceProxy.prototype.changeLayerPan = function (index, value, fractionVal
     this.layerBank.getChannel (index).getPan ().set (t.pan, Config.maxParameterValue);
 };
 
+CursorDeviceProxy.prototype.toggleLayerMute = function (index)
+{
+    this.layerBank.getChannel (index).getMute ().set (!this.getLayer (index).mute);
+};
+
+CursorDeviceProxy.prototype.toggleLayerSolo = function (index)
+{
+    this.layerBank.getChannel (index).getSolo ().set (!this.getLayer (index).solo);
+};
+
 CursorDeviceProxy.prototype.canSelectPreviousFX = function ()
 {
     return this.canSelectPrevious;
