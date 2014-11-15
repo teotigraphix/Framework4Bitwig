@@ -5,10 +5,12 @@
 
 function CursorDeviceProxy ()
 {
-    this.canSelectPrevious = false;
-    this.canSelectNext = false;
-    this.hasNextParamPage = false;
-    this.hasPreviousParamPage = false;
+    this.canSelectPrevious = true;
+    this.canSelectNext = true;
+    this.hasNextParamPage = true;
+    this.hasPreviousParamPage = true;
+    this.canScrollLayersUpValue = true;
+    this.canScrollLayersDownValue = true;
     
     this.textLength = GlobalConfig.CURSOR_DEVICE_TEXT_LENGTH;
     
@@ -71,22 +73,25 @@ function CursorDeviceProxy ()
     
     // Monitor the layers of a container device (if any)
     this.layerBank = this.cursorDevice.createLayerBank (this.numDeviceLayers);
+    this.layerBank.addCanScrollChannelsUpObserver (doObject (this, CursorDeviceProxy.prototype.handleCanScrollLayerUp));
+    this.layerBank.addCanScrollChannelsDownObserver (doObject (this, CursorDeviceProxy.prototype.handleCanScrollLayerDown));
+    
     this.deviceLayers = this.createDeviceLayers (this.numDeviceLayers);
     for (i = 0; i < this.numDeviceLayers; i++)
     {
         layer = this.layerBank.getChannel (i);
-        layer.exists ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleExists));
-        layer.addIsSelectedObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDeviceLayerSelection));
-        layer.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDeviceLayerName));
+        layer.exists ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerExists));
+        layer.addIsSelectedObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerSelection));
+        layer.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerName));
         v = layer.getVolume ();
-        v.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleVolume));
-        v.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleVolumeStr));
+        v.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerVolume));
+        v.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerVolumeStr));
         p = layer.getPan ();
-        p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handlePan));
-        p.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handlePanStr));
-        layer.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleVUMeters));
-        layer.getMute ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleMute));
-        layer.getSolo ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleSolo));
+        p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerPan));
+        p.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerPanStr));
+        layer.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerVUMeters));
+        layer.getMute ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerMute));
+        layer.getSolo ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerSolo));
 
         this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
     }
@@ -351,6 +356,26 @@ CursorDeviceProxy.prototype.selectFirstDeviceInLayer = function (index)
     this.cursorDevice.selectDevice (this.deviceBanks[index].getDevice (0));
 };
 
+CursorDeviceProxy.prototype.canScrollLayersUp = function ()
+{
+    return this.canScrollLayersUpValue;
+};
+
+CursorDeviceProxy.prototype.canScrollLayersDown = function ()
+{
+    return this.canScrollLayersDownValue;
+};
+
+CursorDeviceProxy.prototype.scrollLayersPageUp = function ()
+{
+    this.layerBank.scrollChannelsPageUp ();
+};
+
+CursorDeviceProxy.prototype.scrollLayersPageDown = function ()
+{
+    this.layerBank.scrollChannelsPageDown ();
+};
+
 CursorDeviceProxy.prototype.changeLayerVolume = function (index, value, fractionValue)
 {
     var t = this.getLayer (index);
@@ -541,56 +566,70 @@ CursorDeviceProxy.prototype.handleHasSlots = function (value)
     this.hasSlotsValue = value;
 };
 
-CursorDeviceProxy.prototype.handleExists = function (index, exists)
+CursorDeviceProxy.prototype.handleLayerExists = function (index, exists)
 {
     this.deviceLayers[index].exists = exists;
 };
 
-CursorDeviceProxy.prototype.handleDeviceLayerSelection = function (index, isSelected)
+CursorDeviceProxy.prototype.handleLayerSelection = function (index, isSelected)
 {
     this.deviceLayers[index].selected = isSelected;
 // TODO FIX Required - Not called
 println(index+" Selected:"+this.deviceLayers[index].selected);    
 };
 
-CursorDeviceProxy.prototype.handleDeviceLayerName = function (index, name)
+CursorDeviceProxy.prototype.handleLayerName = function (index, name)
 {
     this.deviceLayers[index].name = name;
 };
 
-CursorDeviceProxy.prototype.handleVolume = function (index, value)
+CursorDeviceProxy.prototype.handleLayerVolume = function (index, value)
 {
     this.deviceLayers[index].volume = value;
 };
 
-CursorDeviceProxy.prototype.handleVolumeStr = function (index, text)
+CursorDeviceProxy.prototype.handleLayerVolumeStr = function (index, text)
 {
     this.deviceLayers[index].volumeStr = text;
 };
 
-CursorDeviceProxy.prototype.handlePan = function (index, value)
+CursorDeviceProxy.prototype.handleLayerPan = function (index, value)
 {
     this.deviceLayers[index].pan = value;
 };
 
-CursorDeviceProxy.prototype.handlePanStr = function (index, text)
+CursorDeviceProxy.prototype.handleLayerPanStr = function (index, text)
 {
     this.deviceLayers[index].panStr = text;
 };
 
-CursorDeviceProxy.prototype.handleVUMeters = function (index, value)
+CursorDeviceProxy.prototype.handleLayerVUMeters = function (index, value)
 {
     this.deviceLayers[index].vu = value;
 };
 
-CursorDeviceProxy.prototype.handleMute = function (index, isMuted)
+CursorDeviceProxy.prototype.handleLayerMute = function (index, isMuted)
 {
     this.deviceLayers[index].mute = isMuted;
 };
 
-CursorDeviceProxy.prototype.handleSolo = function (index, isSoloed)
+CursorDeviceProxy.prototype.handleLayerSolo = function (index, isSoloed)
 {
     this.deviceLayers[index].solo = isSoloed;
+};
+
+CursorDeviceProxy.prototype.handleCanScrollLayerUp = function (canScroll)
+{
+    // TODO Never called
+    println ("CanScrollLayerUp: " + canScroll);
+    this.canScrollLayersUpValue = canScroll;
+};
+
+CursorDeviceProxy.prototype.handleCanScrollLayerDown = function (canScroll)
+{
+    // TODO Never called
+    println ("CanScrollLayerDown: " + canScroll);
+    this.canScrollLayersDownValue = canScroll;
 };
 
 CursorDeviceProxy.prototype.handleDrumPadExists = function (index, exists)
