@@ -3,8 +3,10 @@
 // (c) 2014
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function CursorDeviceProxy ()
+function CursorDeviceProxy (numSends)
 {
+    this.numSends = numSends;
+
     this.canSelectPrevious = true;
     this.canSelectNext = true;
     this.hasNextParamPage = true;
@@ -92,6 +94,18 @@ function CursorDeviceProxy ()
         layer.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerVUMeters));
         layer.getMute ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerMute));
         layer.getSolo ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerSolo));
+        // Sends values & texts
+        for (var j = 0; j < this.numSends; j++)
+        {
+            var s = layer.getSend (j);
+            // TODO FIX Required - Always returns null
+            if (s != null)
+            {
+                s.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendName));
+                s.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendVolume));
+                s.addValueDisplayObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendVolumeStr));
+            }
+        }
 
         this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
     }
@@ -628,6 +642,21 @@ CursorDeviceProxy.prototype.handleLayerSolo = function (index, isSoloed)
     this.deviceLayers[index].solo = isSoloed;
 };
 
+CursorDeviceProxy.prototype.handleSendName = function (index1, index2, text)
+{
+    this.deviceLayers[index].sends[index2].name = text;
+};
+
+CursorDeviceProxy.prototype.handleSendVolume = function (index1, index2, value)
+{
+    this.deviceLayers[index].sends[index2].volume = value;
+};
+
+CursorDeviceProxy.prototype.handleSendVolumeStr = function (index1, index2, text)
+{
+    this.deviceLayers[index].sends[index2].volumeStr = text;
+};
+
 CursorDeviceProxy.prototype.handleCanScrollLayerUp = function (canScroll)
 {
     // TODO Never called
@@ -745,7 +774,8 @@ CursorDeviceProxy.prototype.createDeviceLayers = function (count)
             pan: 0,
             vu: 0,
             mute: false,
-            solo: false
+            solo: false,
+            sends: []
         };
         layers.push (l);
     }

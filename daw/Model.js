@@ -5,17 +5,21 @@
 
 function Model (userCCStart, scales, numTracks, numScenes, numSends)
 {
+    numTracks = numTracks ? numTracks : 8;
+    numScenes = numScenes ? numScenes : 8;
+    numSends  = numSends  ? numSends  : 6;
+
     this.application = new ApplicationProxy ();
     this.transport = new TransportProxy ();
     this.groove = new GrooveProxy ();
     this.masterTrack = new MasterTrackProxy ();
-    this.trackBank = new TrackBankProxy (numTracks ? numTracks : 8, numScenes ? numScenes : 8, numSends ? numSends : 6);
-    this.effectTrackBank = new EffectTrackBankProxy (numTracks ? numTracks : 8, numScenes ? numScenes : 8);
+    this.trackBank = new TrackBankProxy (numTracks, numScenes, numSends);
+    this.effectTrackBank = new EffectTrackBankProxy (numTracks, numScenes);
     this.userControlBank = new UserControlBankProxy (userCCStart);
-    this.cursorDevice = new CursorDeviceProxy ();
+    this.cursorDevice = new CursorDeviceProxy (numSends);
     this.arranger = new ArrangerProxy ();
     this.mixer = new MixerProxy ();
-    this.sceneBank = new SceneBankProxy (numScenes ? numScenes : 8);
+    this.sceneBank = new SceneBankProxy (numScenes);
 
     this.currentTrackBank = this.trackBank;
 
