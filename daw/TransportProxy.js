@@ -12,16 +12,18 @@ function TransportProxy ()
 {
     this.transport = host.createTransport ();
 
-    this.isClickOn         = false;
-    this.isPlaying         = false;
-    this.isRecording       = false;
-    this.isLooping         = false;
-    this.isOverdub         = false;
-    this.isLauncherOverdub = false;
-    this.crossfade         = 0;
-    this.numerator         = 4;
-    this.denominator       = 4;
-    this.metroVolume       = 95;
+    this.isClickOn                       = false;
+    this.isPlaying                       = false;
+    this.isRecording                     = false;
+    this.isLooping                       = false;
+    this.isOverdub                       = false;
+    this.isLauncherOverdub               = false;
+    this.isWritingArrangerAutomation     = false;
+    this.isWritingClipLauncherAutomation = false;
+    this.crossfade                       = 0;
+    this.numerator                       = 4;
+    this.denominator                     = 4;
+    this.metroVolume                     = 95;
     
     this.transport.addClickObserver (doObject (this, TransportProxy.prototype.handleClick));
     this.transport.addIsPlayingObserver (doObject (this, TransportProxy.prototype.handleIsPlaying));
@@ -29,6 +31,8 @@ function TransportProxy ()
     this.transport.addIsLoopActiveObserver (doObject (this, TransportProxy.prototype.handleIsLoopActive));
     this.transport.addOverdubObserver (doObject (this, TransportProxy.prototype.handleOverdub));
     this.transport.addLauncherOverdubObserver (doObject (this, TransportProxy.prototype.handleLauncherOverdub));
+    this.transport.addIsWritingArrangerAutomationObserver (doObject (this, TransportProxy.prototype.handleIsWritingArrangerAutomation));
+    this.transport.addIsWritingClipLauncherAutomationObserver (doObject (this, TransportProxy.prototype.handleIsWritingClipLauncherAutomation));
     this.transport.addMetronomeVolumeObserver (doObject (this, TransportProxy.prototype.handleMetronomeVolume));
     this.transport.getTempo ().addRawValueObserver (doObject (this, TransportProxy.prototype.handleTempo));
     this.transport.getCrossfade ().addValueObserver (Config.maxParameterValue, doObject (this, TransportProxy.prototype.handleCrossfade));
@@ -292,6 +296,16 @@ TransportProxy.prototype.handleOverdub = function (isOverdub)
 TransportProxy.prototype.handleLauncherOverdub = function (isOverdub)
 {
     this.isLauncherOverdub = isOverdub;
+};
+
+TransportProxy.prototype.handleIsWritingArrangerAutomation = function (isAutomation)
+{
+    this.isWritingArrangerAutomation = isAutomation;
+};
+
+TransportProxy.prototype.handleIsWritingClipLauncherAutomation = function (isAutomation)
+{
+    this.isWritingClipLauncherAutomation = isAutomation;
 };
 
 TransportProxy.prototype.handleMetronomeVolume = function (volume)
