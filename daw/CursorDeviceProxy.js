@@ -454,14 +454,10 @@ CursorDeviceProxy.prototype.getDirectParameter = function (id)
     return null;
 };
 
-CursorDeviceProxy.prototype.changeDirectParameter = function (index, value)
+CursorDeviceProxy.prototype.changeDirectParameter = function (index, value, fractionValue)
 {
-    var value = changeValue (value, this.directParameters[index].value, 1.0 / 127, 1.0);
-  //TODO  
-    this.cursorDevice.setDirectParameterValueNormalized (this.directParameters[index].id,
-		value,
-		1.0);
-    
+    var value = changeValue (value, this.directParameters[index].value, fractionValue / 127, 1);
+    this.cursorDevice.setDirectParameterValueNormalized (this.directParameters[index].id, value, 1);
 };
 
 CursorDeviceProxy.prototype.isMacroMapping = function (index)
@@ -485,15 +481,11 @@ CursorDeviceProxy.prototype.handleName = function (name)
 
 CursorDeviceProxy.prototype.handleCanSelectPrevious = function (isEnabled)
 {
-    // TODO Never called
-    println ("CanSelectPrevious: " + isEnabled);
     this.canSelectPrevious = isEnabled;
 };
 
 CursorDeviceProxy.prototype.handleCanSelectNext = function (isEnabled)
 {
-    // TODO Never called
-    println ("CanSelectNext:" + isEnabled);
     this.canSelectNext = isEnabled;
 };
 
@@ -522,11 +514,11 @@ CursorDeviceProxy.prototype.handleParameterName = function (index, name)
     this.fxparams[index].name = name;
 };
 
-CursorDeviceProxy.prototype.handleDirectParameterIds = function ()
+CursorDeviceProxy.prototype.handleDirectParameterIds = function (ids)
 {
     this.directParameters.length = 0;
-    for (var i = 0; i < arguments.length; i++)
-        this.directParameters.push ({ id: arguments[i], name: '', valueStr: '', value: '' });
+    for (var i = 0; i < ids.length; i++)
+        this.directParameters.push ({ id: ids[i], name: '', valueStr: '', value: '' });
 };
 
 CursorDeviceProxy.prototype.handleDirectParameterNames = function (id, name)
@@ -545,8 +537,6 @@ CursorDeviceProxy.prototype.handleDirectParameterValueDisplay = function (id, va
         host.errorln ("Direct parameter '" + id + "' not found.");
     else
         dp.valueStr = value;
-//TODO FIX REQUIRED
-//  println("Display "+id+": "+value);
 };
 
 CursorDeviceProxy.prototype.handleDirectParameterValue = function (id, value)
@@ -556,8 +546,6 @@ CursorDeviceProxy.prototype.handleDirectParameterValue = function (id, value)
         host.errorln ("Direct parameter '" + id + "' not found.");
     else
         dp.value = value;
-//TODO FIX REQUIRED
-//    println("Value "+id+": "+value);
 };
 
 CursorDeviceProxy.prototype.handleValue = function (index, value)
@@ -599,7 +587,7 @@ CursorDeviceProxy.prototype.handleLayerSelection = function (index, isSelected)
 {
     this.deviceLayers[index].selected = isSelected;
 // TODO FIX Required - Not called
-println(index+" Selected:"+this.deviceLayers[index].selected);    
+// println(index+" Selected:"+this.deviceLayers[index].selected);    
 };
 
 CursorDeviceProxy.prototype.handleLayerName = function (index, name)
