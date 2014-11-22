@@ -121,9 +121,6 @@ AbstractTrackBankProxy.prototype.init = function ()
         cs.addIsSelectedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotSelection));
         cs.addHasContentObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotHasContent));
         cs.addPlaybackStateObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePlaybackState));
-        cs.addIsPlaybackQueuedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsPlaybackQueued));
-        cs.addIsRecordingQueuedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsRecordingQueued));
-        cs.addIsStopQueuedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotIsStopQueued));
         cs.addColorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotColor));
 
         // Devices on the track
@@ -463,12 +460,6 @@ AbstractTrackBankProxy.prototype.getClipLauncherScenes = function ()
     return this.trackBank.getClipLauncherScenes ();
 };
 
-// TODO remove out when sure its not used elsewhere
-AbstractTrackBankProxy.prototype.getColorIndex = function (red, green, blue)
-{
-    return AbstractTrackBankProxy.getColorIndex (red, green, blue);
-};
-
 AbstractTrackBankProxy.getColorEntry = function (colorId)
 {
     for (var i = 0; i < AbstractTrackBankProxy.COLORS.length; i++)
@@ -591,7 +582,7 @@ AbstractTrackBankProxy.prototype.handleVUMeters = function (index, value)
 
 AbstractTrackBankProxy.prototype.handleColor = function (index, red, green, blue)
 {
-    this.tracks[index].color = this.getColorIndex (red, green, blue);
+    this.tracks[index].color = AbstractTrackBankProxy.getColorIndex (red, green, blue);
 };
 
 AbstractTrackBankProxy.prototype.handleExists = function (index, exists)
@@ -658,21 +649,6 @@ AbstractTrackBankProxy.prototype.handleCanHoldNotes = function (index, canHoldNo
 // Slots Handlers
 //--------------------------------------
 
-AbstractTrackBankProxy.prototype.handleSlotIsPlaybackQueued = function (index, slot, playbackQueued)
-{
-    this.tracks[index].slots[slot].isPlaybackQueued = playbackQueued;
-};
-
-AbstractTrackBankProxy.prototype.handleSlotIsRecordingQueued = function (index, slot, recordingQueued)
-{
-    this.tracks[index].slots[slot].isRecordingQueued = recordingQueued;
-};
-
-AbstractTrackBankProxy.prototype.handleSlotIsStopQueued = function (index, slot, stopQueued)
-{
-    this.tracks[index].slots[slot].isStopQueued = stopQueued;
-};
-
 AbstractTrackBankProxy.prototype.handleSlotName = function (index, slot, name)
 {
     this.tracks[index].slots[slot].name = name;
@@ -731,6 +707,6 @@ AbstractTrackBankProxy.prototype.handleCanScrollScenesDown = function (canScroll
 
 AbstractTrackBankProxy.prototype.handleDeviceName = function (index, device, name)
 {
-    // TODO
+    // TODO works
     // println(index+":"+ device+":"+ name);
 };
