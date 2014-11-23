@@ -434,9 +434,24 @@ CursorDeviceProxy.prototype.hasNextParameterPage = function ()
     return this.hasNextParamPage;
 };
 
+CursorDeviceProxy.prototype.getParameterPageNames = function ()
+{
+    return this.parameterPageNames;
+};
+
 CursorDeviceProxy.prototype.getSelectedParameterPageName = function ()
 {
     return this.selectedParameterPage >= 0 ? this.parameterPageNames[this.selectedParameterPage] : "";
+};
+
+CursorDeviceProxy.prototype.getSelectedParameterPage = function ()
+{
+    return this.selectedParameterPage;
+};
+
+CursorDeviceProxy.prototype.setSelectedParameterPage = function (page)
+{
+    this.cursorDevice.setParameterPage (page);
 };
 
 CursorDeviceProxy.prototype.getDirectParameters = function ()

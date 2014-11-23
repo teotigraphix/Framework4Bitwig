@@ -527,12 +527,15 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             autoMonitor: false,
             sends: [],
             slots: [],
+            devices: [],
             crossfadeMode: 'AB'
         };
         for (var j = 0; j < this.numScenes; j++)
             t.slots.push ({ index: j });
         for (var j = 0; j < this.numSends; j++)
             t.sends.push ({ index: j });
+        for (var j = 0; j < this.numDevices; j++)
+            t.devices.push ("");
         tracks.push (t);
     }
     return tracks;
@@ -707,6 +710,5 @@ AbstractTrackBankProxy.prototype.handleCanScrollScenesDown = function (canScroll
 
 AbstractTrackBankProxy.prototype.handleDeviceName = function (index, device, name)
 {
-    // TODO works
-    // println(index+":"+ device+":"+ name);
+    this.tracks[index].devices[device] = name;
 };
