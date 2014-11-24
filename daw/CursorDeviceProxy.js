@@ -83,6 +83,7 @@ function CursorDeviceProxy (numSends)
     {
         layer = this.layerBank.getChannel (i);
         layer.exists ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerExists));
+        layer.isActivated ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerActivated));
         layer.addIsSelectedObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerSelection));
         layer.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerName));
         v = layer.getVolume ();
@@ -602,6 +603,11 @@ CursorDeviceProxy.prototype.handleLayerExists = function (index, exists)
     this.deviceLayers[index].exists = exists;
 };
 
+CursorDeviceProxy.prototype.handleLayerActivated = function (index, activated)
+{
+    this.deviceLayers[index].activated = activated;
+};
+
 CursorDeviceProxy.prototype.handleLayerSelection = function (index, isSelected)
 {
     this.deviceLayers[index].selected = isSelected;
@@ -771,6 +777,7 @@ CursorDeviceProxy.prototype.createDeviceLayers = function (count)
         {
             index: i,
             exists: false,
+            activated: true,
             selected: false,
             name: '',
             volumeStr: '',

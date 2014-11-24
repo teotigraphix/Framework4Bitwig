@@ -97,6 +97,7 @@ AbstractTrackBankProxy.prototype.init = function ()
         t.addColorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleColor));
 
         t.exists ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleExists));
+        t.isActivated ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleActivated));
         t.getMute ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleMute));
         t.getSolo ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSolo));
         t.getArm ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleRecArm));
@@ -512,6 +513,7 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             index: i,
             position: i,
             exists: false,
+            activated: true,
             selected: false,
             name: '',
             volumeStr: '',
@@ -591,6 +593,11 @@ AbstractTrackBankProxy.prototype.handleColor = function (index, red, green, blue
 AbstractTrackBankProxy.prototype.handleExists = function (index, exists)
 {
     this.tracks[index].exists = exists;
+};
+
+AbstractTrackBankProxy.prototype.handleActivated = function (index, activated)
+{
+    this.tracks[index].activated = activated;
 };
 
 AbstractTrackBankProxy.prototype.handleMute = function (index, isMuted)
