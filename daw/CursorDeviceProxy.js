@@ -15,7 +15,8 @@ function CursorDeviceProxy (numSends)
     this.canScrollLayersDownValue = true;
     
     this.textLength = GlobalConfig.CURSOR_DEVICE_TEXT_LENGTH;
-    
+
+    this.isWindowOpenValue = false;
     this.hasDrumPadsValue = false;
     this.hasLayersValue = false;
     this.hasSlotsValue = false;
@@ -64,6 +65,8 @@ function CursorDeviceProxy (numSends)
     this.cursorDevice.addDirectParameterNameObserver (this.textLength, doObject (this, CursorDeviceProxy.prototype.handleDirectParameterNames));
     this.cursorDevice.addDirectParameterValueDisplayObserver (this.textLength, doObject (this, CursorDeviceProxy.prototype.handleDirectParameterValueDisplay));
     this.cursorDevice.addDirectParameterNormalizedValueObserver (doObject (this, CursorDeviceProxy.prototype.handleDirectParameterValue));
+    
+    this.cursorDevice.isWindowOpen ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsWindowOpen));
     
     this.cursorDevice.hasDrumPads ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleHasDrumPads));
     this.cursorDevice.hasLayers ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleHasLayers));
@@ -325,6 +328,16 @@ CursorDeviceProxy.prototype.getFXParam = function (index)
     return this.fxparams[index];
 };
 
+CursorDeviceProxy.prototype.isWindowOpen = function ()
+{
+    return this.isWindowOpenValue;
+};
+
+CursorDeviceProxy.prototype.toggleWindowOpen = function ()
+{
+    this.cursorDevice.isWindowOpen ().toggle ();
+};
+
 CursorDeviceProxy.prototype.hasDrumPads = function ()
 {
     return this.hasDrumPadsValue;
@@ -581,6 +594,11 @@ CursorDeviceProxy.prototype.handleValueDisplay = function (index, value)
 CursorDeviceProxy.prototype.handleIsMapping = function (index, value)
 {
     this.isMacroMappings[index] = value;
+};
+
+CursorDeviceProxy.prototype.handleIsWindowOpen = function (value)
+{
+    this.isWindowOpenValue = value;
 };
 
 CursorDeviceProxy.prototype.handleHasDrumPads = function (value)
