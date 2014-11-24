@@ -356,8 +356,12 @@ CursorDeviceProxy.prototype.getSelectedLayer = function ()
 
 CursorDeviceProxy.prototype.selectLayer = function (index)
 {
-    // TODO FIX Required - Enters the device chain instead of just selecting the layer
     this.layerBank.getChannel (index).selectInEditor ();
+};
+
+CursorDeviceProxy.prototype.enterLayer = function (index)
+{
+    this.layerBank.getChannel (index).selectInMixer ();
 };
 
 CursorDeviceProxy.prototype.selectParent = function ()
@@ -601,8 +605,6 @@ CursorDeviceProxy.prototype.handleLayerExists = function (index, exists)
 CursorDeviceProxy.prototype.handleLayerSelection = function (index, isSelected)
 {
     this.deviceLayers[index].selected = isSelected;
-// TODO FIX Required - Not called
-// println(index+" Selected:"+this.deviceLayers[index].selected);    
 };
 
 CursorDeviceProxy.prototype.handleLayerName = function (index, name)
@@ -662,14 +664,14 @@ CursorDeviceProxy.prototype.handleSendVolumeStr = function (index1, index2, text
 
 CursorDeviceProxy.prototype.handleCanScrollLayerUp = function (canScroll)
 {
-    // TODO Never called
+    // TODO Always called with false
     println ("CanScrollLayerUp: " + canScroll);
     this.canScrollLayersUpValue = canScroll;
 };
 
 CursorDeviceProxy.prototype.handleCanScrollLayerDown = function (canScroll)
 {
-    // TODO Never called
+    // TODO Always called with false
     println ("CanScrollLayerDown: " + canScroll);
     this.canScrollLayersDownValue = canScroll;
 };
