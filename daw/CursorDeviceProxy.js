@@ -13,13 +13,17 @@ function CursorDeviceProxy (numSends)
     this.hasPreviousParamPage = true;
     this.canScrollLayersUpValue = true;
     this.canScrollLayersDownValue = true;
-    
+
     this.textLength = GlobalConfig.CURSOR_DEVICE_TEXT_LENGTH;
 
     this.isWindowOpenValue = false;
     this.hasDrumPadsValue = false;
     this.hasLayersValue = false;
     this.hasSlotsValue = false;
+    
+    this.isExpandedValue = false;
+    this.isMacroSectionVisibleValue = false;
+    this.isParameterPageSectionVisibleValue = false;
 
     this.selectedParameterPage = -1;
     this.parameterPageNames = null;
@@ -48,7 +52,10 @@ function CursorDeviceProxy (numSends)
     this.cursorDevice.addNextParameterPageEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handleNextParameterPageEnabled));
     this.cursorDevice.addSelectedPageObserver (-1, doObject (this, CursorDeviceProxy.prototype.handleSelectedPage));
     this.cursorDevice.addPageNamesObserver(doObject (this, CursorDeviceProxy.prototype.handlePageNames));
-
+    this.cursorDevice.isExpanded ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsExpanded));
+    this.cursorDevice.isMacroSectionVisible ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsMacroSectionVisible));
+    this.cursorDevice.isParameterPageSectionVisible ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsParameterPageSectionVisible));
+    
     var i = 0;
     for (i = 0; i < 8; i++)
     {
@@ -338,6 +345,36 @@ CursorDeviceProxy.prototype.toggleWindowOpen = function ()
     this.cursorDevice.isWindowOpen ().toggle ();
 };
 
+CursorDeviceProxy.prototype.isExpanded = function ()
+{
+    return this.isExpandedValue;
+};
+
+CursorDeviceProxy.prototype.toggleExpanded = function ()
+{
+    this.cursorDevice.isExpanded ().toggle ();
+};
+
+CursorDeviceProxy.prototype.isMacroSectionVisible = function ()
+{
+    return this.isMacroSectionVisibleValue;
+};
+
+CursorDeviceProxy.prototype.toggleMacroSectionVisible = function ()
+{
+    this.cursorDevice.isMacroSectionVisible ().toggle ();
+};
+
+CursorDeviceProxy.prototype.isParameterPageSectionVisible = function ()
+{
+    return this.isParameterPageSectionVisibleValue;
+};
+
+CursorDeviceProxy.prototype.toggleParameterPageSectionVisible = function ()
+{
+    this.cursorDevice.isParameterPageSectionVisible ().toggle ();
+};
+
 CursorDeviceProxy.prototype.hasDrumPads = function ()
 {
     return this.hasDrumPadsValue;
@@ -540,6 +577,21 @@ CursorDeviceProxy.prototype.handleSelectedPage = function (page)
 CursorDeviceProxy.prototype.handlePageNames = function ()
 {
     this.parameterPageNames = arguments;
+};
+
+CursorDeviceProxy.prototype.handleIsExpanded = function (expanded)
+{
+    this.isExpandedValue = expanded;
+};
+
+CursorDeviceProxy.prototype.handleIsMacroSectionVisible = function (isVisible)
+{
+    this.isMacroSectionVisibleValue = isVisible;
+};
+
+CursorDeviceProxy.prototype.handleIsParameterPageSectionVisible = function (isVisible)
+{
+    this.isParameterPageSectionVisibleValue = isVisible;
 };
 
 CursorDeviceProxy.prototype.handleParameterName = function (index, name)

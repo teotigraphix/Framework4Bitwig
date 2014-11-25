@@ -249,21 +249,23 @@ AbstractTrackBankProxy.prototype.setPanIndication = function (index, indicate)
     this.trackBank.getChannel (index).getPan ().setIndication (indicate);
 };
 
+AbstractTrackBankProxy.prototype.toggleIsActivated = function (index)
+{
+    this.trackBank.getChannel (index).isActivated ().toggle ();
+};
+
 AbstractTrackBankProxy.prototype.setMute = function (index, value)
 {
-    this.getTrack (index).mute = value;
     this.trackBank.getChannel (index).getMute ().set (value);
 };
 
 AbstractTrackBankProxy.prototype.setSolo = function (index, value)
 {
-    this.getTrack (index).solo = value;
     this.trackBank.getChannel (index).getSolo ().set (value);
 };
 
 AbstractTrackBankProxy.prototype.setArm = function (index, value)
 {
-    this.getTrack (index).recarm = value;
     this.trackBank.getChannel (index).getArm ().set (value);
 };
 
