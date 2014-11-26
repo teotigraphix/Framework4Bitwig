@@ -526,8 +526,8 @@ CursorDeviceProxy.prototype.getDirectParameter = function (id)
 
 CursorDeviceProxy.prototype.changeDirectParameter = function (index, value, fractionValue)
 {
-    var value = changeValue (value, this.directParameters[index].value, fractionValue / 127, 1);
-    this.cursorDevice.setDirectParameterValueNormalized (this.directParameters[index].id, value, 1);
+    var newvalue = changeValue (value, this.directParameters[index].value, fractionValue / 127, 1);
+    this.cursorDevice.setDirectParameterValueNormalized (this.directParameters[index].id, newvalue, 1);
 };
 
 CursorDeviceProxy.prototype.isMacroMapping = function (index)
