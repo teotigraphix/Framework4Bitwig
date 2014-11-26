@@ -41,11 +41,9 @@ AbstractSessionView.prototype.updateArrowStates = function ()
     var tb = this.model.getCurrentTrackBank ();
     if (this.flip)
     {
-        var isDevice = this.surface.getCurrentMode () == MODE_BANK_DEVICE || this.surface.getCurrentMode () == MODE_PRESET;
         var sel = tb.getSelectedTrack ();
-        // var cd = this.model.getCursorDevice ();
-        this.canScrollUp = isDevice ? true /* TODO: Bitwig bug cd.canSelectPreviousFX () */ : sel != null && sel.index > 0 || tb.canScrollTracksUp ();
-        this.canScrollDown = isDevice ? true /* TODO: Bitwig bug cd.canSelectPreviousFX () */ : sel != null && sel.index < 7 || tb.canScrollTracksDown ();
+        this.canScrollUp = sel != null && sel.index > 0 || tb.canScrollTracksUp ();
+        this.canScrollDown = sel != null && sel.index < 7 || tb.canScrollTracksDown ();
         this.canScrollLeft = tb.canScrollScenesUp ();
         this.canScrollRight = tb.canScrollScenesDown ();
 
