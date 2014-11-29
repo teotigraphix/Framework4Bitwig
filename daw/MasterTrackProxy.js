@@ -13,6 +13,7 @@ function MasterTrackProxy ()
     this.solo = null;
     this.monitor = false;
     this.autoMonitor = false;
+    this.activated = true;
     this.pan = null;
     this.panStr = null;
     this.volume = null;
@@ -24,6 +25,7 @@ function MasterTrackProxy ()
     this.masterTrack.addNameObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handleName));
     this.masterTrack.addIsSelectedObserver (doObject (this, MasterTrackProxy.prototype.handleIsSelected));
     this.masterTrack.addVuMeterObserver (Config.maxParameterValue, -1, true, doObject (this, MasterTrackProxy.prototype.handleVuMeter));
+    this.masterTrack.isActivated ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleActivated));
     this.masterTrack.getMute ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleMute));
     this.masterTrack.getSolo ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleSolo));
     this.masterTrack.getArm ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleRecArm));
@@ -103,6 +105,16 @@ MasterTrackProxy.prototype.setPanIndication = function (indicate)
 MasterTrackProxy.prototype.resetPan = function ()
 {
     this.masterTrack.getPan ().reset ();
+};
+
+MasterTrackProxy.prototype.setIsActivated = function (value)
+{
+    this.masterTrack.isActivated ().set (value);
+};
+
+MasterTrackProxy.prototype.toggleIsActivated = function ()
+{
+    this.masterTrack.isActivated ().toggle ();
 };
 
 MasterTrackProxy.prototype.setMute = function (value)
@@ -186,6 +198,11 @@ MasterTrackProxy.prototype.handleIsSelected = function (isSelected)
 MasterTrackProxy.prototype.handleVuMeter = function (value)
 {
     this.vu = value;
+};
+
+MasterTrackProxy.prototype.handleActivated = function (isActivated)
+{
+    this.activated = isActivated;
 };
 
 MasterTrackProxy.prototype.handleMute = function (isMuted)

@@ -249,6 +249,11 @@ AbstractTrackBankProxy.prototype.setPanIndication = function (index, indicate)
     this.trackBank.getChannel (index).getPan ().setIndication (indicate);
 };
 
+AbstractTrackBankProxy.prototype.setIsActivated = function (index, value)
+{
+    this.trackBank.getChannel (index).isActivated ().set (value);
+};
+
 AbstractTrackBankProxy.prototype.toggleIsActivated = function (index)
 {
     this.trackBank.getChannel (index).isActivated ().toggle ();
