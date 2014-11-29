@@ -6,6 +6,11 @@
 function CursorDeviceProxy (numSends)
 {
     this.numSends = numSends;
+    this.numParams = 8;
+    this.numDeviceLayers = 8;
+    this.numDevicesInBank = 8;
+    this.numDrumPadLayers = 16;
+    this.presetWidth = 16;
 
     this.canSelectPrevious = true;
     this.canSelectNext = true;
@@ -27,24 +32,27 @@ function CursorDeviceProxy (numSends)
 
     this.selectedParameterPage = -1;
     this.parameterPageNames = null;
-    this.presetWidth = 16;
-    this.fxparams = this.createFXParams (8);
+
+    this.fxparams = this.createFXParams (this.numParams);
+    this.commonParams = this.createFXParams (this.numParams);
+    this.envelopeParams = this.createFXParams (this.numParams);
+    this.macroParams = this.createFXParams (this.numParams);
+    this.modulationParams = this.createFXParams (this.numParams);
+
     this.selectedDevice =
     {
         name: 'None',
         enabled: false
     };
     
-    this.numDeviceLayers = 8;
-    this.numDevicesInBank = 8;
-    this.numDrumPadLayers = 16;
     this.directParameters = [];
     this.deviceBanks = [];
 
-    this.isMacroMappings = initArray (false, 8);
+    this.isMacroMappings = initArray (false, this.numParams);
     this.cursorDevice = host.createEditorCursorDevice ();
 
     this.cursorDevice.addIsEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handleIsEnabled));
+    this.cursorDevice.addPositionObserver (doObject (this, CursorDeviceProxy.prototype.handlePosition));
     this.cursorDevice.addNameObserver (34, 'None', doObject (this, CursorDeviceProxy.prototype.handleName));
     this.cursorDevice.addCanSelectPreviousObserver (doObject (this, CursorDeviceProxy.prototype.handleCanSelectPrevious));
     this.cursorDevice.addCanSelectNextObserver (doObject (this, CursorDeviceProxy.prototype.handleCanSelectNext));
@@ -57,15 +65,35 @@ function CursorDeviceProxy (numSends)
     this.cursorDevice.isParameterPageSectionVisible ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsParameterPageSectionVisible));
     
     var i = 0;
-    for (i = 0; i < 8; i++)
+
+    for (i = 0; i < this.numParams; i++)
     {
         var p = this.getParameter (i);
         p.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleParameterName));
         p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleValue));
         p.addValueDisplayObserver (this.textLength, '',  doObjectIndex (this, i, CursorDeviceProxy.prototype.handleValueDisplay));
 
-        var m = this.getMacro (i).getModulationSource ();
-        m.addIsMappingObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleIsMapping));
+        p = this.getCommonParameter (i);
+        p.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleCommonParameterName));
+        p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleCommonValue));
+        p.addValueDisplayObserver (this.textLength, '',  doObjectIndex (this, i, CursorDeviceProxy.prototype.handleCommonValueDisplay));
+
+        p = this.getEnvelopeParameter (i);
+        p.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleEnvelopeParameterName));
+        p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleEnvelopeValue));
+        p.addValueDisplayObserver (this.textLength, '',  doObjectIndex (this, i, CursorDeviceProxy.prototype.handleEnvelopeValueDisplay));
+        
+        p = this.getMacro (i);
+        p.addLabelObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleMacroParameterName));
+        var amount = p.getAmount ();
+        amount.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleMacroValue));
+        amount.addValueDisplayObserver (this.textLength, '',  doObjectIndex (this, i, CursorDeviceProxy.prototype.handleMacroValueDisplay));
+        var mod = p.getModulationSource ();
+        mod.addIsMappingObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleIsMapping));
+
+        p = this.getModulationSource (i);
+        p.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleModulationSourceName));
+        p.addIsMappingObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleModulationSourceIsMapping));
     }
     
     this.cursorDevice.addDirectParameterIdObserver (doObject (this, CursorDeviceProxy.prototype.handleDirectParameterIds));
@@ -335,6 +363,26 @@ CursorDeviceProxy.prototype.getFXParam = function (index)
     return this.fxparams[index];
 };
 
+CursorDeviceProxy.prototype.getCommonParam = function (index)
+{
+    return this.commonParams[index];
+};
+
+CursorDeviceProxy.prototype.getEnvelopeParam = function (index)
+{
+    return this.envelopeParams[index];
+};
+
+CursorDeviceProxy.prototype.getMacroParam = function (index)
+{
+    return this.macroParams[index];
+};
+
+CursorDeviceProxy.prototype.getModulationParam = function (index)
+{
+    return this.modulationParams[index];
+};
+
 CursorDeviceProxy.prototype.isWindowOpen = function ()
 {
     return this.isWindowOpenValue;
@@ -544,6 +592,12 @@ CursorDeviceProxy.prototype.handleIsEnabled = function (isEnabled)
     this.selectedDevice.enabled = isEnabled;
 };
 
+CursorDeviceProxy.prototype.handlePosition = function (pos)
+{
+    // TODO FIX always sends -1
+    println (pos);
+};
+
 CursorDeviceProxy.prototype.handleName = function (name)
 {
     this.selectedDevice.name = name;
@@ -594,11 +648,6 @@ CursorDeviceProxy.prototype.handleIsParameterPageSectionVisible = function (isVi
     this.isParameterPageSectionVisibleValue = isVisible;
 };
 
-CursorDeviceProxy.prototype.handleParameterName = function (index, name)
-{
-    this.fxparams[index].name = name;
-};
-
 CursorDeviceProxy.prototype.handleDirectParameterIds = function (ids)
 {
     this.directParameters.length = 0;
@@ -633,6 +682,11 @@ CursorDeviceProxy.prototype.handleDirectParameterValue = function (id, value)
         dp.value = value;
 };
 
+CursorDeviceProxy.prototype.handleParameterName = function (index, name)
+{
+    this.fxparams[index].name = name;
+};
+
 CursorDeviceProxy.prototype.handleValue = function (index, value)
 {
     this.fxparams[index].value = value;
@@ -643,9 +697,65 @@ CursorDeviceProxy.prototype.handleValueDisplay = function (index, value)
     this.fxparams[index].valueStr = value;
 };
 
+CursorDeviceProxy.prototype.handleCommonParameterName = function (index, name)
+{
+    this.commonParams[index].name = name;
+};
+
+CursorDeviceProxy.prototype.handleCommonValue = function (index, value)
+{
+    this.commonParams[index].value = value;
+};
+
+CursorDeviceProxy.prototype.handleCommonValueDisplay = function (index, value)
+{
+    this.commonParams[index].valueStr = value;
+};
+
+CursorDeviceProxy.prototype.handleEnvelopeParameterName = function (index, name)
+{
+    this.envelopeParams[index].name = name;
+};
+
+CursorDeviceProxy.prototype.handleEnvelopeValue = function (index, value)
+{
+    this.envelopeParams[index].value = value;
+};
+
+CursorDeviceProxy.prototype.handleEnvelopeValueDisplay = function (index, value)
+{
+    this.envelopeParams[index].valueStr = value;
+};
+
+CursorDeviceProxy.prototype.handleMacroParameterName = function (index, name)
+{
+    this.macroParams[index].name = name;
+};
+
+CursorDeviceProxy.prototype.handleMacroValue = function (index, value)
+{
+    this.macroParams[index].value = value;
+};
+
+CursorDeviceProxy.prototype.handleMacroValueDisplay = function (index, value)
+{
+    this.macroParams[index].valueStr = value;
+};
+
 CursorDeviceProxy.prototype.handleIsMapping = function (index, value)
 {
     this.isMacroMappings[index] = value;
+};
+
+CursorDeviceProxy.prototype.handleModulationSourceName = function (index, name)
+{
+    this.modulationParams[index].name = name;
+};
+
+CursorDeviceProxy.prototype.handleModulationSourceIsMapping = function (index, isMapping)
+{
+    this.modulationParams[index].value = isMapping;
+    this.modulationParams[index].valueStr = isMapping ? 'On' : 'Off';
 };
 
 CursorDeviceProxy.prototype.handleIsWindowOpen = function (value)

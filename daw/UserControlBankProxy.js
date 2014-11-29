@@ -5,10 +5,20 @@
 
 function UserControlBankProxy (ccStart)
 {
+    this.textLength = GlobalConfig.CURSOR_DEVICE_TEXT_LENGTH;
+    this.numParams = 8;
+    
     this.userControlBank = host.createUserControls (8);
-
+    this.userParams = this.createFXParams (this.numParams);
+    
     for (var i = 0; i < 8; i++)
-        this.userControlBank.getControl (i).setLabel ("CC" + (i + ccStart));
+    {
+        var c = this.userControlBank.getControl (i);
+        c.setLabel ("CC" + (i + ccStart));
+        c.addNameObserver (this.textLength, '', doObjectIndex (this, i, UserControlBankProxy.prototype.handleParameterName));
+        c.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, UserControlBankProxy.prototype.handleValue));
+        c.addValueDisplayObserver (this.textLength, '',  doObjectIndex (this, i, UserControlBankProxy.prototype.handleValueDisplay));
+    }
 }
 
 /**
@@ -18,4 +28,44 @@ function UserControlBankProxy (ccStart)
 UserControlBankProxy.prototype.getControl = function (index)
 {
     return this.userControlBank.getControl (index);
+};
+
+UserControlBankProxy.prototype.getUserParam = function (index)
+{
+    return this.userParams[index];
+};
+
+//--------------------------------------
+// Callback Handlers
+//--------------------------------------
+
+UserControlBankProxy.prototype.handleParameterName = function (index, name)
+{
+    this.userParams[index].name = name;
+};
+
+UserControlBankProxy.prototype.handleValue = function (index, value)
+{
+    this.userParams[index].value = value;
+};
+
+UserControlBankProxy.prototype.handleValueDisplay = function (index, value)
+{
+    this.userParams[index].valueStr = value;
+};
+
+UserControlBankProxy.prototype.createFXParams = function (count)
+{
+    var fxparams = [];
+    for (var i = 0; i < count; i++)
+    {
+        fxparams.push (
+        {
+            index: i,
+            name: '',
+            valueStr: '',
+            value: 0
+        });
+    }
+    return fxparams;
 };
