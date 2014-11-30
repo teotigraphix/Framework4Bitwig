@@ -18,6 +18,7 @@ function TransportProxy ()
     this.isLooping                       = false;
     this.isOverdub                       = false;
     this.isLauncherOverdub               = false;
+    this.automationWriteMode             = "latch";
     this.isWritingArrangerAutomation     = false;
     this.isWritingClipLauncherAutomation = false;
     this.crossfade                       = 0;
@@ -32,6 +33,7 @@ function TransportProxy ()
     this.transport.addIsLoopActiveObserver (doObject (this, TransportProxy.prototype.handleIsLoopActive));
     this.transport.addOverdubObserver (doObject (this, TransportProxy.prototype.handleOverdub));
     this.transport.addLauncherOverdubObserver (doObject (this, TransportProxy.prototype.handleLauncherOverdub));
+    this.transport.addAutomationWriteModeObserver (doObject (this, TransportProxy.prototype.handleAutomationWriteMode));
     this.transport.addIsWritingArrangerAutomationObserver (doObject (this, TransportProxy.prototype.handleIsWritingArrangerAutomation));
     this.transport.addIsWritingClipLauncherAutomationObserver (doObject (this, TransportProxy.prototype.handleIsWritingClipLauncherAutomation));
     this.transport.addMetronomeVolumeObserver (doObject (this, TransportProxy.prototype.handleMetronomeVolume));
@@ -99,6 +101,7 @@ TransportProxy.prototype.rewind = function ()
     this.transport.rewind ();
 };
 
+// mode = "latch", "touch" or "write"
 TransportProxy.prototype.setAutomationWriteMode = function (mode)
 {
     this.transport.setAutomationWriteMode (mode);
@@ -112,6 +115,11 @@ TransportProxy.prototype.setClick = function (on)
 TransportProxy.prototype.setLauncherOverdub = function (on)
 {
     this.transport.setLauncherOverdub (on);
+};
+
+TransportProxy.prototype.setAutomationWriteMode = function (mode)
+{
+    this.transport.setAutomationWriteMode (mode);
 };
 
 TransportProxy.prototype.setLoop = function (on)
@@ -303,6 +311,11 @@ TransportProxy.prototype.handleOverdub = function (isOverdub)
 TransportProxy.prototype.handleLauncherOverdub = function (isOverdub)
 {
     this.isLauncherOverdub = isOverdub;
+};
+
+TransportProxy.prototype.handleAutomationWriteMode = function (writeMode)
+{
+    this.automationWriteMode = writeMode;
 };
 
 TransportProxy.prototype.handleIsWritingArrangerAutomation = function (isAutomation)
