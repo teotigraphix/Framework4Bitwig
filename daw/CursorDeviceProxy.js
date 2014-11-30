@@ -1015,6 +1015,16 @@ PresetProvider.prototype.setSelectedItemVerbose = function (selectedItemVerbose)
     this.itemsChanged ();
 };
 
+PresetProvider.prototype.getPagedView = function (pageSize)
+{
+    var page = Math.floor (this.selectedIndex / pageSize);
+    var start = page * pageSize;
+    var result = [];
+    for (var i = start; i < start + pageSize; i++)
+        result.push (this.items[i]);
+    return result;
+};
+
 PresetProvider.prototype.getView = function (length)
 {
     var result = [];
