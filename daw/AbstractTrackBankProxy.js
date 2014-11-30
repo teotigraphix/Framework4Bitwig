@@ -433,7 +433,7 @@ AbstractTrackBankProxy.prototype.getSelectedSlots = function (trackIndex)
     var selection = [];
     for (var i = 0; i < track.slots.length; i++)
     {
-        if (track.slots[i].isSelected)
+        if (track.slots[i].selected)
             selection.push (track.slots[i]);
     }
     return selection;
@@ -447,7 +447,7 @@ AbstractTrackBankProxy.prototype.getSelectedSlot = function (trackIndex)
     var track = this.getTrack (trackIndex);
     for (var i = 0; i < track.slots.length; i++)
     {
-        if (track.slots[i].isSelected)
+        if (track.slots[i].selected)
             return track.slots[i];
     }
     return null;
@@ -673,7 +673,7 @@ AbstractTrackBankProxy.prototype.handleSlotName = function (index, slot, name)
 
 AbstractTrackBankProxy.prototype.handleSlotSelection = function (index, slot, isSelected)
 {
-    this.tracks[index].slots[slot].isSelected = isSelected;
+    this.tracks[index].slots[slot].selected = isSelected;
 };
 
 AbstractTrackBankProxy.prototype.handleSlotHasContent = function (index, slot, hasContent)
