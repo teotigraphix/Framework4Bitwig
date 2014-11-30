@@ -24,6 +24,7 @@ function TransportProxy ()
     this.numerator                       = 4;
     this.denominator                     = 4;
     this.metroVolume                     = 95;
+    this.preroll                         = 0;
     
     this.transport.addClickObserver (doObject (this, TransportProxy.prototype.handleClick));
     this.transport.addIsPlayingObserver (doObject (this, TransportProxy.prototype.handleIsPlaying));
@@ -34,6 +35,7 @@ function TransportProxy ()
     this.transport.addIsWritingArrangerAutomationObserver (doObject (this, TransportProxy.prototype.handleIsWritingArrangerAutomation));
     this.transport.addIsWritingClipLauncherAutomationObserver (doObject (this, TransportProxy.prototype.handleIsWritingClipLauncherAutomation));
     this.transport.addMetronomeVolumeObserver (doObject (this, TransportProxy.prototype.handleMetronomeVolume));
+    this.transport.addPreRollObserver (doObject (this, TransportProxy.prototype.handlePreRoll));
     this.transport.getTempo ().addRawValueObserver (doObject (this, TransportProxy.prototype.handleTempo));
     this.transport.getCrossfade ().addValueObserver (Config.maxParameterValue, doObject (this, TransportProxy.prototype.handleCrossfade));
 
@@ -254,6 +256,11 @@ TransportProxy.prototype.changeMetronomeVolume = function (value, fractionValue)
     this.transport.setMetronomeValue (this.metroVolume, Config.maxParameterValue);
 };
 
+TransportProxy.prototype.getPreroll = function ()
+{
+    return this.preroll;
+};
+
 TransportProxy.prototype.getNumerator = function ()
 {
     return this.numerator;
@@ -312,6 +319,26 @@ TransportProxy.prototype.handleMetronomeVolume = function (volume)
 {
     // volume is in the range of -48.0 to 0.0, scale to 0 to 127
     this.metroVolume = Math.round ((48.0 + volume) * 127 / 48.0);
+};
+
+TransportProxy.prototype.handlePreRoll = function (prerollValue)
+{
+    switch (prerollValue)
+    {
+        case "one_bar":
+            this.preroll = 1;
+            break;
+        case "two_bars":
+            this.preroll = 2;
+            break;
+        case "four_bars":
+            this.preroll = 4;
+            break;
+        // "none"
+        default:
+            this.preroll = 0;
+            break;
+    }
 };
 
 TransportProxy.prototype.handleTempo = function (value)
