@@ -23,6 +23,7 @@ function CursorDeviceProxy (numSends)
 
     this.isWindowOpenValue = false;
     this.hasDrumPadsValue = false;
+    this.isNestedValue = false;
     this.hasLayersValue = false;
     this.hasSlotsValue = false;
     
@@ -103,6 +104,7 @@ function CursorDeviceProxy (numSends)
     
     this.cursorDevice.isWindowOpen ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsWindowOpen));
     
+    this.cursorDevice.isNested ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsNested));
     this.cursorDevice.hasDrumPads ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleHasDrumPads));
     this.cursorDevice.hasLayers ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleHasLayers));
     this.cursorDevice.hasSlots ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleHasSlots));
@@ -140,6 +142,8 @@ function CursorDeviceProxy (numSends)
             // TODO FIX Required - Always returns null
             if (s != null)
             {
+                println ("Layer Sends are fixed!");
+            
                 s.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendName));
                 s.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendVolume));
                 s.addValueDisplayObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendVolumeStr));
@@ -423,6 +427,11 @@ CursorDeviceProxy.prototype.toggleParameterPageSectionVisible = function ()
     this.cursorDevice.isParameterPageSectionVisible ().toggle ();
 };
 
+CursorDeviceProxy.prototype.isNested = function ()
+{
+    return this.isNestedValue;
+};
+
 CursorDeviceProxy.prototype.hasDrumPads = function ()
 {
     return this.hasDrumPadsValue;
@@ -594,8 +603,9 @@ CursorDeviceProxy.prototype.handleIsEnabled = function (isEnabled)
 
 CursorDeviceProxy.prototype.handlePosition = function (pos)
 {
-    // TODO FIX always sends -1
-    println (pos);
+    // TODO FIX always sends 0 and -1
+    if (pos > 0)
+        println ("Device position is fixed! " + pos);
 };
 
 CursorDeviceProxy.prototype.handleName = function (name)
@@ -763,6 +773,11 @@ CursorDeviceProxy.prototype.handleIsWindowOpen = function (value)
     this.isWindowOpenValue = value;
 };
 
+CursorDeviceProxy.prototype.handleIsNested = function (value)
+{
+    this.isNestedValue = value;
+};
+
 CursorDeviceProxy.prototype.handleHasDrumPads = function (value)
 {
     this.hasDrumPadsValue = value;
@@ -851,14 +866,16 @@ CursorDeviceProxy.prototype.handleSendVolumeStr = function (index1, index2, text
 CursorDeviceProxy.prototype.handleCanScrollLayerUp = function (canScroll)
 {
     // TODO Always called with false
-    println ("CanScrollLayerUp: " + canScroll);
+    if (canScroll)
+        println ("CanScrollLayerUp is fixed!");
     this.canScrollLayersUpValue = canScroll;
 };
 
 CursorDeviceProxy.prototype.handleCanScrollLayerDown = function (canScroll)
 {
     // TODO Always called with false
-    println ("CanScrollLayerDown: " + canScroll);
+    if (canScroll)
+        println ("CanScrollLayerDown is fixed!");
     this.canScrollLayersDownValue = canScroll;
 };
 
