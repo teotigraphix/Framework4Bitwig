@@ -12,6 +12,21 @@ function ApplicationProxy ()
     this.application.addPanelLayoutObserver (doObject (this, ApplicationProxy.prototype.handlePanelLayout), 10);
 }
 
+ApplicationProxy.prototype.isArrangeLayout = function ()
+{
+    return this.panelLayout == 'ARRANGE';
+};
+
+ApplicationProxy.prototype.isMixerLayout = function ()
+{
+    return this.panelLayout == 'MIX';
+};
+
+ApplicationProxy.prototype.isEditLayout = function ()
+{
+    return this.panelLayout == 'EDIT';
+};
+
 /**
  * Switches the Bitwig Studio user interface to the panel layout with the given name.
  *
