@@ -603,7 +603,7 @@ CursorDeviceProxy.prototype.handleIsEnabled = function (isEnabled)
 
 CursorDeviceProxy.prototype.handlePosition = function (pos)
 {
-    // TODO FIX always sends 0 and -1
+    // TODO FIX Required - Always sends 0 and -1
     if (pos > 0)
         println ("Device position is fixed! " + pos);
 };
@@ -865,7 +865,7 @@ CursorDeviceProxy.prototype.handleSendVolumeStr = function (index1, index2, text
 
 CursorDeviceProxy.prototype.handleCanScrollLayerUp = function (canScroll)
 {
-    // TODO Always called with false
+    // TODO FIX Required - Always called with false
     if (canScroll)
         println ("CanScrollLayerUp is fixed!");
     this.canScrollLayersUpValue = canScroll;
@@ -873,7 +873,7 @@ CursorDeviceProxy.prototype.handleCanScrollLayerUp = function (canScroll)
 
 CursorDeviceProxy.prototype.handleCanScrollLayerDown = function (canScroll)
 {
-    // TODO Always called with false
+    // TODO FIX Required - Always called with false
     if (canScroll)
         println ("CanScrollLayerDown is fixed!");
     this.canScrollLayersDownValue = canScroll;

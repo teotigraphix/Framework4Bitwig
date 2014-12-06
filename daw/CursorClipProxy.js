@@ -184,10 +184,13 @@ CursorClipProxy.prototype.setStep = function (step, row, velocity, duration)
 
 CursorClipProxy.prototype.clearRow = function (row)
 {
-    // TODO Can be calculated in 1.1
+    // Can be calculated but it is complicated:
+    //   var quartersPerPad = this.model.getQuartersPerMeasure ();
+    //   var stepsPerMeasure = Math.round (quartersPerPad / this.resolutions[this.selectedIndex]);
+    //   var numOfSteps = this.playEnd * stepsPerMeasure;
     
-    // Since there is no dedicated function, we suggest a maximum of 32 tracks 
-    // with a resolution of 64 steps each
+    // We suggest a maximum of 32 measures with a resolution of 64 steps each
+    // Would be nice to have a dedicated function
     for (var step = 0; step < 64 * 32; step++)
         this.clip.clearStep (step, row);
 };

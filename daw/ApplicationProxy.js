@@ -139,8 +139,8 @@ ApplicationProxy.prototype.undo = function ()
  */
 ApplicationProxy.prototype.quantize = function ()
 {
-    // TODO Clip must already be visible in editor and the editor must be focused
-    // this.application.getAction ("focus_or_toggle_detail_editor").invoke ();
+    // TODO API extension required
+    // Clip must already be visible in editor and the editor must be focused
     this.application.getAction ("Select All").invoke ();
     this.application.getAction ("Quantize").invoke ();
 };
