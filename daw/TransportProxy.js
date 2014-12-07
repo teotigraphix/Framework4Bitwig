@@ -117,11 +117,6 @@ TransportProxy.prototype.setLauncherOverdub = function (on)
     this.transport.setLauncherOverdub (on);
 };
 
-TransportProxy.prototype.setAutomationWriteMode = function (mode)
-{
-    this.transport.setAutomationWriteMode (mode);
-};
-
 TransportProxy.prototype.setLoop = function (on)
 {
     this.transport.setLoop (on);

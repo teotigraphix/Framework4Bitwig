@@ -16,7 +16,7 @@ function Model (userCCStart, scales, numTracks, numScenes, numSends)
     this.trackBank = new TrackBankProxy (numTracks, numScenes, numSends);
     this.effectTrackBank = new EffectTrackBankProxy (numTracks, numScenes);
     this.userControlBank = new UserControlBankProxy (userCCStart);
-    this.cursorDevice = new CursorDeviceProxy (numSends);
+    this.cursorDevice = new CursorDeviceProxy (host.createEditorCursorDevice (), numSends);
     this.arranger = new ArrangerProxy ();
     this.mixer = new MixerProxy ();
     this.sceneBank = new SceneBankProxy (numScenes);

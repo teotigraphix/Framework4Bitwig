@@ -67,17 +67,18 @@ function AbstractTrackBankProxy (numTracks, numScenes, numSends)
     this.listeners = [];
     this.noteListeners = [];
     this.prefferedViews = [];
+    this.primaryDevice = null;
 
     this.tracks = this.createTracks (this.numTracks);
-    this.deviceBank = null;
 }
 
 AbstractTrackBankProxy.prototype.init = function ()
 {
     // Monitor 'all' tracks for selection to move the 'window' of the main
     // track bank to the selected track
-    var trackSelectionMonitor = host.createArrangerCursorTrack (0, 0);
-    trackSelectionMonitor.addPositionObserver (doObject (this, AbstractTrackBankProxy.prototype.handleTrackSelection));
+    var cursorTrack = host.createArrangerCursorTrack (0, 0);
+    cursorTrack.addPositionObserver (doObject (this, AbstractTrackBankProxy.prototype.handleTrackSelection));
+    this.primaryDevice = new CursorDeviceProxy (cursorTrack.createCursorDevice ("Primary"), this.numSends);
 
     for (var i = 0; i < this.numTracks; i++)
     {
@@ -126,10 +127,10 @@ AbstractTrackBankProxy.prototype.init = function ()
         cs.addColorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotColor));
 
         // Devices on the track
-        this.deviceBank = t.createDeviceBank (this.numDevices);
+        this.tracks[i].deviceBank = t.createDeviceBank (this.numDevices);
         for (var j = 0; j < this.numDevices; j++)
         {
-            var device = this.deviceBank.getDevice (j);
+            var device = this.tracks[i].deviceBank.getDevice (j);
             device.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, AbstractTrackBankProxy.prototype.handleDeviceName));
         }
     }
@@ -538,7 +539,9 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             sends: [],
             slots: [],
             devices: [],
-            crossfadeMode: 'AB'
+            crossfadeMode: 'AB',
+            // Non value attribute
+            deviceBank: null
         };
         for (var j = 0; j < this.numScenes; j++)
             t.slots.push ({ index: j });
@@ -562,16 +565,14 @@ AbstractTrackBankProxy.prototype.notifyListeners = function (pressed, note, velo
         this.noteListeners[i].call (null, pressed, note, velocity);
 };
 
-AbstractTrackBankProxy.prototype.nextDeviceBank = function ()
+AbstractTrackBankProxy.prototype.nextDeviceBank = function (trackIndex)
 {
-    // TODO Fix required - not working
-    this.deviceBank.scrollPageUp ();
+    this.tracks[trackIndex].deviceBank.scrollPageUp ();
 };
 
-AbstractTrackBankProxy.prototype.previousDeviceBank = function ()
+AbstractTrackBankProxy.prototype.previousDeviceBank = function (trackIndex)
 {
-    // TODO Fix required - not working
-    this.deviceBank.scrollPageDown ();
+    this.tracks[trackIndex].deviceBank.scrollPageDown ();
 };
 
 //--------------------------------------
