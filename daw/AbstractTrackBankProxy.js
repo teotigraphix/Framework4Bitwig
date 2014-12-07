@@ -69,6 +69,7 @@ function AbstractTrackBankProxy (numTracks, numScenes, numSends)
     this.prefferedViews = [];
 
     this.tracks = this.createTracks (this.numTracks);
+    this.deviceBank = null;
 }
 
 AbstractTrackBankProxy.prototype.init = function ()
@@ -125,10 +126,10 @@ AbstractTrackBankProxy.prototype.init = function ()
         cs.addColorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotColor));
 
         // Devices on the track
-        var bank = t.createDeviceBank (this.numDevices);
+        this.deviceBank = t.createDeviceBank (this.numDevices);
         for (var j = 0; j < this.numDevices; j++)
         {
-            var device = bank.getDevice (j);
+            var device = this.deviceBank.getDevice (j);
             device.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, AbstractTrackBankProxy.prototype.handleDeviceName));
         }
     }
@@ -559,6 +560,18 @@ AbstractTrackBankProxy.prototype.notifyListeners = function (pressed, note, velo
 {
     for (var i = 0; i < this.noteListeners.length; i++)
         this.noteListeners[i].call (null, pressed, note, velocity);
+};
+
+AbstractTrackBankProxy.prototype.nextDeviceBank = function ()
+{
+    // TODO Fix required - not working
+    this.deviceBank.scrollPageUp ();
+};
+
+AbstractTrackBankProxy.prototype.previousDeviceBank = function ()
+{
+    // TODO Fix required - not working
+    this.deviceBank.scrollPageDown ();
 };
 
 //--------------------------------------
