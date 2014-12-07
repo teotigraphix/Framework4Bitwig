@@ -152,10 +152,6 @@ function CursorDeviceProxy (cursorDevice, numSends)
         }
 
         this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
-        for (var j = 0; j < this.numDevicesInBank; j++)
-        {
-            this.deviceBanks[i].getDevice (j).addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleDeviceName));
-        }
     }
     
     // Monitor the drum pad layers of a container device (if any)
@@ -165,6 +161,7 @@ function CursorDeviceProxy (cursorDevice, numSends)
     {
         layer = this.drumPadBank.getChannel (i);
         layer.exists ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadExists));
+        layer.isActivated ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadActivated));
         layer.addIsSelectedObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadSelection));
         layer.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadName));
         v = layer.getVolume ();
@@ -361,7 +358,7 @@ CursorDeviceProxy.prototype.selectPrevious = function ()
 
 CursorDeviceProxy.prototype.selectSibling = function (index)
 {
-    // TODO Requires API change - Very bad workaround
+    // TODO API extension required - Very bad workaround
     for (var i = 0; i < 8; i++)
         this.cursorDevice.selectPrevious ();
     for (var i = 0; i < index; i++)
@@ -540,6 +537,21 @@ CursorDeviceProxy.prototype.toggleLayerMute = function (index)
 CursorDeviceProxy.prototype.toggleLayerSolo = function (index)
 {
     this.layerBank.getChannel (index).getSolo ().set (!this.getLayer (index).solo);
+};
+
+CursorDeviceProxy.prototype.getDrumPad = function (index)
+{
+    return this.drumPadLayers[index];
+};
+
+CursorDeviceProxy.prototype.scrollDrumPadsPageUp = function ()
+{
+    this.drumPadBank.scrollChannelsPageUp ();
+};
+
+CursorDeviceProxy.prototype.scrollDrumPadsPageDown = function ()
+{
+    this.drumPadBank.scrollChannelsPageDown ();
 };
 
 CursorDeviceProxy.prototype.hasPreviousParameterPage = function ()
@@ -888,72 +900,61 @@ CursorDeviceProxy.prototype.handleCanScrollLayerDown = function (canScroll)
 CursorDeviceProxy.prototype.handleDrumPadExists = function (index, exists)
 {
     this.drumPadLayers[index].exists = exists;
-//TODO println(index+" Exists:"+this.drumPadLayers[index].exists);    
+};
+
+CursorDeviceProxy.prototype.handleDrumPadActivated = function (index, activated)
+{
+    this.drumPadLayers[index].activated = activated;
 };
 
 CursorDeviceProxy.prototype.handleDrumPadSelection = function (index, isSelected)
 {
     this.drumPadLayers[index].selected = isSelected;
-//TODO println(index+" Selected:"+this.drumPadLayers[index].selected);    
 };
 
 CursorDeviceProxy.prototype.handleDrumPadName = function (index, name)
 {
     this.drumPadLayers[index].name = name;
-//TODO println(index+" Name:"+this.drumPadLayers[index].name);
 };
 
 CursorDeviceProxy.prototype.handleDrumPadVolume = function (index, value)
 {
     this.drumPadLayers[index].volume = value;
-//TODO println(index+" Volume:"+this.drumPadLayers[index].volume);
 };
 
 CursorDeviceProxy.prototype.handleDrumPadVolumeStr = function (index, text)
 {
     this.drumPadLayers[index].volumeStr = text;
-//TODO println(index+" VolumeStr:"+this.drumPadLayers[index].volumeStr);
 };
 
 CursorDeviceProxy.prototype.handleDrumPadPan = function (index, value)
 {
     this.drumPadLayers[index].pan = value;
-//TODO println(index+" Pan:"+this.drumPadLayers[index].pan);
 };
 
 CursorDeviceProxy.prototype.handleDrumPadPanStr = function (index, text)
 {
     this.drumPadLayers[index].panStr = text;
-//TODO println(index+" PanStr:"+this.drumPadLayers[index].panStr);
 };
 
 CursorDeviceProxy.prototype.handleDrumPadVUMeters = function (index, value)
 {
     this.drumPadLayers[index].vu = value;
-//TODO println(index+" VU:"+this.drumPadLayers[index].vu);
 };
 
 CursorDeviceProxy.prototype.handleDrumPadMute = function (index, isMuted)
 {
     this.drumPadLayers[index].mute = isMuted;
-//TODO println(index+" mute:"+this.drumPadLayers[index].mute);
 };
 
 CursorDeviceProxy.prototype.handleDrumPadSolo = function (index, isSoloed)
 {
     this.drumPadLayers[index].solo = isSoloed;
-//TODO println(index+" solo:"+this.drumPadLayers[index].solo);
 };
 
 CursorDeviceProxy.prototype.handleDrumPadColor = function (index, red, green, blue)
 {
     this.drumPadLayers[index].color = AbstractTrackBankProxy.getColorIndex (red, green, blue);
-// TODO println(index+" color:"+this.drumPadLayers[index].color);
-};
-
-CursorDeviceProxy.prototype.handleDeviceName = function (index1, index2, text)
-{
-// TODO     println(index1+":"+ index2+":"+ text);
 };
 
 //--------------------------------------

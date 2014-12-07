@@ -110,19 +110,6 @@ SceneBankProxy.prototype.scrollTo = function (position)
 };
 
 /**
- * Launches the scene with the given bank index.
- *
- * @param indexInWindow he scene index within the bank, not the position of the scene
- * within the underlying full list of scenes.
- */
-//SceneBankProxy.prototype.launchScene = function (indexInWindow)
-//{
-//    this.sceneBank.launchScene (indexInWindow)
-//};
-
-// Scene
-
-/**
  * Returns whether the scene exists within the bank.
  *
  * @param index scene bank index.
@@ -141,8 +128,6 @@ SceneBankProxy.prototype.sceneExists = function (index)
  */
 SceneBankProxy.prototype.getSceneName = function (index)
 {
-    //if (!this.scenes[index].exists)
-    //    return null;
     return this.scenes[index].name;
 };
 
@@ -153,8 +138,7 @@ SceneBankProxy.prototype.getSceneName = function (index)
  */
 SceneBankProxy.prototype.launchScene = function (index)
 {
-    //if (this.scenes[index].exists)
-        this.sceneBank.getScene (index).launch ();
+    this.sceneBank.getScene (index).launch ();
 };
 
 /**
@@ -164,8 +148,7 @@ SceneBankProxy.prototype.launchScene = function (index)
  */
 SceneBankProxy.prototype.selectScene = function (index)
 {
-    //if (this.scenes[index].exists)
-        this.sceneBank.getScene (index).selectInEditor ();
+    this.sceneBank.getScene (index).selectInEditor ();
 };
 
 /**
@@ -175,8 +158,7 @@ SceneBankProxy.prototype.selectScene = function (index)
  */
 SceneBankProxy.prototype.showScene = function (index)
 {
-    //if (this.scenes[index].exists)
-        this.sceneBank.getScene (index).showInEditor ();
+    this.sceneBank.getScene (index).showInEditor ();
 };
 
 //--------------------------------------
@@ -203,30 +185,24 @@ SceneBankProxy.prototype.handleScrollPosition = function (position)
     this.scrollPosition = position;
 };
 
-// Scene
-
 SceneBankProxy.prototype.handleSceneName = function (index, name)
 {
     this.scenes[index].name = name;
-    //println("name " + name);
 };
 
 SceneBankProxy.prototype.handleSceneExists = function (index, exists)
 {
     this.scenes[index].exists = exists;
-    // TODO println("exists " + exists);
 };
 
 SceneBankProxy.prototype.handleSceneSelected = function (index, selected)
 {
     this.scenes[index].selected = selected;
-    //println("selected " + selected);
 };
 
 SceneBankProxy.prototype.handleScenePosition = function (index, position)
 {
     this.scenes[index].position = position;
-    //println("position " + position);
 };
 
 //--------------------------------------

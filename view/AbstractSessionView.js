@@ -93,7 +93,7 @@ AbstractSessionView.prototype.onGridNote = function (note, velocity)
     }
     slots.select (s);
     
-    /* TODO Focus must be on clip launcher!
+    /* TODO API extension required - Focus must be on clip launcher!
     
     if (this.surface.isDeletePressed ())
     {
