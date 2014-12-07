@@ -3,8 +3,10 @@
 // (c) 2014
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function CursorDeviceProxy (numSends)
+function CursorDeviceProxy (cursorDevice, numSends)
 {
+    this.cursorDevice = cursorDevice;
+
     this.numSends = numSends;
     this.numParams = 8;
     this.numDeviceLayers = 8;
@@ -50,7 +52,6 @@ function CursorDeviceProxy (numSends)
     this.deviceBanks = [];
 
     this.isMacroMappings = initArray (false, this.numParams);
-    this.cursorDevice = host.createEditorCursorDevice ();
 
     this.cursorDevice.addIsEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handleIsEnabled));
     this.cursorDevice.addPositionObserver (doObject (this, CursorDeviceProxy.prototype.handlePosition));
