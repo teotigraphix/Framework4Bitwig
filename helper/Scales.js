@@ -8,6 +8,8 @@ Scales.NOTE_NAMES    = [ 'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', '
 Scales.BASES   = [ 'C', 'G', 'D', 'A', 'E', 'B', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb' ];
 Scales.OFFSETS = [  0,   7,   2,   9,   4,   11,  5,   10,   3,    8,    1,    6 ];
 
+Scales.PLAY_SHIFT_COLS = 8;
+
 Scales.DRUM_NOTE_START = 36;
 Scales.DRUM_NOTE_END   = 100;
 Scales.DRUM_MATRIX =
@@ -192,7 +194,7 @@ Scales.prototype.setScaleLayout = function (scaleLayout)
             break;
         case 4:
         case 5:
-            this.setPlayShift (8);
+            this.setPlayShift (Scales.PLAY_SHIFT_COLS);
             break;
     }
 };
