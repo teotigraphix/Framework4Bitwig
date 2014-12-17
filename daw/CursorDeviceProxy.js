@@ -115,10 +115,11 @@ function CursorDeviceProxy (cursorDevice, numSends)
     var p = null;
     
     // Monitor the layers of a container device (if any)
-    this.layerBank = this.cursorDevice.createLayerBank (this.numDeviceLayers);
-    this.layerBank.addCanScrollChannelsUpObserver (doObject (this, CursorDeviceProxy.prototype.handleCanScrollLayerUp));
-    this.layerBank.addCanScrollChannelsDownObserver (doObject (this, CursorDeviceProxy.prototype.handleCanScrollLayerDown));
+    this.cursorDeviceLayer = this.cursorDevice.createCursorLayer ();
+    this.cursorDeviceLayer.addCanSelectPreviousObserver (doObject (this, CursorDeviceProxy.prototype.handleCanScrollLayerDown));
+    this.cursorDeviceLayer.addCanSelectNextObserver (doObject (this, CursorDeviceProxy.prototype.handleCanScrollLayerUp));
     
+    this.layerBank = this.cursorDevice.createLayerBank (this.numDeviceLayers);
     this.deviceLayers = this.createDeviceLayers (this.numDeviceLayers);
     for (i = 0; i < this.numDeviceLayers; i++)
     {

@@ -26,6 +26,7 @@ function TransportProxy ()
     this.denominator                     = 4;
     this.metroVolume                     = 95;
     this.preroll                         = 0;
+    this.position                        = 0;
     
     this.transport.addClickObserver (doObject (this, TransportProxy.prototype.handleClick));
     this.transport.addIsPlayingObserver (doObject (this, TransportProxy.prototype.handleIsPlaying));
@@ -40,6 +41,7 @@ function TransportProxy ()
     this.transport.addPreRollObserver (doObject (this, TransportProxy.prototype.handlePreRoll));
     this.transport.getTempo ().addRawValueObserver (doObject (this, TransportProxy.prototype.handleTempo));
     this.transport.getCrossfade ().addValueObserver (Config.maxParameterValue, doObject (this, TransportProxy.prototype.handleCrossfade));
+    this.transport.getPosition ().addTimeObserver (":", 3, 2, 2, 2, doObject (this, TransportProxy.prototype.handlePosition));
 
     var ts = this.transport.getTimeSignature ();
     ts.getNumerator ().addValueObserver (doObject (this, TransportProxy.prototype.handleNumerator));
@@ -64,6 +66,11 @@ TransportProxy.prototype.getOutPosition = function ()
 TransportProxy.prototype.getPosition = function ()
 {
     return this.transport.getPosition ();
+};
+
+TransportProxy.prototype.getPositionText = function ()
+{
+    return this.position;
 };
 
 TransportProxy.prototype.incPosition = function (deltaBase, snap)
@@ -357,6 +364,11 @@ TransportProxy.prototype.handleTempo = function (value)
 TransportProxy.prototype.handleCrossfade = function (value)
 {
     this.crossfade = value;
+};
+
+TransportProxy.prototype.handlePosition = function (value)
+{
+    this.position = value;
 };
 
 TransportProxy.prototype.handleNumerator = function (value)
