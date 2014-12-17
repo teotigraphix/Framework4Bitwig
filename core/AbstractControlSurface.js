@@ -152,6 +152,16 @@ AbstractControlSurface.prototype.setActiveView = function (viewId)
         this.viewChangeListeners[i].call (null, prevView, this.activeViewId);
 };
 
+AbstractControlSurface.prototype.previousView = function (viewId)
+{
+    this.setActiveView (Math.max (0, this.activeViewId - 1));
+};
+
+AbstractControlSurface.prototype.nextView = function (viewId)
+{
+    this.setActiveView (Math.min (this.views.length - 1, this.activeViewId + 1));
+};
+
 AbstractControlSurface.prototype.updateButtons = function () {};
 
 AbstractControlSurface.prototype.getView = function (viewId)

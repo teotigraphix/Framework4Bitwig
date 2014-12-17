@@ -286,54 +286,79 @@ CursorDeviceProxy.prototype.previousParameterPage = function ()
     return this.cursorDevice.previousParameterPage ();
 };
 
-CursorDeviceProxy.prototype.setParameterPage = function (index)
+CursorDeviceProxy.prototype.hasPreviousParameterPage = function ()
 {
-    return this.cursorDevice.setParameterPage (index);
+    return this.hasPreviousParamPage;
+};
+
+CursorDeviceProxy.prototype.hasNextParameterPage = function ()
+{
+    return this.hasNextParamPage;
+};
+
+CursorDeviceProxy.prototype.getParameterPageNames = function ()
+{
+    return this.parameterPageNames;
+};
+
+CursorDeviceProxy.prototype.getSelectedParameterPageName = function ()
+{
+    return this.selectedParameterPage >= 0 ? this.parameterPageNames[this.selectedParameterPage] : "";
+};
+
+CursorDeviceProxy.prototype.getSelectedParameterPage = function ()
+{
+    return this.selectedParameterPage;
+};
+
+CursorDeviceProxy.prototype.setSelectedParameterPage = function (index)
+{
+    this.cursorDevice.setParameterPage (index);
 };
 
 CursorDeviceProxy.prototype.setPresetCategory = function (index)
 {
-    return this.cursorDevice.setPresetCategory (index);
+    this.cursorDevice.setPresetCategory (index);
 };
 
 CursorDeviceProxy.prototype.setPresetCreator = function (index)
 {
-    return this.cursorDevice.setPresetCreator (index);
+    this.cursorDevice.setPresetCreator (index);
 };
 
 CursorDeviceProxy.prototype.switchToNextPreset = function ()
 {
-    return this.cursorDevice.switchToNextPreset ();
+    this.cursorDevice.switchToNextPreset ();
 };
 
 CursorDeviceProxy.prototype.switchToNextPresetCategory = function ()
 {
-    return this.cursorDevice.switchToNextPresetCategory ();
+    this.cursorDevice.switchToNextPresetCategory ();
 };
 
 CursorDeviceProxy.prototype.switchToNextPresetCreator = function ()
 {
-    return this.cursorDevice.switchToNextPresetCreator ();
+    this.cursorDevice.switchToNextPresetCreator ();
 };
 
 CursorDeviceProxy.prototype.switchToPreviousPreset = function ()
 {
-    return this.cursorDevice.switchToPreviousPreset ();
+    this.cursorDevice.switchToPreviousPreset ();
 };
 
 CursorDeviceProxy.prototype.switchToPreviousPresetCategory = function ()
 {
-    return this.cursorDevice.switchToPreviousPresetCategory ();
+    this.cursorDevice.switchToPreviousPresetCategory ();
 };
 
 CursorDeviceProxy.prototype.switchToPreviousPresetCreator = function ()
 {
-    return this.cursorDevice.switchToPreviousPresetCreator ();
+    this.cursorDevice.switchToPreviousPresetCreator ();
 };
 
 CursorDeviceProxy.prototype.toggleEnabledState = function ()
 {
-    return this.cursorDevice.toggleEnabledState ();
+    this.cursorDevice.toggleEnabledState ();
 };
 
 CursorDeviceProxy.prototype.canSelectPreviousFX = function ()
@@ -348,12 +373,12 @@ CursorDeviceProxy.prototype.canSelectNextFX = function ()
 
 CursorDeviceProxy.prototype.selectNext = function ()
 {
-    return this.cursorDevice.selectNext ();
+    this.cursorDevice.selectNext ();
 };
 
 CursorDeviceProxy.prototype.selectPrevious = function ()
 {
-    return this.cursorDevice.selectPrevious ();
+    this.cursorDevice.selectPrevious ();
 };
 
 CursorDeviceProxy.prototype.selectSibling = function (index)
@@ -490,6 +515,11 @@ CursorDeviceProxy.prototype.selectParent = function ()
     this.cursorDevice.selectParent ();
 };
 
+CursorDeviceProxy.prototype.selectChannel = function ()
+{
+    this.cursorDevice.getChannel ().selectInEditor ();
+};
+
 CursorDeviceProxy.prototype.selectFirstDeviceInLayer = function (index)
 {
     this.cursorDevice.selectDevice (this.deviceBanks[index].getDevice (0));
@@ -552,36 +582,6 @@ CursorDeviceProxy.prototype.scrollDrumPadsPageUp = function ()
 CursorDeviceProxy.prototype.scrollDrumPadsPageDown = function ()
 {
     this.drumPadBank.scrollChannelsPageDown ();
-};
-
-CursorDeviceProxy.prototype.hasPreviousParameterPage = function ()
-{
-    return this.hasPreviousParamPage;
-};
-
-CursorDeviceProxy.prototype.hasNextParameterPage = function ()
-{
-    return this.hasNextParamPage;
-};
-
-CursorDeviceProxy.prototype.getParameterPageNames = function ()
-{
-    return this.parameterPageNames;
-};
-
-CursorDeviceProxy.prototype.getSelectedParameterPageName = function ()
-{
-    return this.selectedParameterPage >= 0 ? this.parameterPageNames[this.selectedParameterPage] : "";
-};
-
-CursorDeviceProxy.prototype.getSelectedParameterPage = function ()
-{
-    return this.selectedParameterPage;
-};
-
-CursorDeviceProxy.prototype.setSelectedParameterPage = function (page)
-{
-    this.cursorDevice.setParameterPage (page);
 };
 
 CursorDeviceProxy.prototype.getDirectParameters = function ()
