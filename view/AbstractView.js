@@ -34,8 +34,6 @@ AbstractView.prototype.usesButton = function (buttonID)
     return true;
 };
 
-AbstractView.prototype.onActivate = function () {};
-
 AbstractView.prototype.drawGrid = function () {};
 
 AbstractView.prototype.onGridNote = function (note, velocity) {};

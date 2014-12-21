@@ -149,6 +149,11 @@ Scales.prototype.setScaleOffset = function (scaleOffset)
     this.scaleOffset = Math.max (0, Math.min (scaleOffset, Scales.OFFSETS.length - 1));
 };
 
+Scales.prototype.changeScaleOffset = function (value)
+{
+    this.scaleOffset = changeValue (value, this.scaleOffset, 1, Scales.OFFSETS.length - 1);
+};
+
 Scales.prototype.setScaleOffsetByName = function (scaleOffsetName)
 {
     for (var i = 0; i < Scales.BASES.length; i++)
