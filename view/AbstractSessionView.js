@@ -83,10 +83,9 @@ AbstractSessionView.prototype.onGridNote = function (note, velocity)
     {
         if (tb.getTrack (t).recarm)
         {
-            if (slot.isRecording)
-                slots.launch (s);
-            else
+            if (!slot.isRecording)
                 slots.record (s);
+            slots.launch (s);
         }
         else
             slots.launch (s);
