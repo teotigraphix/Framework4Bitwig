@@ -1,6 +1,6 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
-// (c) 2014
+// (c) 2014-2015
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 function AbstractMode (model)
@@ -23,6 +23,7 @@ AbstractMode.prototype.getId = function ()
 };
 
 AbstractMode.prototype.onActivate = function () {};
+AbstractMode.prototype.onDeactivate = function () {};
 AbstractMode.prototype.onValueKnob = function (index, value) {};
 AbstractMode.prototype.onValueKnobTouch = function (index, isTouched) {};
 

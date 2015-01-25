@@ -1,6 +1,6 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
-// (c) 2014
+// (c) 2014-2015
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 function CursorDeviceProxy (cursorDevice, numSends)
@@ -49,6 +49,10 @@ function CursorDeviceProxy (cursorDevice, numSends)
     };
     
     this.directParameters = [];
+    this.numDirectPageBank = 0;
+    this.directParameterPageNames = [];
+    this.currentDirectParameterPage = 0;
+    this.directParameterObservationEnabled = false;
     this.deviceBanks = [];
 
     this.isMacroMappings = initArray (false, this.numParams);
@@ -100,7 +104,7 @@ function CursorDeviceProxy (cursorDevice, numSends)
     
     this.cursorDevice.addDirectParameterIdObserver (doObject (this, CursorDeviceProxy.prototype.handleDirectParameterIds));
     this.cursorDevice.addDirectParameterNameObserver (this.textLength, doObject (this, CursorDeviceProxy.prototype.handleDirectParameterNames));
-    this.cursorDevice.addDirectParameterValueDisplayObserver (this.textLength, doObject (this, CursorDeviceProxy.prototype.handleDirectParameterValueDisplay));
+    this.directParameterValueDisplayObserver = this.cursorDevice.addDirectParameterValueDisplayObserver (this.textLength, doObject (this, CursorDeviceProxy.prototype.handleDirectParameterValueDisplay));
     this.cursorDevice.addDirectParameterNormalizedValueObserver (doObject (this, CursorDeviceProxy.prototype.handleDirectParameterValue));
     
     this.cursorDevice.isWindowOpen ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsWindowOpen));
@@ -606,6 +610,86 @@ CursorDeviceProxy.prototype.changeDirectParameter = function (index, value, frac
     this.cursorDevice.setDirectParameterValueNormalized (this.directParameters[index].id, newvalue, 1);
 };
 
+CursorDeviceProxy.prototype.hasPreviousDirectParameterPage = function ()
+{
+    return this.directParameters.length > 0 && this.currentDirectParameterPage > 0;
+};
+
+CursorDeviceProxy.prototype.hasNextDirectParameterPage = function ()
+{
+    return this.directParameters.length > 0 && this.currentDirectParameterPage < this.getDirectParameterPagesLength () - 1;
+};
+
+CursorDeviceProxy.prototype.previousDirectParameterPage = function ()
+{
+    this.setSelectedDirectParameterPage (this.currentDirectParameterPage - 1);
+};
+
+CursorDeviceProxy.prototype.nextDirectParameterPage = function ()
+{
+    this.setSelectedDirectParameterPage (this.currentDirectParameterPage + 1);
+};
+
+CursorDeviceProxy.prototype.previousDirectParameterPageBank = function ()
+{
+    this.setSelectedDirectParameterPage (this.currentDirectParameterPage - 8);
+};
+
+CursorDeviceProxy.prototype.nextDirectParameterPageBank = function ()
+{
+    this.setSelectedDirectParameterPage (this.currentDirectParameterPage + 8);
+};
+
+CursorDeviceProxy.prototype.getSelectedDirectParameterPageName = function (page)
+{
+    return this.directParameterPageNames[page];
+};
+
+CursorDeviceProxy.prototype.getSelectedDirectParameterPage = function ()
+{
+    return this.currentDirectParameterPage;
+};
+
+CursorDeviceProxy.prototype.setSelectedDirectParameterPage = function (index)
+{
+    this.currentDirectParameterPage = Math.max (0, Math.min (index, this.getDirectParameterPagesLength () - 1));
+    this.enableDirectParameterObservation (this.directParameterObservationEnabled);
+};
+
+CursorDeviceProxy.prototype.enableDirectParameterObservation = function (enable)
+{
+    this.directParameterObservationEnabled = enable;
+
+    // Disable / clear old observers
+    this.directParameterValueDisplayObserver.setObservedParameterIds (null);
+
+    if (!enable)
+        return;
+    
+    var paramIds = [];
+    for (var i = 0; i < 8; i++)
+    {
+        var index = this.currentDirectParameterPage * 8 + i;
+        if (index >= this.directParameters.length)
+            break;
+        paramIds.push (this.directParameters[index].id);
+    }
+    this.directParameterValueDisplayObserver.setObservedParameterIds (paramIds);
+};
+
+// Get the number of pages with direct parameters
+CursorDeviceProxy.prototype.getDirectParameterPagesLength = function ()
+{
+    return this.numDirectPageBank;
+};
+
+CursorDeviceProxy.prototype.changeDirectPageParameter = function (index, value, fractionValue)
+{
+    var pos = this.currentDirectParameterPage * 8 + index;
+    if (pos < this.directParameters.length)
+        this.changeDirectParameter (pos, value, fractionValue);
+};
+
 CursorDeviceProxy.prototype.isMacroMapping = function (index)
 {
     return this.isMacroMappings[index];
@@ -682,6 +766,14 @@ CursorDeviceProxy.prototype.handleDirectParameterIds = function (ids)
     this.directParameters.length = 0;
     for (var i = 0; i < ids.length; i++)
         this.directParameters.push ({ id: ids[i], name: '', valueStr: '', value: '' });
+
+    this.numDirectPageBank = Math.floor (this.directParameters.length / 8) + (this.directParameters.length % 8 > 0 ? 1 : 0);
+    this.directParameterPageNames.length = 0;
+    for (var i = 0; i < this.numDirectPageBank; i++)
+        this.directParameterPageNames.push ("Page " + (i + 1));
+
+    // Reset page to check for new range of pages
+    this.setSelectedDirectParameterPage (this.currentDirectParameterPage);
 };
 
 CursorDeviceProxy.prototype.handleDirectParameterNames = function (id, name)

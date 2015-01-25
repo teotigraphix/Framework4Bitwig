@@ -1,6 +1,6 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
-// (c) 2014
+// (c) 2014-2015
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 AbstractControlSurface.buttonStateInterval = 400;
@@ -217,8 +217,12 @@ AbstractControlSurface.prototype.setPendingMode = function (mode)
 
     if (mode != this.currentMode)
     {
-        if (!this.getMode (this.currentMode).isTemporary)
+        var activeMode = this.getMode (this.currentMode);
+        if (!activeMode.isTemporary)
+        {
             this.previousMode = this.currentMode;
+            activeMode.onDeactivate ();
+        }
         this.currentMode = mode;
         this.setActiveMode (this.currentMode);
     }
