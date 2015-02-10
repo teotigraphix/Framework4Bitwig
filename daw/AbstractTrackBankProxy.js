@@ -78,7 +78,8 @@ AbstractTrackBankProxy.prototype.init = function ()
     // track bank to the selected track
     var cursorTrack = host.createArrangerCursorTrack (0, 0);
     cursorTrack.addPositionObserver (doObject (this, AbstractTrackBankProxy.prototype.handleTrackSelection));
-    this.primaryDevice = new CursorDeviceProxy (cursorTrack.createCursorDevice ("Primary"), this.numSends);
+
+    this.primaryDevice = new CursorDeviceProxy (cursorTrack.createCursorDevice ("Primary", 0), 0);
 
     for (var i = 0; i < this.numTracks; i++)
     {
@@ -125,14 +126,6 @@ AbstractTrackBankProxy.prototype.init = function ()
         cs.addHasContentObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotHasContent));
         cs.addPlaybackStateObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePlaybackState));
         cs.addColorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotColor));
-
-        // Devices on the track
-        this.tracks[i].deviceBank = t.createDeviceBank (this.numDevices);
-        for (var j = 0; j < this.numDevices; j++)
-        {
-            var device = this.tracks[i].deviceBank.getDevice (j);
-            device.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, AbstractTrackBankProxy.prototype.handleDeviceName));
-        }
     }
 
     this.trackBank.addCanScrollChannelsUpObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollTracksUp));
@@ -536,19 +529,15 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             recarm: false,
             monitor: false,
             autoMonitor: false,
+            canHoldNotes: false,
             sends: [],
             slots: [],
-            devices: [],
             crossfadeMode: 'AB',
-            // Non value attribute
-            deviceBank: null
         };
         for (var j = 0; j < this.numScenes; j++)
             t.slots.push ({ index: j });
         for (var j = 0; j < this.numSends; j++)
             t.sends.push ({ index: j });
-        for (var j = 0; j < this.numDevices; j++)
-            t.devices.push ("");
         tracks.push (t);
     }
     return tracks;
@@ -563,16 +552,6 @@ AbstractTrackBankProxy.prototype.notifyListeners = function (pressed, note, velo
 {
     for (var i = 0; i < this.noteListeners.length; i++)
         this.noteListeners[i].call (null, pressed, note, velocity);
-};
-
-AbstractTrackBankProxy.prototype.nextDeviceBank = function (trackIndex)
-{
-    this.tracks[trackIndex].deviceBank.scrollPageUp ();
-};
-
-AbstractTrackBankProxy.prototype.previousDeviceBank = function (trackIndex)
-{
-    this.tracks[trackIndex].deviceBank.scrollPageDown ();
 };
 
 //--------------------------------------
@@ -734,9 +713,4 @@ AbstractTrackBankProxy.prototype.handleCanScrollScenesUp = function (canScroll)
 AbstractTrackBankProxy.prototype.handleCanScrollScenesDown = function (canScroll)
 {
     this.canScrollScenesDownFlag = canScroll;
-};
-
-AbstractTrackBankProxy.prototype.handleDeviceName = function (index, device, name)
-{
-    this.tracks[index].devices[device] = name;
 };
