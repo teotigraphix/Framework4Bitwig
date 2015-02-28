@@ -54,6 +54,7 @@ function CursorDeviceProxy (cursorDevice, numSends)
     this.currentDirectParameterPage = 0;
     this.directParameterObservationEnabled = false;
     this.deviceBanks = [];
+    this.drumPadBanks = [];
     this.position = 0;
     this.siblingDevices = initArray ("", this.numDevicesInBank);
 
@@ -196,6 +197,8 @@ function CursorDeviceProxy (cursorDevice, numSends)
             s.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleDrumPadSendVolume));
             s.addValueDisplayObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleDrumPadSendVolumeStr));
         }
+
+        this.drumPadBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
     }
 
     //----------------------------------
@@ -884,7 +887,7 @@ CursorDeviceProxy.prototype.toggleDrumPadSolo = function (index)
 
 CursorDeviceProxy.prototype.selectFirstDeviceInDrumPad = function (index)
 {
-    this.cursorDevice.selectDevice (this.drumPadLayers[index].getDevice (0));
+    this.cursorDevice.selectDevice (this.drumPadBanks[index].getDevice (0));
 };
 
 CursorDeviceProxy.prototype.canScrollDrumPadsUp = function ()
@@ -1284,19 +1287,16 @@ CursorDeviceProxy.prototype.handleLayerSolo = function (index, isSoloed)
 CursorDeviceProxy.prototype.handleLayerSendName = function (index, index2, text)
 {
     this.deviceLayers[index].sends[index2].name = text;
-// TODO println(index+":"+index2+":"+text+"*"+this.deviceLayers[index].sends[index2].name+"*");
 };
 
 CursorDeviceProxy.prototype.handleLayerSendVolume = function (index, index2, value)
 {
     this.deviceLayers[index].sends[index2].volume = value;
-// TODO println(index+":"+index2+":"+value+"*"+this.deviceLayers[index].sends[index2].volume+"*");
 };
 
 CursorDeviceProxy.prototype.handleLayerSendVolumeStr = function (index, index2, text)
 {
     this.deviceLayers[index].sends[index2].volumeStr = text;
-// TODO println(index+":"+index2+":"+text+"*"+this.deviceLayers[index].sends[index2].volumeStr+"*");
 };
 
 CursorDeviceProxy.prototype.handleCanScrollLayerUp = function (canScroll)
@@ -1372,19 +1372,16 @@ CursorDeviceProxy.prototype.handleDrumPadColor = function (index, red, green, bl
 CursorDeviceProxy.prototype.handleDrumPadSendName = function (index, index2, text)
 {
     this.drumPadLayers[index].sends[index2].name = text;
-// TODO println(index+":"+index2+":"+text+"*"+this.drumPadLayers[index].sends[index2].name+"*");
 };
 
 CursorDeviceProxy.prototype.handleDrumPadSendVolume = function (index, index2, value)
 {
     this.drumPadLayers[index].sends[index2].volume = value;
-// TODO println(index+":"+index2+":"+value+"*"+this.drumPadLayers[index].sends[index2].volume+"*");
 };
 
 CursorDeviceProxy.prototype.handleDrumPadSendVolumeStr = function (index, index2, text)
 {
     this.drumPadLayers[index].sends[index2].volumeStr = text;
-// TODO println(index+":"+index2+":"+text+"*"+this.drumPadLayers[index].sends[index2].volumeStr+"*");
 };
 
 //--------------------------------------
