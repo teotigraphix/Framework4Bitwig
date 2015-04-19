@@ -9,6 +9,7 @@ function MasterTrackProxy ()
     this.listeners = [];
     this.name = null;
     this.vu = null;
+    this.color = null;
     this.mute = null;
     this.solo = null;
     this.monitor = false;
@@ -22,25 +23,27 @@ function MasterTrackProxy ()
 
     this.textLength = GlobalConfig.MASTER_TRACK_TEXT_LENGTH;
 
-    this.masterTrack.addNameObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handleName));
+    // DeviceChain attributes
     this.masterTrack.addIsSelectedObserver (doObject (this, MasterTrackProxy.prototype.handleIsSelected));
-    this.masterTrack.addVuMeterObserver (Config.maxParameterValue, -1, true, doObject (this, MasterTrackProxy.prototype.handleVuMeter));
+    this.masterTrack.addNameObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handleName));
+    
+    // Channel attributes
     this.masterTrack.isActivated ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleActivated));
-    this.masterTrack.getMute ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleMute));
-    this.masterTrack.getSolo ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleSolo));
-    this.masterTrack.getArm ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleRecArm));
-    this.masterTrack.getMonitor ().addValueObserver (doObjectIndex (this, i, MasterTrackProxy.prototype.handleMonitor));
-    this.masterTrack.getAutoMonitor ().addValueObserver (doObjectIndex (this, i, MasterTrackProxy.prototype.handleAutoMonitor));
-
-    // Master Track Pan value & text
-    var p = this.masterTrack.getPan ();
-    p.addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handlePan));
-    p.addValueDisplayObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handlePanStr));
-
-    // Master Track volume value & text
     var v = this.masterTrack.getVolume ();
     v.addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handleVolume));
     v.addValueDisplayObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handleVolumeStr));
+    var p = this.masterTrack.getPan ();
+    p.addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handlePan));
+    p.addValueDisplayObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handlePanStr));
+    this.masterTrack.getMute ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleMute));
+    this.masterTrack.getSolo ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleSolo));
+    this.masterTrack.addVuMeterObserver (Config.maxParameterValue, -1, true, doObject (this, MasterTrackProxy.prototype.handleVuMeter));
+    this.masterTrack.addColorObserver (doObject (this, MasterTrackProxy.prototype.handleColor));
+
+    // Track attributes
+    this.masterTrack.getArm ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleRecArm));
+    this.masterTrack.getMonitor ().addValueObserver (doObjectIndex (this, i, MasterTrackProxy.prototype.handleMonitor));
+    this.masterTrack.getAutoMonitor ().addValueObserver (doObjectIndex (this, i, MasterTrackProxy.prototype.handleAutoMonitor));
 }
 
 // listener has 1 parameter: [boolean] isSelected
@@ -56,6 +59,7 @@ MasterTrackProxy.prototype.addTrackSelectionListener = function (listener)
 MasterTrackProxy.prototype.isSelected = function () { return this.selected; };
 MasterTrackProxy.prototype.getName = function () { return this.name; };
 MasterTrackProxy.prototype.getVU = function () { return this.vu; };
+MasterTrackProxy.prototype.getColor = function () { return this.color; };
 MasterTrackProxy.prototype.isMute = function () { return this.mute; };
 MasterTrackProxy.prototype.isSolo = function () { return this.solo; };
 MasterTrackProxy.prototype.getPan = function () { return this.pan; };
@@ -198,6 +202,11 @@ MasterTrackProxy.prototype.handleIsSelected = function (isSelected)
 MasterTrackProxy.prototype.handleVuMeter = function (value)
 {
     this.vu = value;
+};
+
+MasterTrackProxy.prototype.handleColor = function (red, green, blue)
+{
+    this.color = AbstractTrackBankProxy.getColorIndex (red, green, blue);
 };
 
 MasterTrackProxy.prototype.handleActivated = function (isActivated)
