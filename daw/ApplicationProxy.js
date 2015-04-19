@@ -8,9 +8,16 @@ function ApplicationProxy ()
     this.application = host.createApplication ();
     
     this.panelLayout = 'ARRANGE';
+    this.engineActive = false;
 
     this.application.addPanelLayoutObserver (doObject (this, ApplicationProxy.prototype.handlePanelLayout), 10);
+    this.application.addHasActiveEngineObserver (doObject (this, ApplicationProxy.prototype.handleHasActiveEngine));
 }
+
+ApplicationProxy.prototype.isEngineActive = function ()
+{
+    return this.engineActive;
+};
 
 ApplicationProxy.prototype.isArrangeLayout = function ()
 {
@@ -25,6 +32,19 @@ ApplicationProxy.prototype.isMixerLayout = function ()
 ApplicationProxy.prototype.isEditLayout = function ()
 {
     return this.panelLayout == 'EDIT';
+};
+
+ApplicationProxy.prototype.setEngineActive = function (active)
+{
+    if (active)
+        this.application.activateEngine();
+    else
+        this.application.deactivateEngine();
+};
+
+ApplicationProxy.prototype.toggleEngineActive = function ()
+{
+    this.setEngineActive (!this.engineActive);
 };
 
 /**
@@ -267,4 +287,9 @@ ApplicationProxy.prototype.getActions  = function ()
 ApplicationProxy.prototype.handlePanelLayout = function (panelLayout)
 {
     this.panelLayout = panelLayout;
+};
+
+ApplicationProxy.prototype.handleHasActiveEngine = function (active)
+{
+    this.engineActive = active;
 };
