@@ -5,6 +5,9 @@
 
 function Model (userCCStart, scales, numTracks, numScenes, numSends)
 {
+    if (scales == null)
+        return;
+    
     this.numTracks = numTracks ? numTracks : 8;
     this.numScenes = numScenes ? numScenes : 8;
     this.numSends  = numSends  ? numSends  : 6;

@@ -525,7 +525,7 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             canHoldNotes: false,
             sends: [],
             slots: [],
-            crossfadeMode: 'AB',
+            crossfadeMode: 'AB'
         };
         for (var j = 0; j < this.numScenes; j++)
             t.slots.push ({ index: j });
