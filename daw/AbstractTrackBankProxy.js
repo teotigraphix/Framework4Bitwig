@@ -68,6 +68,8 @@ function AbstractTrackBankProxy (numTracks, numScenes, numSends)
     this.noteListeners = [];
     this.prefferedViews = [];
     this.primaryDevice = null;
+    
+    this.trackCount = 0;
 
     this.tracks = this.createTracks (this.numTracks);
 }
@@ -125,11 +127,18 @@ AbstractTrackBankProxy.prototype.init = function ()
     this.trackBank.addCanScrollChannelsDownObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollTracksDown));
     this.trackBank.addCanScrollScenesUpObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollScenesUp));
     this.trackBank.addCanScrollScenesDownObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollScenesDown));
+    
+    this.trackBank.addChannelCountObserver (doObject (this, AbstractTrackBankProxy.prototype.handleChannelCount));
 };
 
 AbstractTrackBankProxy.prototype.isMuteState = function ()
 {
     return this.trackState == TrackState.MUTE;
+};
+
+AbstractTrackBankProxy.prototype.getTrackCount = function ()
+{
+    return this.trackCount;
 };
 
 AbstractTrackBankProxy.prototype.isSoloState = function ()
@@ -553,7 +562,13 @@ AbstractTrackBankProxy.prototype.notifyListeners = function (pressed, note, velo
 
 AbstractTrackBankProxy.prototype.handleTrackSelection = function (index)
 {
-    this.trackBank.scrollToChannel (Math.floor (index / this.numTracks) * this.numTracks);
+   this.scrollToChannel (index);
+};
+
+AbstractTrackBankProxy.prototype.scrollToChannel = function (channel)
+{
+    if (channel < this.trackCount)
+        this.trackBank.scrollToChannel (Math.floor (channel / this.numTracks) * this.numTracks);
 };
 
 AbstractTrackBankProxy.prototype.handleBankTrackSelection = function (index, isSelected)
@@ -714,4 +729,9 @@ AbstractTrackBankProxy.prototype.handleCanScrollScenesUp = function (canScroll)
 AbstractTrackBankProxy.prototype.handleCanScrollScenesDown = function (canScroll)
 {
     this.canScrollScenesDownFlag = canScroll;
+};
+
+AbstractTrackBankProxy.prototype.handleChannelCount = function (count)
+{
+    this.trackCount = count;
 };
