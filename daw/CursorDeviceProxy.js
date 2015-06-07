@@ -190,9 +190,9 @@ function CursorDeviceProxy (cursorDevice, numSends)
         for (var j = 0; j < this.numSends; j++)
         {
             var s = layer.getSend (j);
-// TODO println(s);
             if (s == null)
                 continue;
+println("#54 is fixed for drum pads! " + i+"/"+j);
             s.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleDrumPadSendName));
             s.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleDrumPadSendVolume));
             s.addValueDisplayObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleDrumPadSendVolumeStr));
@@ -638,6 +638,14 @@ CursorDeviceProxy.prototype.changeLayerOrDrumPadPan = function (index, value, fr
         this.changeLayerPan (index, value, fractionValue);
 };
 
+CursorDeviceProxy.prototype.changeLayerOrDrumPadSend = function (index, send, value, fractionValue)
+{
+    if (this.hasDrumPads ())
+        this.changeDrumPadSend (index, send, value, fractionValue);
+    else
+        this.changeLayerSend (index, send, value, fractionValue);
+};
+
 CursorDeviceProxy.prototype.toggleLayerOrDrumPadMute = function (index)
 {
     if (this.hasDrumPads ())
@@ -775,6 +783,14 @@ CursorDeviceProxy.prototype.changeLayerPan = function (index, value, fractionVal
     this.layerBank.getChannel (index).getPan ().set (t.pan, Config.maxParameterValue);
 };
 
+CursorDeviceProxy.prototype.changeLayerSend = function (index, sendIndex, value, fractionValue)
+{
+    var s = this.getLayer (index).sends[sendIndex];
+    s.volume = changeValue (value, s.volume, fractionValue, Config.maxParameterValue);
+    var send = this.layerBank.getChannel (index).getSend (sendIndex);
+    send.set (s.volume, Config.maxParameterValue);
+};
+
 CursorDeviceProxy.prototype.toggleLayerMute = function (index)
 {
     this.layerBank.getChannel (index).getMute ().set (!this.getLayer (index).mute);
@@ -873,6 +889,14 @@ CursorDeviceProxy.prototype.changeDrumPadPan = function (index, value, fractionV
     var t = this.getDrumPad (index);
     t.pan = changeValue (value, t.pan, fractionValue, Config.maxParameterValue);
     this.drumPadBank.getChannel (index).getPan ().set (t.pan, Config.maxParameterValue);
+};
+
+CursorDeviceProxy.prototype.changeDrumPadSend = function (index, sendIndex, value, fractionValue)
+{
+    var s = this.getDrumPad (index).sends[sendIndex];
+    s.volume = changeValue (value, s.volume, fractionValue, Config.maxParameterValue);
+    var send = this.drumPadBank.getChannel (index).getSend (sendIndex);
+    send.set (s.volume, Config.maxParameterValue);
 };
 
 CursorDeviceProxy.prototype.toggleDrumPadMute = function (index)
@@ -1426,7 +1450,7 @@ CursorDeviceProxy.prototype.createDeviceLayers = function (count)
             sends: []
         };
         for (var j = 0; j < this.numSends; j++)
-            l.sends.push ({ index: j });
+            l.sends.push ({ index: j, volume: 0 });
         layers.push (l);
     }
     return layers;
