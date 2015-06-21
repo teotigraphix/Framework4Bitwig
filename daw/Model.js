@@ -24,6 +24,8 @@ function Model (userCCStart, scales, numTracks, numScenes, numSends)
     this.arranger = new ArrangerProxy ();
     this.mixer = new MixerProxy ();
     this.sceneBank = new SceneBankProxy (this.numScenes);
+    
+    this.browser = new BrowserProxy (this.cursorDevice);
 
     this.currentTrackBank = this.trackBank;
 
@@ -126,6 +128,14 @@ Model.prototype.getApplication = function ()
 Model.prototype.getSceneBank = function ()
 {
     return this.sceneBank;
+};
+
+/**
+ * @returns {BrowserProxy}
+ */
+Model.prototype.getBrowser = function ()
+{
+    return this.browser;
 };
 
 /**
