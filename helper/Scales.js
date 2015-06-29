@@ -418,7 +418,7 @@ Scales.prototype.formatNote = function (note)
 
 Scales.prototype.formatNoteAndOctave = function (note, octaveOffset)
 {
-    return Scales.NOTE_NAMES[Math.abs(note % 12)] + (Math.floor (note / 12) + octaveOffset);
+    return Scales.NOTE_NAMES[Math.abs(note % 12)] + (Math.floor (note / 12) + octaveOffset + 1);
 };
 
 Scales.prototype.createScale = function (scale)
