@@ -191,7 +191,6 @@ function CursorDeviceProxy (cursorDevice, numSends)
             var s = layer.getSend (j);
             if (s == null)
                 continue;
-println("#54 is fixed for drum pads! " + i+"/"+j);
             s.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleDrumPadSendName));
             s.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleDrumPadSendVolume));
             s.addValueDisplayObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleDrumPadSendVolumeStr));
