@@ -62,7 +62,15 @@ function AbstractTrackBankProxy (numTracks, numScenes, numSends)
 
     this.trackState = TrackState.MUTE;
     
-    this.newClipLength = 2; // 1 Bar
+    // 0: 1 Beat
+    // 1: 2 Beat
+    // 2: 1 Bar
+    // 3: 2 Bars
+    // 4: 4 Bars
+    // 5: 8 Bars
+    // 6: 16 Bars
+    // 7: 32 Bars
+    this.newClipLength = 2;
     this.recCount = numTracks * numScenes;
     this.listeners = [];
     this.noteListeners = [];
