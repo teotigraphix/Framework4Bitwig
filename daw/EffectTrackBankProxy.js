@@ -10,7 +10,6 @@ function EffectTrackBankProxy (numTracks, numScenes, audioInstrumentTrackBank)
     this.audioInstrumentTrackBank = audioInstrumentTrackBank;
 
     this.trackBank = host.createEffectTrackBank (numTracks, numScenes);
-    this.trackSelectionBank = host.createEffectTrackBank (AbstractTrackBankProxy.OBSERVED_TRACKS, 0);
     
     this.init ();
 }

@@ -8,7 +8,6 @@ function TrackBankProxy (numTracks, numScenes, numSends)
     AbstractTrackBankProxy.call (this, numTracks, numScenes, numSends);
 
     this.trackBank = host.createMainTrackBank (numTracks, numSends, numScenes);
-    this.trackSelectionBank = host.createMainTrackBank (AbstractTrackBankProxy.OBSERVED_TRACKS, 0, 0);
     
     this.init ();
     

@@ -40,8 +40,6 @@ TrackState =
     SOLO: 2
 };
 
-AbstractTrackBankProxy.OBSERVED_TRACKS = 256;
-
 function AbstractTrackBankProxy (numTracks, numScenes, numSends)
 {
     if (!numTracks)
