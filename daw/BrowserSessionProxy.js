@@ -10,6 +10,11 @@ function BrowserSessionProxy (session, textLength, numFilterColumns, numFilterCo
     this.numFilterColumns = numFilterColumns;
     this.numFilterColumnEntries = numFilterColumnEntries;
     this.numResults = numResults;
+
+    this.isActive = false;    
+    this.selectedResult = null;
+    
+    session.addIsActiveObserver (doObject (this, BrowserSessionProxy.prototype.handleIsActive));
     
     this.filterColumnBank = session.createFilterBank (this.numFilterColumns);
     this.filterColumns = [];
@@ -38,9 +43,10 @@ function BrowserSessionProxy (session, textLength, numFilterColumns, numFilterCo
         this.cursorItems[i].addExistsObserver (doObjectIndex (this, i, BrowserSessionProxy.prototype.handleCursorItemExists));
         this.cursorItems[i].addValueObserver (this.textLength, "", doObjectIndex (this, i, BrowserSessionProxy.prototype.handleCursorItemName));
     }
-    
+
     this.resultsColumn = session.getResults ();
     this.cursorResult = session.getCursorResult ();
+    this.cursorResult.addValueObserver (this.textLength, "", doObject (this, BrowserSessionProxy.prototype.handleCursorResultValue));
     this.resultsItemBank = this.resultsColumn.createItemBank (this.numResults);
     this.resultData = this.createResultData (this.numResults);
     for (i = 0; i < this.numFilterColumnEntries; i++)
@@ -48,6 +54,7 @@ function BrowserSessionProxy (session, textLength, numFilterColumns, numFilterCo
         var item = this.resultsItemBank.getItem (i);
         item.addExistsObserver (doObjectIndex (this, i, BrowserSessionProxy.prototype.handleResultExists));
         item.addValueObserver (this.textLength, "", doObjectIndex (this, i, BrowserSessionProxy.prototype.handleResultName));
+        item.isSelected ().addValueObserver (doObjectIndex (this, i, BrowserSessionProxy.prototype.handleResultIsSelected));
     }
 }
 
@@ -80,6 +87,26 @@ BrowserSessionProxy.prototype.selectNextFilterItem = function (column)
 	this.cursorItems[column].selectNext ();
 };
 
+BrowserSessionProxy.prototype.previousFilterItemPage = function (column)
+{
+    this.filterColumnItemBanks[column].scrollPageUp ();
+};
+
+BrowserSessionProxy.prototype.nextFilterItemPage = function (column)
+{
+    this.filterColumnItemBanks[column].scrollPageDown ();
+};
+
+BrowserSessionProxy.prototype.getSelectedFilterItemIndex = function (column)
+{
+    for (var i = 0; i < this.numFilterColumnEntries; i++)
+    {
+        if (this.filterColumnData[column].items[i].isSelected)
+            return i;
+    }
+    return -1;
+};
+
 BrowserSessionProxy.prototype.selectPreviousResult = function ()
 {
 	this.cursorResult.selectPrevious ();
@@ -88,6 +115,31 @@ BrowserSessionProxy.prototype.selectPreviousResult = function ()
 BrowserSessionProxy.prototype.selectNextResult = function ()
 {
 	this.cursorResult.selectNext ();
+};
+
+BrowserSessionProxy.prototype.getSelectedResult = function ()
+{
+    return this.selectedResult;
+};
+
+BrowserSessionProxy.prototype.getSelectedResultIndex = function ()
+{
+    for (var i = 0; i < this.numResults; i++)
+    {
+        if (this.resultData[i].isSelected)
+            return i;
+    }
+    return -1;
+};
+
+BrowserSessionProxy.prototype.previousResultPage = function ()
+{
+    this.resultsItemBank.scrollPageUp ();
+};
+
+BrowserSessionProxy.prototype.nextResultPage = function ()
+{
+    this.resultsItemBank.scrollPageDown ();
 };
 
 //--------------------------------------
@@ -135,6 +187,11 @@ BrowserSessionProxy.prototype.createResultData = function (count)
 // Callback Handlers
 //--------------------------------------
 
+BrowserSessionProxy.prototype.handleIsActive = function (active)
+{
+    this.isActive = active;
+};
+
 BrowserSessionProxy.prototype.handleColumnExists = function (index, exists)
 {
     this.filterColumnData[index].exists = exists;
@@ -175,6 +232,11 @@ BrowserSessionProxy.prototype.handleResultName = function (index, name)
     this.resultData[index].name = name;
 };
 
+BrowserSessionProxy.prototype.handleResultIsSelected = function (index, isSelected)
+{
+    this.resultData[index].isSelected = isSelected;
+};
+
 BrowserSessionProxy.prototype.handleCursorItemExists = function (index, exists)
 {
     this.filterColumnData[index].cursorExists = exists;
@@ -183,4 +245,9 @@ BrowserSessionProxy.prototype.handleCursorItemExists = function (index, exists)
 BrowserSessionProxy.prototype.handleCursorItemName = function (index, name)
 {
     this.filterColumnData[index].cursorName = name;
+};
+
+BrowserSessionProxy.prototype.handleCursorResultValue = function (value)
+{
+    this.selectedResult = value;
 };

@@ -3,11 +3,11 @@
 // (c) 2014-2015
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function BrowserProxy (device)
+function BrowserProxy (device, numFilterColumns, numFilterColumnEntries, numResults)
 {
-    this.numFilterColumns = 6;        // TODO
-    this.numFilterColumnEntries = 16; // TODO
-    this.numResults = 16;             // TODO
+    this.numFilterColumns       = numFilterColumns;
+    this.numFilterColumnEntries = numFilterColumnEntries;
+    this.numResults             = numResults;
     
     this.textLength = GlobalConfig.PRESET_TEXT_LENGTH;
 
