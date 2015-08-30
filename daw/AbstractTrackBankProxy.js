@@ -78,16 +78,17 @@ function AbstractTrackBankProxy (numTracks, numScenes, numSends)
     this.trackCount = 0;
 
     this.tracks = this.createTracks (this.numTracks);
+    
+    this.cursorTrack = host.createArrangerCursorTrack (0, 0);
 }
 
 AbstractTrackBankProxy.prototype.init = function ()
 {
     // Monitor 'all' tracks for selection to move the 'window' of the main
     // track bank to the selected track
-    var cursorTrack = host.createArrangerCursorTrack (0, 0);
-    cursorTrack.addPositionObserver (doObject (this, AbstractTrackBankProxy.prototype.handleTrackSelection));
+    this.cursorTrack.addPositionObserver (doObject (this, AbstractTrackBankProxy.prototype.handleTrackSelection));
 
-    this.primaryDevice = new CursorDeviceProxy (cursorTrack.createCursorDevice ("Primary", 0), 0);
+    this.primaryDevice = new CursorDeviceProxy (this.cursorTrack.createCursorDevice ("Primary", 0), 0);
 
     for (var i = 0; i < this.numTracks; i++)
     {
@@ -454,6 +455,32 @@ AbstractTrackBankProxy.prototype.getSelectedSlot = function (trackIndex)
             return track.slots[i];
     }
     return null;
+};
+
+/**
+ * Returns the first empty slot in the current clip window. If none is empty null is returned.
+ * If startFrom is set the search starts from the given index (and wraps around after the last one to 0).
+ */
+AbstractTrackBankProxy.prototype.getEmptySlot = function (trackIndex, startFrom)
+{
+    var start = startFrom ? startFrom : 0;
+    var track = this.getTrack (trackIndex);
+    for (var i = 0; i < track.slots.length; i++)
+    {
+        var index = (start + i) % track.slots.length;
+        if (!track.slots[index].hasContent)
+            return track.slots[index];
+    }
+    return null;
+};
+
+AbstractTrackBankProxy.prototype.createClip = function (trackIndex, slotIndex, quartersPerMeasure)
+{
+    var newCLipLength = this.getNewClipLength ();
+    var beats = newCLipLength < 2 ? 
+                    Math.pow (2, tb.getNewClipLength ()) :
+                    Math.pow (2, (newCLipLength - 2)) * quartersPerMeasure;
+    this.getClipLauncherSlots (trackIndex).createEmptyClip (slotIndex, beats);
 };
 
 AbstractTrackBankProxy.prototype.showClipInEditor = function (trackIndex, slotIndex)

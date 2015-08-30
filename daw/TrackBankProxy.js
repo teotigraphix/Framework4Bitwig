@@ -7,9 +7,14 @@ function TrackBankProxy (numTracks, numScenes, numSends)
 {
     AbstractTrackBankProxy.call (this, numTracks, numScenes, numSends);
 
-    this.trackBank = host.createMainTrackBank (numTracks, numSends, numScenes);
+    // TODO remove
+    //this.trackBank = host.createMainTrackBank (numTracks, numSends, numScenes);
+    this.trackBank = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes);
     
     this.init ();
+
+    // We only need 1 track of the children to move down in the group tree
+    this.childTrackBank = this.cursorTrack.createMainTrackBank 	(1, 0, 0, false);
     
     // Sends values & texts
     for (var i = 0; i < numTracks; i++)
@@ -25,6 +30,17 @@ function TrackBankProxy (numTracks, numScenes, numSends)
     }
 }
 TrackBankProxy.prototype = new AbstractTrackBankProxy ();
+
+TrackBankProxy.prototype.selectChildren = function ()
+{
+    var subChannel = this.childTrackBank.getChannel (0);
+    this.cursorTrack.selectChannel (subChannel);
+};
+
+TrackBankProxy.prototype.selectParent = function ()
+{
+    this.cursorTrack.selectParent ();
+};
 
 TrackBankProxy.prototype.changeSend = function (index, sendIndex, value, fractionValue)
 {
