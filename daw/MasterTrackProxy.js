@@ -20,6 +20,7 @@ function MasterTrackProxy ()
     this.volume = null;
     this.volumeStr = null;
     this.selected = false;
+    this.isGroup = false;
 
     this.textLength = GlobalConfig.MASTER_TRACK_TEXT_LENGTH;
 

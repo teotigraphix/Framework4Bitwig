@@ -45,6 +45,15 @@ BrowserProxy.prototype.stopBrowsing = function (commitSelection)
         this.browser.cancelBrowsing ();
 };
 
+BrowserProxy.prototype.getActiveSession = function ()
+{
+    if (this.presetBrowsingSession.isActive)
+        return this.presetBrowsingSession;
+    if (this.deviceBrowsingSession.isActive)
+        return this.deviceBrowsingSession;
+    return null;
+};
+
 BrowserProxy.prototype.getPresetSession = function ()
 {
     return this.presetBrowsingSession;

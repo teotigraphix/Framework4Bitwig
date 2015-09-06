@@ -115,6 +115,7 @@ AbstractTrackBankProxy.prototype.init = function ()
         
         // Track attributes
         t.addPositionObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePosition));
+        t.addIsGroupObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleIsGroup));
         t.getArm ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleRecArm));
         t.getMonitor ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleMonitor));
         t.getAutoMonitor ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleAutoMonitor));
@@ -552,6 +553,7 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             exists: false,
             activated: true,
             selected: false,
+            isGroup: false,
             name: '',
             volumeStr: '',
             volume: 0,
@@ -614,6 +616,14 @@ AbstractTrackBankProxy.prototype.handleBankTrackSelection = function (index, isS
 AbstractTrackBankProxy.prototype.handlePosition = function (index, position)
 {
     this.tracks[index].position = position;
+};
+
+AbstractTrackBankProxy.prototype.handleIsGroup = function (index, isGroup)
+{
+    // TODO Not triggered for groups
+    if (isGroup)
+        println("isGroup Bug is fixed");
+    this.tracks[index].isGroup = isGroup;
 };
 
 AbstractTrackBankProxy.prototype.handleName = function (index, name)

@@ -7,8 +7,6 @@ function TrackBankProxy (numTracks, numScenes, numSends)
 {
     AbstractTrackBankProxy.call (this, numTracks, numScenes, numSends);
 
-    // TODO remove
-    //this.trackBank = host.createMainTrackBank (numTracks, numSends, numScenes);
     this.trackBank = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes);
     
     this.init ();
