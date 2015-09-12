@@ -620,9 +620,6 @@ AbstractTrackBankProxy.prototype.handlePosition = function (index, position)
 
 AbstractTrackBankProxy.prototype.handleIsGroup = function (index, isGroup)
 {
-    // TODO Not triggered for groups
-    if (isGroup)
-        println("isGroup Bug is fixed");
     this.tracks[index].isGroup = isGroup;
 };
 

@@ -60,7 +60,7 @@ function toHexStr (data)
     return sysex;
 }
 
-var REMOVABLE_CHARS = [' ', 'e', 'a', 'u', 'i'];
+var REMOVABLE_CHARS = [' ', 'e', 'a', 'u', 'i', 'o'];
 function optimizeName (name, length)
 {
     if (!name)
