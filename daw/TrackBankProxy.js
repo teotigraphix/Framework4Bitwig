@@ -3,11 +3,14 @@
 // (c) 2014-2015
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function TrackBankProxy (numTracks, numScenes, numSends)
+function TrackBankProxy (numTracks, numScenes, numSends, hasFlatTrackList)
 {
     AbstractTrackBankProxy.call (this, numTracks, numScenes, numSends);
 
-    this.trackBank = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
+    if (hasFlatTrackList)
+        this.trackBank = host.createMainTrackBank (numTracks, numSends, numScenes);
+    else
+        this.trackBank = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
     
     this.init ();
 
