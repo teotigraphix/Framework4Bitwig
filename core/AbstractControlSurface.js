@@ -30,6 +30,7 @@ function AbstractControlSurface (output, input, buttons)
 
     // View related
     this.activeViewId = -1;
+    this.previousViewId = -1;
     this.views = [];
     this.viewChangeListeners = [];
 
@@ -133,7 +134,7 @@ AbstractControlSurface.prototype.addView = function (viewId, view)
 
 AbstractControlSurface.prototype.setActiveView = function (viewId)
 {
-    var prevView = this.activeViewId;
+    this.previousViewId = this.activeViewId;
     this.activeViewId = viewId;
 
     var view = this.getActiveView ();
@@ -149,7 +150,7 @@ AbstractControlSurface.prototype.setActiveView = function (viewId)
     
     // Notify all view change listeners
     for (var i = 0; i < this.viewChangeListeners.length; i++)
-        this.viewChangeListeners[i].call (null, prevView, this.activeViewId);
+        this.viewChangeListeners[i].call (null, this.previousViewId, this.activeViewId);
 };
 
 AbstractControlSurface.prototype.previousView = function (viewId)
@@ -180,6 +181,12 @@ AbstractControlSurface.prototype.getActiveView = function ()
 AbstractControlSurface.prototype.isActiveView = function (viewId)
 {
     return this.activeViewId == viewId;
+};
+
+// Set the previous view as the active one
+AbstractControlSurface.prototype.restoreView = function ()
+{
+    return this.activeViewId = this.previousViewId;
 };
 
 AbstractControlSurface.prototype.addViewChangeListener = function (listener)
