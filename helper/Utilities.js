@@ -14,7 +14,7 @@ function changeValue (control, value, fractionValue, maxParameterValue, minParam
         minParameterValue = 0;
     var isInc = control <= 61;
     var speed = Math.max ((isInc ? control : 127 - control) * fractionValue, fractionValue);
-    return isInc ? Math.min (value + speed, maxParameterValue) : Math.max (value - speed, minParameterValue);
+    return isInc ? Math.min (value + speed, maxParameterValue - 1) : Math.max (value - speed, minParameterValue);
 }
 
 function doObject (object, f)
