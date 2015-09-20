@@ -225,6 +225,11 @@ AbstractTrackBankProxy.prototype.resetVolume = function (index)
     this.trackBank.getChannel (index).getVolume ().reset ();
 };
 
+AbstractTrackBankProxy.prototype.touchVolume = function (index, isBeingTouched)
+{
+    this.trackBank.getChannel (index).getVolume ().touch (isBeingTouched);
+};
+
 AbstractTrackBankProxy.prototype.setVolumeIndication = function (index, indicate)
 {
     this.trackBank.getChannel (index).getVolume ().setIndication (indicate);
@@ -247,6 +252,11 @@ AbstractTrackBankProxy.prototype.setPan = function (index, value, fractionValue)
 AbstractTrackBankProxy.prototype.resetPan = function (index)
 {
     this.trackBank.getChannel (index).getPan ().reset ();
+};
+
+AbstractTrackBankProxy.prototype.touchPan = function (index, isBeingTouched)
+{
+    this.trackBank.getChannel (index).getPan ().touch (isBeingTouched);
 };
 
 AbstractTrackBankProxy.prototype.setPanIndication = function (index, indicate)

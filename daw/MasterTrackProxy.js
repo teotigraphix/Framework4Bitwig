@@ -90,6 +90,11 @@ MasterTrackProxy.prototype.resetVolume = function ()
     this.masterTrack.getVolume ().reset ();
 };
 
+MasterTrackProxy.prototype.touchVolume = function (isBeingTouched)
+{
+    this.masterTrack.getVolume ().touch (isBeingTouched);
+};
+
 MasterTrackProxy.prototype.changePan = function (value, fractionValue)
 {
     this.pan = changeValue (value, this.pan, fractionValue, Config.maxParameterValue);
@@ -110,6 +115,11 @@ MasterTrackProxy.prototype.setPanIndication = function (indicate)
 MasterTrackProxy.prototype.resetPan = function ()
 {
     this.masterTrack.getPan ().reset ();
+};
+
+MasterTrackProxy.prototype.touchPan = function (isBeingTouched)
+{
+    this.masterTrack.getPan ().touch (isBeingTouched);
 };
 
 MasterTrackProxy.prototype.setIsActivated = function (value)

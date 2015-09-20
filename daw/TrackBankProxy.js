@@ -64,6 +64,11 @@ TrackBankProxy.prototype.resetSend = function (index, sendIndex)
     this.trackBank.getChannel (index).getSend (sendIndex).reset ();
 };
 
+TrackBankProxy.prototype.touchSend = function (index, sendIndex, isBeingTouched)
+{
+    this.trackBank.getChannel (index).getSend (sendIndex).touch (isBeingTouched);
+};
+
 TrackBankProxy.prototype.setSendIndication = function (index, sendIndex, indicate)
 {
     this.trackBank.getChannel (index).getSend (sendIndex).setIndication (indicate);
