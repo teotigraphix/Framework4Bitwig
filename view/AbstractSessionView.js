@@ -92,13 +92,12 @@ AbstractSessionView.prototype.onGridNote = function (note, velocity)
     }
     slots.select (s);
     
-    /* TODO API extension required - Focus must be on clip launcher!
-    
+    // Delete selected clip
     if (this.surface.isDeletePressed ())
     {
         this.surface.setButtonConsumed (PUSH_BUTTON_DELETE);
-        this.model.getApplication ().deleteSelection ();
-    }*/
+        slots.deleteClip (s);
+    }
 };
 
 AbstractSessionView.prototype.scrollLeft = function (event)

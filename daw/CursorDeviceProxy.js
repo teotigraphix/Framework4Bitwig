@@ -60,6 +60,7 @@ function CursorDeviceProxy (cursorDevice, numSends)
     this.isMacroMappings = initArray (false, this.numParams);
 
     this.cursorDevice.addIsEnabledObserver (doObject (this, CursorDeviceProxy.prototype.handleIsEnabled));
+    this.cursorDevice.addIsPluginObserver (doObject (this, CursorDeviceProxy.prototype.handleIsPlugin));
     this.cursorDevice.addPositionObserver (doObject (this, CursorDeviceProxy.prototype.handlePosition));
     this.cursorDevice.addNameObserver (34, 'None', doObject (this, CursorDeviceProxy.prototype.handleName));
     this.cursorDevice.addCanSelectPreviousObserver (doObject (this, CursorDeviceProxy.prototype.handleCanSelectPrevious));
@@ -1158,6 +1159,11 @@ CursorDeviceProxy.prototype.changeDirectPageParameter = function (index, value, 
 CursorDeviceProxy.prototype.handleIsEnabled = function (isEnabled)
 {
     this.selectedDevice.enabled = isEnabled;
+};
+
+CursorDeviceProxy.prototype.handleIsPlugin = function (isPlugin)
+{
+    this.selectedDevice.isPlugin = isPlugin;
 };
 
 CursorDeviceProxy.prototype.handlePosition = function (pos)
