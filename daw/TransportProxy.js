@@ -8,6 +8,12 @@ TransportProxy.INC_FRACTION_TIME_SLOW = 1.0 / 20;   // 1/20th of a beat
 TransportProxy.TEMPO_MIN              = 20;
 TransportProxy.TEMPO_MAX              = 666;
 
+TransportProxy.PREROLL_NONE   = "none";
+TransportProxy.PREROLL_1_BAR  = "one_bar";
+TransportProxy.PREROLL_2_BARS = "two_bars";
+TransportProxy.PREROLL_4_BARS = "four_bars";
+
+
 function TransportProxy ()
 {
     this.transport = host.createTransport ();
@@ -29,6 +35,7 @@ function TransportProxy ()
     this.denominator                     = 4;
     this.metroVolume                     = 95;
     this.preroll                         = 0;
+    this.prerollClick                    = false;
     this.position                        = 0;
     
     this.transport.addClickObserver (doObject (this, TransportProxy.prototype.handleClick));
@@ -45,6 +52,7 @@ function TransportProxy ()
     this.transport.addIsWritingClipLauncherAutomationObserver (doObject (this, TransportProxy.prototype.handleIsWritingClipLauncherAutomation));
     this.transport.addMetronomeVolumeObserver (doObject (this, TransportProxy.prototype.handleMetronomeVolume));
     this.transport.addPreRollObserver (doObject (this, TransportProxy.prototype.handlePreRoll));
+    this.transport.addPreRollClickObserver (doObject (this, TransportProxy.prototype.handlePreRollClick));
     this.transport.getTempo ().addRawValueObserver (doObject (this, TransportProxy.prototype.handleTempo));
     this.transport.getCrossfade ().addValueObserver (Config.maxParameterValue, doObject (this, TransportProxy.prototype.handleCrossfade));
     this.transport.getPosition ().addTimeObserver (":", 3, 2, 2, 2, doObject (this, TransportProxy.prototype.handlePosition));
@@ -277,6 +285,21 @@ TransportProxy.prototype.getPreroll = function ()
     return this.preroll;
 };
 
+TransportProxy.prototype.setPreroll = function (preroll)
+{
+    this.transport.setPreRoll (preroll);
+};
+
+TransportProxy.prototype.isPrerollClickEnabled = function ()
+{
+    return this.prerollClick;
+};
+
+TransportProxy.prototype.togglePrerollClick = function ()
+{
+    this.transport.toggleMetronomeDuringPreRoll ()
+};
+
 TransportProxy.prototype.getNumerator = function ()
 {
     return this.numerator;
@@ -359,22 +382,12 @@ TransportProxy.prototype.handleMetronomeVolume = function (volume)
 
 TransportProxy.prototype.handlePreRoll = function (prerollValue)
 {
-    switch (prerollValue)
-    {
-        case "one_bar":
-            this.preroll = 1;
-            break;
-        case "two_bars":
-            this.preroll = 2;
-            break;
-        case "four_bars":
-            this.preroll = 4;
-            break;
-        // "none"
-        default:
-            this.preroll = 0;
-            break;
-    }
+    this.preroll = prerollValue;
+};
+
+TransportProxy.prototype.handlePreRollClick = function (prerollClickValue)
+{
+    this.prerollClick = prerollClickValue;
 };
 
 TransportProxy.prototype.handleTempo = function (value)
