@@ -3,15 +3,15 @@
 // (c) 2014-2015
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function CursorDeviceProxy (cursorDevice, numSends)
+function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers)
 {
     this.cursorDevice = cursorDevice;
 
     this.numSends = numSends;
-    this.numParams = 8;
-    this.numDeviceLayers = 8;
-    this.numDevicesInBank = 8;
-    this.numDrumPadLayers = 16;
+    this.numParams = numParams ? numParams : 8;
+    this.numDevicesInBank = numDevicesInBank ? numDevicesInBank : 8;
+    this.numDeviceLayers = numDeviceLayers ? numDeviceLayers : 8;
+    this.numDrumPadLayers = numDrumPadLayers ? numDrumPadLayers : 16;
 
     this.canSelectPrevious = true;
     this.canSelectNext = true;
