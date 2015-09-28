@@ -297,7 +297,7 @@ TransportProxy.prototype.isPrerollClickEnabled = function ()
 
 TransportProxy.prototype.togglePrerollClick = function ()
 {
-    this.transport.toggleMetronomeDuringPreRoll ()
+    this.transport.toggleMetronomeDuringPreRoll ();
 };
 
 TransportProxy.prototype.getNumerator = function ()

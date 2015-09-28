@@ -39,7 +39,8 @@ function Model (userCCStart,               // The MIDI CC at which the user para
     this.masterTrack = new MasterTrackProxy ();
     this.trackBank = new TrackBankProxy (this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
     this.effectTrackBank = new EffectTrackBankProxy (this.numTracks, this.numScenes, this.trackBank);
-    this.userControlBank = new UserControlBankProxy (userCCStart);
+    if (userCCStart >= 0)
+        this.userControlBank = new UserControlBankProxy (userCCStart);
 
     this.cursorDevice = new CursorDeviceProxy (host.createEditorCursorDevice (this.numSends), this.numSends);
     this.arranger = new ArrangerProxy ();
