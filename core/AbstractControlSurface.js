@@ -19,6 +19,7 @@ function AbstractControlSurface (output, input, buttons)
     
     this.selectButtonId = -1;
     this.shiftButtonId  = -1;
+    this.deleteButtonId = -1;
 
     // Mode related
     this.previousMode  = null;
@@ -186,7 +187,7 @@ AbstractControlSurface.prototype.isActiveView = function (viewId)
 // Set the previous view as the active one
 AbstractControlSurface.prototype.restoreView = function ()
 {
-    return this.activeViewId = this.previousViewId;
+    this.setActiveView (this.previousViewId);
 };
 
 AbstractControlSurface.prototype.addViewChangeListener = function (listener)
@@ -295,6 +296,11 @@ AbstractControlSurface.prototype.isSelectPressed = function ()
 AbstractControlSurface.prototype.isShiftPressed = function ()
 {
     return this.isPressed (this.shiftButtonId);
+};
+
+AbstractControlSurface.prototype.isDeletePressed = function ()
+{
+    return this.isPressed (this.deleteButtonId);
 };
 
 AbstractControlSurface.prototype.isPressed = function (button)

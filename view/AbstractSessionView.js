@@ -95,7 +95,7 @@ AbstractSessionView.prototype.onGridNote = function (note, velocity)
     // Delete selected clip
     if (this.surface.isDeletePressed ())
     {
-        this.surface.setButtonConsumed (PUSH_BUTTON_DELETE);
+        this.surface.setButtonConsumed (this.surface.deleteButtonId);
         slots.deleteClip (s);
     }
 };
