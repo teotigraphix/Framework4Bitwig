@@ -82,6 +82,8 @@ Scales.SCALE_COLOR_OCTAVE       = 1;
 Scales.SCALE_COLOR_NOTE         = 2;
 Scales.SCALE_COLOR_OUT_OF_SCALE = 3;
 
+Scales.OCTAVE_RANGE = 4;
+
 
 Scales.getNames = function ()
 {
@@ -240,7 +242,7 @@ Scales.prototype.isChromatic = function ()
 
 Scales.prototype.setOctave = function (octave)
 {
-    this.octave = Math.max (-3, Math.min (octave, 3));
+    this.octave = Math.max (-Scales.OCTAVE_RANGE, Math.min (octave, Scales.OCTAVE_RANGE));
 };
 
 Scales.prototype.getOctave = function ()
