@@ -38,7 +38,8 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
     this.fxparams = this.createFXParams (this.numParams);
     this.commonParams = this.createFXParams (this.numParams);
     this.envelopeParams = this.createFXParams (this.numParams);
-    this.macroParams = this.createFXParams (this.numParams);
+    // There are only 8 macro parameters
+    this.macroParams = this.createFXParams (Math.min (8, this.numParams));
     this.modulationParams = this.createFXParams (this.numParams);
 
     this.selectedDevice =
