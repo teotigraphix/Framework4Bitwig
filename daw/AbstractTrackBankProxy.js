@@ -640,7 +640,10 @@ AbstractTrackBankProxy.prototype.handleName = function (index, name)
 
 AbstractTrackBankProxy.prototype.handleVUMeters = function (index, value)
 {
-    this.tracks[index].vu = value;
+    // Limit value to 127 due to https://github.com/teotigraphix/Framework4Bitwig/issues/98
+    if (value > 127)
+        println ("VU sent with outside range value: " + value);
+    this.tracks[index].vu = Math.min (127, value);
 };
 
 AbstractTrackBankProxy.prototype.handleColor = function (index, red, green, blue)

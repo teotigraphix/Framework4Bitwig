@@ -1069,8 +1069,11 @@ CursorDeviceProxy.prototype.getDirectParameter = function (id)
 
 CursorDeviceProxy.prototype.changeDirectParameter = function (index, value, fractionValue)
 {
-    var newvalue = changeValue (value, this.directParameters[index].value * Config.maxParameterValue, fractionValue, Config.maxParameterValue);
-    this.cursorDevice.setDirectParameterValueNormalized (this.directParameters[index].id, Math.floor (newvalue), Config.maxParameterValue);
+    // Scale up from [0..1] to [0..1000000000000] to prevent rounding errors
+    var UP_SCALE = 1000000000000;
+    var frac = fractionValue / Config.maxParameterValue * UP_SCALE;
+    var newvalue = changeValue (value, Math.floor (this.directParameters[index].value * UP_SCALE), frac, UP_SCALE);
+    this.cursorDevice.setDirectParameterValueNormalized (this.directParameters[index].id, newvalue, UP_SCALE);
 };
 
 CursorDeviceProxy.prototype.hasPreviousDirectParameterPage = function ()
