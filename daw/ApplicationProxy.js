@@ -14,26 +14,55 @@ function ApplicationProxy ()
     this.application.addHasActiveEngineObserver (doObject (this, ApplicationProxy.prototype.handleHasActiveEngine));
 }
 
+/**
+ * Returns whether the current project's audio engine is active.
+ *
+ * @return {boolean}
+ * @see ApplicationProxy.setEngineActive()
+ */
 ApplicationProxy.prototype.isEngineActive = function ()
 {
     return this.engineActive;
 };
 
+/**
+ * Returns whether the current Bitwig panel layout is ARRANGE.
+ *
+ * @return {boolean}
+ * @see ApplicationProxy.setPanelLayout()
+ */
 ApplicationProxy.prototype.isArrangeLayout = function ()
 {
     return this.panelLayout == 'ARRANGE';
 };
 
+/**
+ * Returns whether the current Bitwig panel layout is MIX.
+ *
+ * @return {boolean}
+ * @see ApplicationProxy.setPanelLayout()
+ */
 ApplicationProxy.prototype.isMixerLayout = function ()
 {
     return this.panelLayout == 'MIX';
 };
 
+/**
+ * Returns whether the current Bitwig panel layout is EDIT.
+ *
+ * @return {boolean}
+ * @see ApplicationProxy.setPanelLayout()
+ */
 ApplicationProxy.prototype.isEditLayout = function ()
 {
     return this.panelLayout == 'EDIT';
 };
 
+/**
+ * Sets whether the active project's audio engine is active.
+ *
+ * @param {boolean} active Current project's engine active.
+ */
 ApplicationProxy.prototype.setEngineActive = function (active)
 {
     if (active)
@@ -42,6 +71,11 @@ ApplicationProxy.prototype.setEngineActive = function (active)
         this.application.deactivateEngine();
 };
 
+/**
+ * Toggles the active project's audio engine on/off.
+ *
+ * @see ApplicationProxy.setEngineActive()
+ */
 ApplicationProxy.prototype.toggleEngineActive = function ()
 {
     this.setEngineActive (!this.engineActive);
@@ -59,7 +93,7 @@ ApplicationProxy.prototype.setPanelLayout = function (panelLayout)
 
 /**
  * Returns the active panel layout (ARRANGE, MIX or EDIT).
- * @returns {string}
+ * @returns {string} (ARRANGE, MIX or EDIT)
  */
 ApplicationProxy.prototype.getPanelLayout = function ()
 {
