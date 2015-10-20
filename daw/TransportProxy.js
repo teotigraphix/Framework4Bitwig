@@ -376,8 +376,8 @@ TransportProxy.prototype.handleIsWritingClipLauncherAutomation = function (isAut
 
 TransportProxy.prototype.handleMetronomeVolume = function (volume)
 {
-    // volume is in the range of -48.0 to 0.0, scale to 0 to 127
-    this.metroVolume = Math.round ((48.0 + volume) * 127 / 48.0);
+    // volume is in the range of -48.0 to 0.0, scale to 0 to Config.maxParameterValue - 1
+    this.metroVolume = Math.round ((48.0 + volume) * (Config.maxParameterValue - 1) / 48.0);
 };
 
 TransportProxy.prototype.handlePreRoll = function (prerollValue)
