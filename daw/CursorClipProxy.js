@@ -143,7 +143,7 @@ CursorClipProxy.prototype.getAccent = function ()
 
 CursorClipProxy.prototype.changeAccent = function (value, fractionValue)
 {
-    this.accent = Math.max (-1, changeValue (value, this.accent, fractionValue / 100, 1, -1));
+    this.accent = Math.max (-1, changeValue (value, this.accent, fractionValue / 100, 2, -1));
     this.clip.getAccent ().setRaw (this.accent);
 };
 
