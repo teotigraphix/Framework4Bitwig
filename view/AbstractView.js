@@ -18,10 +18,7 @@ function AbstractView (model)
     // Override in subclass with specific Config value
     this.scrollerInterval = 100;
 
-    this.scrollerLeft = new TimerTask (this, this.scrollLeft, this.scrollerInterval);
-    this.scrollerRight = new TimerTask (this, this.scrollRight, this.scrollerInterval);
-    this.scrollerUp = new TimerTask (this, this.scrollUp, this.scrollerInterval);
-    this.scrollerDown = new TimerTask (this, this.scrollDown, this.scrollerInterval);
+    this.scrollerTask = new TimerTask (this, null, this.scrollerInterval);
 }
 
 AbstractView.prototype.attachTo = function (surface)
@@ -74,42 +71,36 @@ AbstractView.prototype.onFirstRow = function (event, index)
 
 AbstractView.prototype.onUp = function (event)
 {
-    if (event.isDown ())
-        this.scrollUp (event);
-    else if (event.isLong ())
-        this.scrollerUp.start ([event]);
-    else if (event.isUp ())
-        this.scrollerUp.stop ();
+    this.handleScroller (event, this.scrollUp);
 };
 
 AbstractView.prototype.onDown = function (event)
 {
-    if (event.isDown ())
-        this.scrollDown (event);
-    else if (event.isLong ())
-        this.scrollerDown.start ([event]);
-    else if (event.isUp ())
-        this.scrollerDown.stop ();
+    this.handleScroller (event, this.scrollDown);
 };
 
 AbstractView.prototype.onLeft = function (event)
 {
-    if (event.isDown ())
-        this.scrollLeft (event);
-    else if (event.isLong ())
-        this.scrollerLeft.start ([event]);
-    else if (event.isUp ())
-        this.scrollerLeft.stop ();
+    this.handleScroller (event, this.scrollLeft);
 };
 
 AbstractView.prototype.onRight = function (event)
 {
+    this.handleScroller (event, this.scrollRight);
+};
+
+AbstractView.prototype.handleScroller = function (event, method)
+{
     if (event.isDown ())
-        this.scrollRight (event);
+        method.call (this, event);
     else if (event.isLong ())
-        this.scrollerRight.start ([event]);
+    {
+        this.scrollerTask.stop ();
+        this.scrollerTask.callback = method;
+        this.scrollerTask.start ([event]);
+    }
     else if (event.isUp ())
-        this.scrollerRight.stop ();
+        this.scrollerTask.stop ();
 };
 
 

@@ -63,7 +63,7 @@ GrooveProxy.prototype.isEnabled = function (kind)
 GrooveProxy.prototype.toggleEnabled = function ()
 {
     this.enabled = !this.enabled;
-    this.groove.getEnabled ().set (this.enabled ? 1 : 0, 1);
+    this.groove.getEnabled ().set (this.enabled ? 1 : 0, 2);
 };
 
 GrooveProxy.prototype.getValue = function (kind)
