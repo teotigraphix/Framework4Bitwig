@@ -394,7 +394,7 @@ Scales.prototype.getRangeText = function ()
 
 Scales.prototype.getSequencerRangeText = function (from, to)
 {
-    return this.formatNoteAndOctave (from, -2) + ' to ' + this.formatDrumNote (to, -2);
+    return this.formatNoteAndOctave (from, -3) + ' to ' + this.formatNoteAndOctave (to, -3);
 };
 
 Scales.prototype.getDrumRangeText = function ()
@@ -410,7 +410,7 @@ Scales.prototype.getPianoRangeText = function ()
 
 Scales.prototype.formatDrumNote = function (note)
 {
-    return this.formatNoteAndOctave (note, -2);
+    return this.formatNoteAndOctave (note, -3);
 };
 
 Scales.prototype.formatNote = function (note)
