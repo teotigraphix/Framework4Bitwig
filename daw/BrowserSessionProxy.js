@@ -23,6 +23,7 @@ function BrowserSessionProxy (session, textLength, numFilterColumns, numFilterCo
     this.filterColumnData = this.createFilterColumns (this.numFilterColumns);
     var i;
     var j;
+    var item;
     for (i = 0; i < this.numFilterColumns; i++)
     {
         this.filterColumns[i] = this.filterColumnBank.getItem (i);
@@ -32,7 +33,7 @@ function BrowserSessionProxy (session, textLength, numFilterColumns, numFilterCo
         
         for (j = 0; j < this.numFilterColumnEntries; j++)
         {
-            var item = this.filterColumnItemBanks[i].getItem (j);
+            item = this.filterColumnItemBanks[i].getItem (j);
             item.addExistsObserver (doObjectDoubleIndex (this, i, j, BrowserSessionProxy.prototype.handleItemExists));
             item.addValueObserver (this.textLength, "", doObjectDoubleIndex (this, i, j, BrowserSessionProxy.prototype.handleItemName));
             item.addHitCountObserver (doObjectDoubleIndex (this, i, j, BrowserSessionProxy.prototype.handleHitCount));
@@ -51,7 +52,7 @@ function BrowserSessionProxy (session, textLength, numFilterColumns, numFilterCo
     this.resultData = this.createResultData (this.numResults);
     for (i = 0; i < this.numFilterColumnEntries; i++)
     {
-        var item = this.resultsItemBank.getItem (i);
+        item = this.resultsItemBank.getItem (i);
         item.addExistsObserver (doObjectIndex (this, i, BrowserSessionProxy.prototype.handleResultExists));
         item.addValueObserver (this.textLength, "", doObjectIndex (this, i, BrowserSessionProxy.prototype.handleResultName));
         item.isSelected ().addValueObserver (doObjectIndex (this, i, BrowserSessionProxy.prototype.handleResultIsSelected));

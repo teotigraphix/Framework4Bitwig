@@ -74,11 +74,11 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
     this.cursorDevice.isMacroSectionVisible ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsMacroSectionVisible));
     this.cursorDevice.isParameterPageSectionVisible ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsParameterPageSectionVisible));
     
-    var i = 0;
-
+    var i;
+    var p;
     for (i = 0; i < this.numParams; i++)
     {
-        var p = this.getParameter (i);
+        p = this.getParameter (i);
         p.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleParameterName));
         p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleValue));
         p.addValueDisplayObserver (this.textLength, '',  doObjectIndex (this, i, CursorDeviceProxy.prototype.handleValueDisplay));
@@ -126,10 +126,6 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
         sibling.addNameObserver (this.textLength, '', doObjectIndex (this, i, CursorDeviceProxy.prototype.handleSiblingName));
     }    
 
-    var layer = null;
-    var v = null;
-    var p = null;
-    
     // Monitor the layers of a container device (if any)
     this.cursorDeviceLayer = this.cursorDevice.createCursorLayer ();
     this.cursorDeviceLayer.addCanSelectPreviousObserver (doObject (this, CursorDeviceProxy.prototype.handleCanScrollLayerDown));
@@ -137,6 +133,11 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
     
     this.layerBank = this.cursorDevice.createLayerBank (this.numDeviceLayers);
     this.deviceLayers = this.createDeviceLayers (this.numDeviceLayers);
+    
+    var layer;
+    var v;
+    var j;
+    var s;
     for (i = 0; i < this.numDeviceLayers; i++)
     {
         layer = this.layerBank.getChannel (i);
@@ -154,9 +155,9 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
         layer.getMute ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerMute));
         layer.getSolo ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerSolo));
         // Sends values & texts
-        for (var j = 0; j < this.numSends; j++)
+        for (j = 0; j < this.numSends; j++)
         {
-            var s = layer.getSend (j);
+            s = layer.getSend (j);
             if (s == null)
                 continue;
             s.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendName));
@@ -170,6 +171,7 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
     // Monitor the drum pad layers of a container device (if any)
     this.drumPadBank = this.cursorDevice.createDrumPadBank (this.numDrumPadLayers);
     this.drumPadLayers = this.createDeviceLayers (this.numDrumPadLayers);
+    
     for (i = 0; i < this.numDrumPadLayers; i++)
     {
         layer = this.drumPadBank.getChannel (i);
@@ -188,9 +190,9 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
         layer.getSolo ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadSolo));
         layer.addColorObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleDrumPadColor));
         // Sends values & texts
-        for (var j = 0; j < this.numSends; j++)
+        for (j = 0; j < this.numSends; j++)
         {
-            var s = layer.getSend (j);
+            s = layer.getSend (j);
             if (s == null)
                 continue;
             s.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleDrumPadSendName));
