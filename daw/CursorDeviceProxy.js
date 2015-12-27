@@ -154,6 +154,7 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
         layer.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerVUMeters));
         layer.getMute ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerMute));
         layer.getSolo ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerSolo));
+        layer.addColorObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerColor));
         // Sends values & texts
         for (j = 0; j < this.numSends; j++)
         {
@@ -1430,6 +1431,11 @@ CursorDeviceProxy.prototype.handleLayerSolo = function (index, isSoloed)
     this.deviceLayers[index].solo = isSoloed;
 };
 
+CursorDeviceProxy.prototype.handleLayerColor = function (index, red, green, blue)
+{
+    this.deviceLayers[index].color = AbstractTrackBankProxy.getColorIndex (red, green, blue);
+};
+
 CursorDeviceProxy.prototype.handleLayerSendName = function (index, index2, text)
 {
     this.deviceLayers[index].sends[index2].name = text;
@@ -1569,6 +1575,7 @@ CursorDeviceProxy.prototype.createDeviceLayers = function (count)
             vu: 0,
             mute: false,
             solo: false,
+            color: 0,
             sends: []
         };
         for (var j = 0; j < this.numSends; j++)
