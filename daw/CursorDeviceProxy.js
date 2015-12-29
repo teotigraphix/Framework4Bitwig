@@ -1031,14 +1031,14 @@ CursorDeviceProxy.prototype.selectFirstDeviceInDrumPad = function (index)
 
 CursorDeviceProxy.prototype.canScrollDrumPadsUp = function ()
 {
-    // TODO API extension required
-    return true;
+    // TODO API extension required, use the layer info instead which works too
+    return this.canScrollLayersUp ();
 };
 
 CursorDeviceProxy.prototype.canScrollDrumPadsDown = function ()
 {
-    // TODO API extension required
-    return true;
+    // TODO API extension required, use the layer info instead which works too
+    return this.canScrollLayersDown ();
 };
 
 CursorDeviceProxy.prototype.scrollDrumPadsPageUp = function ()
