@@ -131,6 +131,17 @@ Model.prototype.getEffectTrackBank = function () { return this.effectTrackBank; 
  */
 Model.prototype.getCursorDevice = function () { return this.cursorDevice; };
 
+
+/**
+ * Get the selected device. If there is none try with the primary device of the current track.
+ * 
+ * @returns {CursorDeviceProxy}
+ */
+Model.prototype.getDevice = function ()
+{
+    return this.hasSelectedDevice () ? this.getCursorDevice () : this.getCurrentTrackBank ().primaryDevice;
+};
+
 /**
  * @returns {UserControlBankProxy}
  */
