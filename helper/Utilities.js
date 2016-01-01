@@ -29,9 +29,10 @@ function doObjectIndex (object, index, f)
 {
     return function ()
     {
-        var args = [ index ];
+        var args = new Array (); 
+        args.push (index);
         for (var i = 0; i < arguments.length; i++)
-            args[i + 1] = arguments[i];
+            args.push (arguments[i]);
         f.apply (object, args);
     };
 }
@@ -40,9 +41,11 @@ function doObjectDoubleIndex (object, index1, index2, f)
 {
     return function ()
     {
-        var args = [ index1, index2 ];
+        var args = new Array (); 
+        args.push (index1);
+        args.push (index2);
         for (var i = 0; i < arguments.length; i++)
-            args[i + 2] = arguments[i];
+            args.push (arguments[i]);
         f.apply (object, args);
     };
 }
