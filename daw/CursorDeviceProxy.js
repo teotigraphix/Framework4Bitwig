@@ -662,6 +662,15 @@ CursorDeviceProxy.prototype.hasLayers = function ()
     return this.hasLayersValue;
 };
 
+// The device can have layers but none exist
+CursorDeviceProxy.prototype.hasZeroLayers = function ()
+{
+    for (var i = 0; i < this.numDeviceLayers; i++)
+        if (this.deviceLayers[i].exists)
+            return false;
+    return true;
+};
+
 CursorDeviceProxy.prototype.getLayer = function (index)
 {
     return this.deviceLayers[index];
