@@ -122,6 +122,7 @@ AbstractTrackBankProxy.prototype.init = function ()
         t.getAutoMonitor ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleAutoMonitor));
         t.getCrossFadeMode ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleCrossfadeMode));
         t.getCanHoldNoteData ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleCanHoldNotes));
+        t.getCanHoldAudioData ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleCanHoldAudioData));
 
         // Slot content changes
         var cs = t.getClipLauncherSlots ();
@@ -579,6 +580,7 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             monitor: false,
             autoMonitor: false,
             canHoldNotes: false,
+            canHoldAudioData: false,
             sends: [],
             slots: [],
             crossfadeMode: 'AB'
@@ -729,6 +731,11 @@ AbstractTrackBankProxy.prototype.handlePanStr = function (index, text)
 AbstractTrackBankProxy.prototype.handleCanHoldNotes = function (index, canHoldNotes)
 {
     this.tracks[index].canHoldNotes = canHoldNotes;
+};
+
+AbstractTrackBankProxy.prototype.handleCanHoldAudioData = function (index, canHoldAudioData)
+{
+    this.tracks[index].canHoldAudioData = canHoldAudioData;
 };
 
 //--------------------------------------
