@@ -141,14 +141,14 @@ AbstractTrackBankProxy.prototype.init = function ()
     this.trackBank.addChannelCountObserver (doObject (this, AbstractTrackBankProxy.prototype.handleChannelCount));
 };
 
-AbstractTrackBankProxy.prototype.isMuteState = function ()
-{
-    return this.trackState == TrackState.MUTE;
-};
-
 AbstractTrackBankProxy.prototype.getTrackCount = function ()
 {
     return this.trackCount;
+};
+
+AbstractTrackBankProxy.prototype.isMuteState = function ()
+{
+    return this.trackState == TrackState.MUTE;
 };
 
 AbstractTrackBankProxy.prototype.isSoloState = function ()
@@ -244,7 +244,7 @@ AbstractTrackBankProxy.prototype.changePan = function (index, value, fractionVal
     this.trackBank.getChannel (t.index).getPan ().set (t.pan, Config.maxParameterValue);
 };
 
-AbstractTrackBankProxy.prototype.setPan = function (index, value, fractionValue)
+AbstractTrackBankProxy.prototype.setPan = function (index, value)
 {
     var t = this.getTrack (index);
     t.pan = value;

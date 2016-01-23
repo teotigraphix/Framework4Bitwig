@@ -1,4 +1,4 @@
-// Written by Jürgen Moßgraber - mossgrabers.de
+// Written by Jï¿½rgen Moï¿½graber - mossgrabers.de
 //            Michael Schmalle - teotigraphix.com
 // (c) 2014-2016
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
@@ -54,11 +54,11 @@ AbstractDisplay.prototype.showNotification = function (message)
     this.notificationMessage = (padding + message + padding).substr (0, this.noOfCharacters);
     this.isNotificationActive = true;
     this.flush ();
-    scheduleTask (function (object)
+    scheduleTask (doObject (this, function ()
     {
-        object.isNotificationActive = false;
-        object.forceFlush ();
-    }, [this], AbstractDisplay.NOTIFICATION_TIME);
+        this.isNotificationActive = false;
+        this.forceFlush ();
+    }), null, AbstractDisplay.NOTIFICATION_TIME);
 };
 
 AbstractDisplay.prototype.clear = function ()

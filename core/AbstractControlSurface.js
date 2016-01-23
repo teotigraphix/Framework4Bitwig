@@ -369,10 +369,10 @@ AbstractControlSurface.prototype.handleCC = function (cc, value)
         this.buttonStates[cc] = value > 0 ? ButtonEvent.DOWN : ButtonEvent.UP;
         if (this.buttonStates[cc] == ButtonEvent.DOWN)
         {
-            scheduleTask (function (object, buttonID)
+            scheduleTask (doObject (this, function (buttonID)
             {
-                object.checkButtonState (buttonID);
-            }, [this, cc], AbstractControlSurface.buttonStateInterval);
+                this.checkButtonState (buttonID);
+            }), [ cc ], AbstractControlSurface.buttonStateInterval);
         }
 
         // If consumed flag is set ignore the UP event
