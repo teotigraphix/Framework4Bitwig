@@ -51,6 +51,8 @@ function AbstractControlSurface (output, input, buttons)
             this.buttonConsumed[this.buttons[i]] = false;
         }
     }
+    // Optimisation for button LED updates
+    this.buttonCache = initArray (-1, 127);
     
     // Flush optimisation
     this.displayScheduled = false;
@@ -66,6 +68,15 @@ AbstractControlSurface.prototype.getDisplay = function ()
 //--------------------------------------
 // Display
 //--------------------------------------
+
+
+AbstractControlSurface.prototype.updateButton = function (button, value)
+{
+    if (this.buttonCache[button] == value)
+        return;
+    this.setButton (button, value);
+    this.buttonCache[button] = value;
+};
 
 AbstractControlSurface.prototype.setButton = function (button, state) {};
 
