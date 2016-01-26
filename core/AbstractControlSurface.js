@@ -43,16 +43,20 @@ function AbstractControlSurface (output, input, buttons)
     this.buttons = buttons;
     this.buttonStates = [];
     this.buttonConsumed = [];
+    var i;
     if (this.buttons)
     {
-        for (var i = 0; i < this.buttons.length; i++)
+        for (i = 0; i < this.buttons.length; i++)
         {
             this.buttonStates[this.buttons[i]] = ButtonEvent.UP;
             this.buttonConsumed[this.buttons[i]] = false;
         }
     }
-    // Optimisation for button LED updates
-    this.buttonCache = initArray (-1, 127);
+    
+    // Optimisation for button LED updates, cache 128 possible note values on all 16 channels
+    this.buttonCache = new Array ();
+    for (i = 0; i < 128; i++)
+        this.buttonCache.push (initArray (-1, 16));
     
     // Flush optimisation
     this.displayScheduled = false;
@@ -72,13 +76,22 @@ AbstractControlSurface.prototype.getDisplay = function ()
 
 AbstractControlSurface.prototype.updateButton = function (button, value)
 {
-    if (this.buttonCache[button] == value)
+    if (this.buttonCache[button][0] == value)
         return;
     this.setButton (button, value);
-    this.buttonCache[button] = value;
+    this.buttonCache[button][0] = value;
+};
+
+AbstractControlSurface.prototype.updateButtonEx = function (button, channel, value)
+{
+    if (this.buttonCache[button][channel] == value)
+        return;
+    this.setButtonEx (button, channel, value);
+    this.buttonCache[button][channel] = value;
 };
 
 AbstractControlSurface.prototype.setButton = function (button, state) {};
+AbstractControlSurface.prototype.setButtonEx = function (button, channel, state) {};
 
 AbstractControlSurface.prototype.flush = function ()
 {
