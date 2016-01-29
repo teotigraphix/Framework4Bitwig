@@ -491,7 +491,7 @@ AbstractTrackBankProxy.prototype.createClip = function (trackIndex, slotIndex, q
 {
     var newCLipLength = this.getNewClipLength ();
     var beats = newCLipLength < 2 ? 
-                    Math.pow (2, tb.getNewClipLength ()) :
+                    Math.pow (2, newCLipLength) :
                     Math.pow (2, (newCLipLength - 2)) * quartersPerMeasure;
     this.getClipLauncherSlots (trackIndex).createEmptyClip (slotIndex, beats);
 };
