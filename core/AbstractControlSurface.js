@@ -348,6 +348,7 @@ AbstractControlSurface.prototype.handleMidi = function (status, data1, data2)
     var code = status & 0xF0;
     switch (code)
     {
+        // Note on/off
         case 0x80:
         case 0x90:
             if (this.isGridNote (data1))
@@ -363,8 +364,16 @@ AbstractControlSurface.prototype.handleMidi = function (status, data1, data2)
                 view.onPolyAftertouch (data1, data2);
             break;
 
+        // CC
         case 0xB0:
             this.handleCC (data1, data2);
+            break;
+
+        // Channel Aftertouch
+        case 0xD0:
+            var view = this.getActiveView ();
+            if (view != null)
+                view.onChannelAftertouch (data1);
             break;
             
         // Pitch Bend
