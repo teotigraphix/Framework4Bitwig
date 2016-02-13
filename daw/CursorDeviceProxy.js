@@ -653,6 +653,12 @@ CursorDeviceProxy.prototype.setLayerOrDrumPadSolo = function (index, value)
         this.setLayerSolo (index, value);
 };
 
+CursorDeviceProxy.prototype.getLayerOrDrumPadColorEntry = function (index)
+{
+    var layer = this.getLayerOrDrumPad (index);
+    return AbstractTrackBankProxy.getColorEntry (layer.color);
+};
+
 //--------------------------------------
 // Layers
 //--------------------------------------

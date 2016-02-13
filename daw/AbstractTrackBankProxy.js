@@ -201,6 +201,12 @@ AbstractTrackBankProxy.prototype.getSelectedTrack = function ()
     return null;
 };
 
+AbstractTrackBankProxy.prototype.getSelectedTrackColorEntry = function ()
+{
+    var selectedTrack = this.getSelectedTrack ();
+    return selectedTrack == null ? 0 : AbstractTrackBankProxy.getColorEntry (selectedTrack.color);
+};
+
 AbstractTrackBankProxy.prototype.select = function (index)
 {
     var t = this.trackBank.getChannel (index);
@@ -509,6 +515,12 @@ AbstractTrackBankProxy.prototype.showClipInEditor = function (trackIndex, slotIn
 AbstractTrackBankProxy.prototype.getClipLauncherScenes = function ()
 {
     return this.trackBank.getClipLauncherScenes ();
+};
+
+AbstractTrackBankProxy.prototype.getTrackColorEntry = function (trackIndex)
+{
+    var t = this.getTrack (trackIndex);
+    return AbstractTrackBankProxy.getColorEntry (t.color);
 };
 
 AbstractTrackBankProxy.getColorEntry = function (colorId)
