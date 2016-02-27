@@ -57,6 +57,8 @@ function AbstractTrackBankProxy (numTracks, numScenes, numSends)
     this.canScrollTracksDownFlag = false;
     this.canScrollScenesUpFlag   = false;
     this.canScrollScenesDownFlag = false;
+    
+    this.scenePosition = -1;
 
     this.trackState = TrackState.MUTE;
     
@@ -137,6 +139,7 @@ AbstractTrackBankProxy.prototype.init = function ()
     this.trackBank.addCanScrollChannelsDownObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollTracksDown));
     this.trackBank.addCanScrollScenesUpObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollScenesUp));
     this.trackBank.addCanScrollScenesDownObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollScenesDown));
+    this.trackBank.addSceneScrollPositionObserver (doObject (this, AbstractTrackBankProxy.prototype.handleSceneScrollPosition), -1);
     
     this.trackBank.addChannelCountObserver (doObject (this, AbstractTrackBankProxy.prototype.handleChannelCount));
 };
@@ -509,6 +512,18 @@ AbstractTrackBankProxy.prototype.showClipInEditor = function (trackIndex, slotIn
     cs.showInEditor (slotIndex);
 };
 
+AbstractTrackBankProxy.prototype.getScenePosition = function ()
+{
+    return this.scenePosition;
+};
+
+AbstractTrackBankProxy.prototype.scrollToScene = function (position)
+{
+    this.trackBank.scrollToScene (position);
+    // TODO Bugfix required - Call it twice to work around a Bitwig bug
+    this.trackBank.scrollToScene (position);
+};
+
 /**
  * @returns {ClipLauncherScenesOrSlots}
  */
@@ -808,6 +823,11 @@ AbstractTrackBankProxy.prototype.handleCanScrollScenesUp = function (canScroll)
 AbstractTrackBankProxy.prototype.handleCanScrollScenesDown = function (canScroll)
 {
     this.canScrollScenesDownFlag = canScroll;
+};
+
+AbstractTrackBankProxy.prototype.handleSceneScrollPosition = function (position)
+{
+    this.scenePosition = position;
 };
 
 AbstractTrackBankProxy.prototype.handleChannelCount = function (count)

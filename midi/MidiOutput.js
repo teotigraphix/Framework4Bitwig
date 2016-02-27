@@ -18,6 +18,11 @@ MidiOutput.prototype.sendCC = function (cc, value)
     this.port.sendMidi (0xB0, cc, value);
 };
 
+MidiOutput.prototype.sendCCEx = function (channel, cc, value)
+{
+    this.port.sendMidi (0xB0 + channel, cc, value);
+};
+
 MidiOutput.prototype.sendNote = function (note, velocity)
 {
     this.port.sendMidi (0x90, note, velocity);
