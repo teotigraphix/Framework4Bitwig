@@ -635,7 +635,12 @@ AbstractTrackBankProxy.prototype.notifyListeners = function (pressed, note, velo
 AbstractTrackBankProxy.prototype.scrollToChannel = function (channel)
 {
     if (channel < this.trackCount)
-        this.trackBank.scrollToChannel (Math.floor (channel / this.numTracks) * this.numTracks);
+    {
+        var pos = Math.floor (channel / this.numTracks) * this.numTracks;
+        this.trackBank.scrollToChannel (pos);
+        // TODO Bugfix required - Call it twice to work around a Bitwig bug
+        this.trackBank.scrollToChannel (pos);
+    }
 };
 
 AbstractTrackBankProxy.prototype.handleBankTrackSelection = function (index, isSelected)
