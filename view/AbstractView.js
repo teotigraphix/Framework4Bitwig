@@ -138,3 +138,9 @@ AbstractView.prototype.doubleClickTest = function ()
         this.restartFlag = false;
     }), null, 250);
 };
+
+AbstractView.prototype.canSelectedTrackHoldNotes = function ()
+{
+    var t = this.model.getCurrentTrackBank ().getSelectedTrack ();
+    return t != null && t.canHoldNotes;
+};
