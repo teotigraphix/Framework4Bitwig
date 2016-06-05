@@ -194,3 +194,9 @@ Model.prototype.getQuartersPerMeasure = function ()
 {
     return 4 * this.transport.getNumerator () / this.transport.getDenominator ();
 };
+
+Model.prototype.canSelectedTrackHoldNotes = function ()
+{
+    var t = this.getCurrentTrackBank ().getSelectedTrack ();
+    return t != null && t.canHoldNotes;
+};
