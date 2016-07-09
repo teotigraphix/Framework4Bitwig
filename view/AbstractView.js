@@ -105,6 +105,20 @@ AbstractView.prototype.handleScroller = function (event, method)
         this.scrollerTask.stop ();
 };
 
+AbstractView.prototype.getColor = function (pad, selectedTrack)
+{
+    var color = this.scales.getColor (this.noteMap, pad);
+    // Replace the octave color with the track color
+    if (color == Scales.SCALE_COLOR_OCTAVE)
+    {
+        if (selectedTrack == null)
+            return Scales.SCALE_COLOR_OCTAVE;
+        var c = selectedTrack.color;
+        return c == null ? Scales.SCALE_COLOR_OCTAVE : c;
+    }
+    return color;
+};
+
 
 //--------------------------------------
 // Protected API
