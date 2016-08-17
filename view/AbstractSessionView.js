@@ -79,8 +79,6 @@ AbstractSessionView.prototype.onGridNote = function (note, velocity)
     var slot = tb.getTrack (t).slots[s];
     var slots = tb.getClipLauncherSlots (t);
     
-    slots.select (s);
-    
     // Delete selected clip
     if (this.surface.isDeletePressed ())
     {
@@ -90,16 +88,26 @@ AbstractSessionView.prototype.onGridNote = function (note, velocity)
     }
     
     if (this.surface.isSelectPressed ())
+    {
+        slots.select (s);
         return;
+    }
 
+    if (this.doSelectClipOnLaunch ())
+        slots.select (s);
+    
     if (tb.getTrack (t).recarm)
     {
         if (!slot.isRecording)
             slots.record (s);
-        slots.launch (s);
     }
-    else
-        slots.launch (s);
+
+    slots.launch (s);
+};
+
+AbstractSessionView.prototype.doSelectClipOnLaunch = function ()
+{
+    return true;
 };
 
 AbstractSessionView.prototype.scrollLeft = function (event)
