@@ -8,7 +8,12 @@ function TrackBankProxy (numTracks, numScenes, numSends, hasFlatTrackList)
     AbstractTrackBankProxy.call (this, numTracks, numScenes, numSends);
 
     if (hasFlatTrackList)
+    {
         this.trackBank = host.createMainTrackBank (numTracks, numSends, numScenes);
+        
+        // Add support for automatic bank movement which is automatically happening for the sibling trackbank
+        this.cursorTrack.addPositionObserver (doObject (this, TrackBankProxy.prototype.handleTrackSelection));
+    }
     else
         this.trackBank = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
     
@@ -77,6 +82,11 @@ TrackBankProxy.prototype.setSendIndication = function (index, sendIndex, indicat
 //--------------------------------------
 // Callback Handlers
 //--------------------------------------
+
+TrackBankProxy.prototype.handleTrackSelection = function (index)
+{
+   this.scrollToChannel (index);
+};
 
 TrackBankProxy.prototype.handleSendName = function (index1, index2, text)
 {
