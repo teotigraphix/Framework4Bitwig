@@ -31,9 +31,7 @@ AbstractSessionView.prototype = new AbstractView ();
 AbstractSessionView.prototype.onActivate = function ()
 {
     AbstractView.prototype.onActivate.call (this);
-
     this.model.getCurrentTrackBank ().setIndication (true);
-    this.drawSceneButtons ();
 };
 
 AbstractSessionView.prototype.updateArrowStates = function ()
@@ -46,9 +44,6 @@ AbstractSessionView.prototype.updateArrowStates = function ()
         this.canScrollDown = sel != null && sel.index < 7 || tb.canScrollTracksDown ();
         this.canScrollLeft = tb.canScrollScenesUp ();
         this.canScrollRight = tb.canScrollScenesDown ();
-
-        // Flipped scene buttons are not updated unless we redraw them here
-        this.drawSceneButtons ();
     }
     else
     {
