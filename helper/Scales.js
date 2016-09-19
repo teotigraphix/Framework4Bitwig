@@ -80,7 +80,7 @@ Scales.LAYOUT_NAMES  = [ '4th ^', '4th >',
                          '3rd ^', '3rd >',
                          'Seqent ^', 'Seqent >',
                          '8th ^', '8th >',
-			 "8th ^ centered", "8th > centered"];
+                         '8th ^ centered', '8th > centered' ];
 Scales.ORIENT_UP     = 0;
 Scales.ORIENT_RIGHT  = 1;
 
