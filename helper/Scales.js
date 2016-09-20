@@ -455,3 +455,9 @@ Scales.prototype.generateMatrices = function ()
     for (var i = 0; i < Scales.INTERVALS.length; i++)
         this.scales.push (this.createScale (Scales.INTERVALS[i]));
 };
+
+// Function to hook in translation for grids who do not send midi notes 36-100
+Scales.prototype.translateMatrixToGrid = function (matrix)
+{
+    return matrix;
+};
