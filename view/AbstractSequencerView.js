@@ -46,6 +46,7 @@ AbstractSequencerView.prototype.onScene = function (index, event)
         return;
     this.selectedIndex = 7 - index;
     this.clip.setStepLength (this.resolutions[this.selectedIndex]);
+    displayNotification (this.resolutionsStr[this.selectedIndex]);
 };
 
 AbstractSequencerView.prototype.isInXRange = function (x)

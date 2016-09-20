@@ -20,6 +20,8 @@ function AbstractControlSurface (output, input, buttons)
     this.selectButtonId = -1;
     this.shiftButtonId  = -1;
     this.deleteButtonId = -1;
+    this.soloButtonId   = -1;
+    this.muteButtonId   = -1;
 
     // Mode related
     this.previousMode  = null;
@@ -327,8 +329,20 @@ AbstractControlSurface.prototype.isDeletePressed = function ()
     return this.isPressed (this.deleteButtonId);
 };
 
+AbstractControlSurface.prototype.isSoloPressed = function ()
+{
+    return this.isPressed (this.soloButtonId);
+};
+
+AbstractControlSurface.prototype.isMutePressed = function ()
+{
+    return this.isPressed (this.muteButtonId);
+};
+
 AbstractControlSurface.prototype.isPressed = function (button)
 {
+    if (button == -1)
+        return false;
     switch (this.buttonStates[button])
     {
         case ButtonEvent.DOWN:

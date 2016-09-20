@@ -439,7 +439,7 @@ Scales.prototype.createScale = function (scale)
     var chromatic = [];
     var isUp = this.orientation == Scales.ORIENT_UP;
     var shiftedNote = this.shift == this.numRows ? this.numRows : (this.shift == 7 ? 12 : scale.notes[this.shift % len]);
-    var CENTER_OFFSET = (this.scaleLayout == 8 || this.scaleLayout == 9) ? -3 : 0;
+    var centerOffset = (this.scaleLayout == 8 || this.scaleLayout == 9) ? -3 : 0;
     
   
     for (var row = 0; row < this.numRows; row++)
@@ -448,7 +448,7 @@ Scales.prototype.createScale = function (scale)
         {
             var y = isUp ? row : column;
             var x = isUp ? column : row;
-            var offset = y * this.shift + x + CENTER_OFFSET;
+            var offset = y * this.shift + x + centerOffset;
             matrix.push ((Math.floor (offset / len)) * 12 + scale.notes[offset % len]);
             chromatic.push (y * shiftedNote + x);
         }
