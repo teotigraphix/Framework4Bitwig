@@ -65,15 +65,22 @@ Scales.INTERVALS =
     { name: 'Spanish',          notes: [ 0, 1, 4, 5, 7,  9,  10 ] }
 ];
 
-Scales.FOURTH_UP     = 0;
-Scales.FOURTH_RIGHT  = 1;
-Scales.THIRD_UP      = 2;
-Scales.THIRD_RIGHT   = 3;
-Scales.SEQUENT_UP    = 4;
-Scales.SEQUENT_RIGHT = 5;
-Scales.EIGTH_UP      = 6;
-Scales.EIGTH_RIGHT   = 7;
-Scales.LAYOUT_NAMES  = [ '4th ^', '4th >', '3rd ^', '3rd >', 'Seqent^', 'Seqent>', '8th ^', '8th >' ];
+Scales.FOURTH_UP          = 0;
+Scales.FOURTH_RIGHT       = 1;
+Scales.THIRD_UP           = 2;
+Scales.THIRD_RIGHT        = 3;
+Scales.SEQUENT_UP         = 4;
+Scales.SEQUENT_RIGHT      = 5;
+Scales.EIGTH_UP           = 6;
+Scales.EIGTH_RIGHT        = 7;
+Scales.EIGTH_UP_CENTER    = 8;
+Scales.EIGTH_RIGHT_CENTER = 9;
+
+Scales.LAYOUT_NAMES  = [ '4th ^', '4th >',
+                         '3rd ^', '3rd >',
+                         'Seqent ^', 'Seqent >',
+                         '8th ^', '8th >',
+                         '8th ^ centered', '8th > centered' ];
 Scales.ORIENT_UP     = 0;
 Scales.ORIENT_RIGHT  = 1;
 
@@ -202,7 +209,7 @@ Scales.prototype.setScaleLayoutByName = function (scaleLayoutName)
 
 Scales.prototype.setScaleLayout = function (scaleLayout)
 {
-    this.scaleLayout = Math.max (Scales.FOURTH_UP, Math.min (scaleLayout, Scales.EIGTH_RIGHT));
+    this.scaleLayout = Math.max (Scales.FOURTH_UP, Math.min (scaleLayout, Scales.EIGTH_RIGHT_CENTER));
     this.orientation = this.scaleLayout % 2 == 0 ? Scales.ORIENT_UP : Scales.ORIENT_RIGHT;
     switch (this.scaleLayout)
     {
@@ -220,6 +227,8 @@ Scales.prototype.setScaleLayout = function (scaleLayout)
             break;
         case 6:
         case 7:
+        case 8:
+        case 9:
             this.setPlayShift (7);
             break;
     }
@@ -430,13 +439,16 @@ Scales.prototype.createScale = function (scale)
     var chromatic = [];
     var isUp = this.orientation == Scales.ORIENT_UP;
     var shiftedNote = this.shift == this.numRows ? this.numRows : (this.shift == 7 ? 12 : scale.notes[this.shift % len]);
+    var CENTER_OFFSET = (this.scaleLayout == 8 || this.scaleLayout == 9) ? -3 : 0;
+    
+  
     for (var row = 0; row < this.numRows; row++)
     {
         for (var column = 0; column < this.numColumns; column++)
         {
             var y = isUp ? row : column;
             var x = isUp ? column : row;
-            var offset = y * this.shift + x;
+            var offset = y * this.shift + x + CENTER_OFFSET;
             matrix.push ((Math.floor (offset / len)) * 12 + scale.notes[offset % len]);
             chromatic.push (y * shiftedNote + x);
         }
