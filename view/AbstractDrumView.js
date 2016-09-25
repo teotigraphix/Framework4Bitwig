@@ -152,7 +152,7 @@ AbstractDrumView.prototype.drawGrid = function ()
     {
         x = this.halfColumns + pad % this.halfColumns;
         y = this.sequencerLines + Math.floor (pad / this.halfColumns);
-        this.surface.pads.lightEx (x, y, pad >= loopStartPad && pad < loopEndPad ? (pad == currentMeasure ? AbstractDrumView.COLOR_ACTIVE_MEASURE : AbstractDrumView.COLOR_MEASURE) : AbstractDrumView.COLOR_OFF, null, false);
+        this.surface.pads.lightEx (x, y, pad >= loopStartPad && pad < loopEndPad ? (pad == currentMeasure ? AbstractSequencerView.COLOR_ACTIVE_MEASURE : AbstractSequencerView.COLOR_MEASURE) : AbstractSequencerView.COLOR_NO_CONTENT, null, false);
     }
 
     // Paint the sequencer steps

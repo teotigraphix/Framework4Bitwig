@@ -5,5 +5,7 @@
 
 load ("AbstractView.js");
 load ("AbstractSequencerView.js");
+load ("AbstractNoteSequencerView.js");
 load ("AbstractDrumView.js");
+load ("AbstractRaindropsView.js");
 load ("AbstractSessionView.js");

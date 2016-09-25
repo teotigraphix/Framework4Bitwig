@@ -22,6 +22,15 @@ function AbstractSequencerView (model, rows, cols)
 }
 AbstractSequencerView.prototype = new AbstractView ();
 
+AbstractSequencerView.prototype.updateArrowStates = function ()
+{
+    var offset = this.getScrollOffset ();
+    this.canScrollUp = this.offsetY + offset < this.clip.getRowSize ();
+    this.canScrollDown = this.offsetY - offset >= 0;
+    this.canScrollLeft = this.offsetX > 0;
+    this.canScrollRight = true; // TODO API extension required - We do not know the number of steps
+};
+
 AbstractSequencerView.prototype.scrollLeft = function (event)
 {
     var newOffset = this.offsetX - this.clip.getStepSize ();
@@ -52,4 +61,11 @@ AbstractSequencerView.prototype.onScene = function (index, event)
 AbstractSequencerView.prototype.isInXRange = function (x)
 {
     return x >= this.offsetX && x < this.offsetX + this.clip.getStepSize ();
+};
+
+AbstractSequencerView.prototype.getScrollOffset = function ()
+{
+    // How many semi-notes are between the first and last 'pad'?
+    var pos = AbstractNoteSequencerView.NUM_SEQUENCER_ROWS;
+    return Math.floor (pos / 7) * 12 + this.noteMap[pos % 7] - this.noteMap[0];
 };
