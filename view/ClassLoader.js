@@ -4,6 +4,7 @@
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 load ("AbstractView.js");
+load ("AbstractPlayView.js");
 load ("AbstractSequencerView.js");
 load ("AbstractNoteSequencerView.js");
 load ("AbstractDrumView.js");

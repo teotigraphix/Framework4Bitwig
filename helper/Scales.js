@@ -89,7 +89,8 @@ Scales.SCALE_COLOR_OCTAVE       = 1;
 Scales.SCALE_COLOR_NOTE         = 2;
 Scales.SCALE_COLOR_OUT_OF_SCALE = 3;
 
-Scales.OCTAVE_RANGE = 4;
+Scales.OCTAVE_RANGE       = 4;
+Scales.PIANO_OCTAVE_RANGE = 3;
 
 
 Scales.getNames = function ()
@@ -291,7 +292,7 @@ Scales.prototype.decDrumOctave = function ()
 
 Scales.prototype.setPianoOctave = function (octave)
 {
-    this.pianoOctave = Math.max (-3, Math.min (octave, 3));
+    this.pianoOctave = Math.max (-Scales.PIANO_OCTAVE_RANGE, Math.min (octave, Scales.PIANO_OCTAVE_RANGE));
 };
 
 Scales.prototype.getPianoOctave = function ()
