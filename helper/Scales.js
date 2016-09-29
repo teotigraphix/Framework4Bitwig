@@ -71,10 +71,10 @@ Scales.THIRD_UP           = 2;
 Scales.THIRD_RIGHT        = 3;
 Scales.SEQUENT_UP         = 4;
 Scales.SEQUENT_RIGHT      = 5;
-Scales.EIGTH_UP           = 6;
-Scales.EIGTH_RIGHT        = 7;
-Scales.EIGTH_UP_CENTER    = 8;
-Scales.EIGTH_RIGHT_CENTER = 9;
+Scales.EIGHT_UP           = 6;
+Scales.EIGHT_RIGHT        = 7;
+Scales.EIGHT_UP_CENTER    = 8;
+Scales.EIGHT_RIGHT_CENTER = 9;
 
 Scales.LAYOUT_NAMES  = [ '4th ^', '4th >',
                          '3rd ^', '3rd >',
@@ -210,7 +210,7 @@ Scales.prototype.setScaleLayoutByName = function (scaleLayoutName)
 
 Scales.prototype.setScaleLayout = function (scaleLayout)
 {
-    this.scaleLayout = Math.max (Scales.FOURTH_UP, Math.min (scaleLayout, Scales.EIGTH_RIGHT_CENTER));
+    this.scaleLayout = Math.max (Scales.FOURTH_UP, Math.min (scaleLayout, Scales.EIGHT_RIGHT_CENTER));
     this.orientation = this.scaleLayout % 2 == 0 ? Scales.ORIENT_UP : Scales.ORIENT_RIGHT;
     switch (this.scaleLayout)
     {
@@ -440,8 +440,7 @@ Scales.prototype.createScale = function (scale)
     var chromatic = [];
     var isUp = this.orientation == Scales.ORIENT_UP;
     var shiftedNote = this.shift == this.numRows ? this.numRows : (this.shift == 7 ? 12 : scale.notes[this.shift % len]);
-    var centerOffset = (this.scaleLayout == 8 || this.scaleLayout == 9) ? -3 : 0;
-    
+    var centerOffset = (this.scaleLayout == Scales.EIGHT_UP_CENTER || this.scaleLayout == Scales.EIGHT_RIGHT_CENTER) ? -3 : 0;
   
     for (var row = 0; row < this.numRows; row++)
     {
@@ -450,7 +449,17 @@ Scales.prototype.createScale = function (scale)
             var y = isUp ? row : column;
             var x = isUp ? column : row;
             var offset = y * this.shift + x + centerOffset;
-            matrix.push ((Math.floor (offset / len)) * 12 + scale.notes[offset % len]);
+            
+            var oct = Math.floor (offset / len);
+
+            // Fix negative values introduced by centerOffset
+            if (offset < 0)
+            {
+                offset = len + offset;
+                oct = Math.floor (offset / len) - 1;
+            }
+            
+            matrix.push (oct * 12 + scale.notes[offset % len]);
             chromatic.push (y * shiftedNote + x);
         }
     }
