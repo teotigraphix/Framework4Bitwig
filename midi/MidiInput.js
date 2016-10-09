@@ -17,7 +17,14 @@ MidiInput.prototype.setMidiCallback = function (f)
     this.port.setMidiCallback (f);
 };
 
-MidiInput.prototype.createNoteInput = function ()
+MidiInput.prototype.setSysexCallback = function (f)
 {
-    return null;
+    this.port.setSysexCallback (f);
+};
+
+MidiInput.prototype.createNoteInputBase = function (name, filters)
+{
+    var noteInput = this.port.createNoteInput (name, filters);
+    noteInput.setShouldConsumeEvents (false);
+    return noteInput;
 };

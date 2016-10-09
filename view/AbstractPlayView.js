@@ -19,8 +19,8 @@ function AbstractPlayView (model)
     var tb = model.getTrackBank ();
     tb.addNoteListener (doObject (this, function (pressed, note, velocity)
     {
-        // Light notes send from the sequencer
-        this.setPressedKeys (note, pressed, velocity);
+        // Light notes sent from the sequencer
+        this.setPressedKeys (note, pressed, pressed ? velocity : 0);
     }));
     tb.addTrackSelectionListener (doObject (this, function (index, isSelected)
     {
@@ -57,7 +57,7 @@ AbstractPlayView.prototype.onGridNote = function (note, velocity)
     if (!this.model.canSelectedTrackHoldNotes () || this.noteMap[note] == -1)
         return;
     // Mark selected notes
-    this.setPressedKeys (this.noteMap[note], true, velocity);
+    this.setPressedKeys (this.noteMap[note], velocity > 0, velocity);
 };
 
 AbstractPlayView.prototype.onPolyAftertouch = function (note, value)
