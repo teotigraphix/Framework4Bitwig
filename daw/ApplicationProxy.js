@@ -189,33 +189,6 @@ ApplicationProxy.prototype.undo = function ()
 };
 
 /**
- * Quantizes all of the selected and focused clip's contents.
- */
-ApplicationProxy.prototype.quantize = function ()
-{
-    // TODO API extension required
-    // Clip must already be visible in editor and the editor must be focused
-    
-    var tb = controller.model.getCurrentTrackBank ();
-    var selTrack = tb.getSelectedTrack ();
-    if (selTrack == null)
-        return;
-    
-    var slot = tb.getSelectedSlot (selTrack.index);
-    if (slot == null)
-        return;
-
-    var slots = tb.getClipLauncherSlots (selTrack.index);
-    slots.showInEditor (slot.index);
-    
-    this.toggleDevices ();    
-    this.toggleNoteEditor ();    
-    
-    this.application.getAction ("Select All").invoke ();
-    this.application.getAction ("Quantize").invoke ();
-};
-
-/**
  * Not implemented.
  */
 ApplicationProxy.prototype.addEffect = function ()

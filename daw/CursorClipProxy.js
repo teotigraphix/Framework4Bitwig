@@ -186,15 +186,7 @@ CursorClipProxy.prototype.setStep = function (step, row, velocity, duration)
 
 CursorClipProxy.prototype.clearRow = function (row)
 {
-    // Can be calculated but it is complicated:
-    //   var quartersPerPad = this.model.getQuartersPerMeasure ();
-    //   var stepsPerMeasure = Math.round (quartersPerPad / this.resolutions[this.selectedIndex]);
-    //   var numOfSteps = this.playEnd * stepsPerMeasure;
-    
-    // We suggest a maximum of 32 measures with a resolution of 64 steps each
-    // Would be nice to have a dedicated function
-    for (var step = 0; step < 64 * 32; step++)
-        this.clip.clearStep (step, row);
+    this.clip.clearSteps (row);
 };
 
 CursorClipProxy.prototype.hasRowData = function (row)
@@ -224,6 +216,17 @@ CursorClipProxy.prototype.scrollStepsPageBackwards = function ()
 CursorClipProxy.prototype.scrollStepsPageForward = function ()
 {
     this.clip.scrollStepsPageForward ();
+};
+
+// Only quantizes the selected notes
+CursorClipProxy.prototype.quantize = function (amount)
+{
+    this.clip.quantize (amount);
+};
+
+CursorClipProxy.prototype.transpose = function (semitones)
+{
+    this.clip.transpose (semitones);
 };
 
 //--------------------------------------

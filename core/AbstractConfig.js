@@ -13,6 +13,9 @@ Config.DISPLAY_CROSSFADER    = 6;
 Config.FLIP_SESSION          = 7;
 Config.SELECT_CLIP_ON_LAUNCH = 8;
 Config.CONVERT_AFTERTOUCH    = 9;
+Config.ACTIVATE_FIXED_ACCENT = 10;
+Config.FIXED_ACCENT_VALUE    = 11;
+Config.QUANTIZE_AMOUNT       = 12;
 
 // Parameters for certain options
 Config.BEHAVIOUR_ON_STOP_MOVE_PLAY_CURSOR = 0;
@@ -35,6 +38,9 @@ Config.displayCrossfader  = true;
 Config.flipSession        = false;
 Config.selectClipOnLaunch = true;
 Config.convertAftertouch  = 0;
+Config.accentActive       = false;                       // Accent button active
+Config.fixedAccentValue   = 127;                         // Fixed velocity value for accent
+Config.quantizeAmount     = 1;
 
 
 function Config () {}
@@ -164,6 +170,35 @@ Config.activateConvertAftertouchSetting = function (prefs)
     });
 };
 
+Config.activateAccentActiveSetting = function (prefs)
+{
+    Config.accentActiveSetting = prefs.getEnumSetting ("Activate Fixed Accent", "Play and Sequence", [ "Off", "On" ], "Off");
+    Config.accentActiveSetting.addValueObserver (function (value)
+    {
+        Config.accentActive = value == "On";
+        Config.notifyListeners (Config.ACTIVATE_FIXED_ACCENT);
+    });
+};
+
+Config.activateAccentValueSetting = function (prefs)
+{
+    Config.accentValueSetting = prefs.getNumberSetting ("Fixed Accent Value", "Play and Sequence", 1, 127, 1, "", 127);
+    Config.accentValueSetting.addRawValueObserver (function (value)
+    {
+        Config.fixedAccentValue = value;
+        Config.notifyListeners (Config.FIXED_ACCENT_VALUE);
+    });
+};
+
+Config.activateQuantizeAmountSetting = function (prefs)
+{
+    Config.quantizeAmountSetting = prefs.getNumberSetting ('Quantize Amount', 'Play and Sequence', 1, 100, 1, '%', 100);
+    Config.quantizeAmountSetting.addRawValueObserver (function (value)
+    {
+        Config.quantizeAmount = Math.floor (value);
+        Config.notifyListeners (Config.QUANTIZE_AMOUNT);
+    });
+};
 
 //------------------------------
 // Option setters
@@ -204,6 +239,25 @@ Config.setFlipSession = function (enabled)
     Config.flipSessionSetting.set (enabled ? "On" : "Off");
 };
 
+Config.setAccentEnabled = function (enabled)
+{
+    Config.accentActiveSetting.set (enabled ? "On" : "Off");
+};
+
+Config.setAccentValue = function (value)
+{
+    Config.accentValueSetting.setRaw (value);
+};
+
+Config.changeQuantizeAmount = function (control)
+{
+    Config.quantizeAmountSetting.setRaw (changeIntValue (control, Config.quantizeAmount, 1, 101));
+};
+
+Config.setQuantizeAmount = function (value)
+{
+    Config.quantizeAmountSetting.setRaw (value);
+};
 
 //------------------------------
 // Property listeners
