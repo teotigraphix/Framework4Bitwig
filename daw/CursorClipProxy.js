@@ -169,7 +169,7 @@ CursorClipProxy.prototype.getStep = function (step, row)
     if (typeof (this.data[step]) == 'undefined' || typeof (this.data[step][row]) == 'undefined')
     {
         host.errorln ("Attempt to get undefined step data: " + step + " : " + row);
-        return false;
+        return 0;
     }
     return this.data[step][row];
 };
@@ -240,7 +240,8 @@ CursorClipProxy.prototype.handlePlayingStep = function (step)
     
 CursorClipProxy.prototype.handleStepData = function (col, row, state)
 {
-    this.data[col][row] = state; // true/false
+    // state: step is empty (0) or a note continues playing (1) or starts playing (2)
+    this.data[col][row] = state;
 };
 
 CursorClipProxy.prototype.handlePlayStart = function (position)

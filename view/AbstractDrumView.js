@@ -163,7 +163,7 @@ AbstractDrumView.prototype.drawGrid = function ()
         var hilite = col == hiStep;
         x = col % AbstractDrumView.GRID_COLUMNS;
         y = Math.floor (col / AbstractDrumView.GRID_COLUMNS);
-        this.surface.pads.lightEx (x, y, isSet ? (hilite ? AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT : AbstractSequencerView.COLOR_CONTENT) : hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_NO_CONTENT, null, false);
+        this.surface.pads.lightEx (x, y, this.getStepColor (isSet, hilite), null, false);
     }
 };
 
@@ -188,6 +188,22 @@ AbstractDrumView.prototype.getPadColor = function (index, primary, hasDrumPads, 
 AbstractDrumView.prototype.getPadContentColor = function (drumPad)
 {
     return drumPad.color ? drumPad.color : AbstractDrumView.COLOR_HAS_CONTENT;
+};
+
+AbstractDrumView.prototype.getStepColor = function (isSet, hilite)
+{
+    switch (isSet)
+    {
+        // Note continues
+        case 1:
+            return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT_CONT;
+        // Note starts
+        case 2:
+            return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT;
+        // Empty
+        default:
+            return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT : AbstractSequencerView.COLOR_NO_CONTENT
+    }
 };
 
 AbstractDrumView.prototype.clearPressedKeys = function ()

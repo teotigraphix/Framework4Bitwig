@@ -88,19 +88,16 @@ AbstractNoteSequencerView.prototype.drawGrid = function ()
     {
         for (var y = 0; y < AbstractNoteSequencerView.NUM_SEQUENCER_ROWS; y++)
         {
-            var row = this.noteMap[y];
-            var isSet = this.clip.getStep (x, row);
-            var hilite = x == hiStep;
-            if (isKeyboardEnabled)
-                this.surface.pads.lightEx (x, AbstractNoteSequencerView.NUM_DISPLAY_ROWS - 1 - y, isSet ? (hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT) : hilite ? AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT : this.getColor (y, selectedTrack), null, false);
-            else
-                this.surface.pads.lightEx (x, AbstractNoteSequencerView.NUM_DISPLAY_ROWS - 1 - y, AbstractSequencerView.COLOR_NO_CONTENT, null, false);
+            // 0: not set, 1: note continues playing, 2: start of note
+            var isSet = this.clip.getStep (x, this.noteMap[y]);
+            var color = this.getStepColor (isKeyboardEnabled, isSet, x == hiStep, y, selectedTrack);
+            this.surface.pads.lightEx (x, AbstractNoteSequencerView.NUM_DISPLAY_ROWS - 1 - y, color, null, false);
         }
     }
 
 	if (AbstractNoteSequencerView.NUM_DISPLAY_ROWS - AbstractNoteSequencerView.NUM_SEQUENCER_ROWS  <= 0)
 		return;
-    
+
     // Clip length/loop area
     var quartersPerPad = this.model.getQuartersPerMeasure () / 2;
     var stepsPerMeasure = Math.round (quartersPerPad / this.resolutions[this.selectedIndex]);
@@ -115,6 +112,25 @@ AbstractNoteSequencerView.prototype.drawGrid = function ()
             this.surface.pads.lightEx (pad, 0, pad >= loopStartPad && pad < loopEndPad ? (pad == currentMeasure ? AbstractSequencerView.COLOR_ACTIVE_MEASURE : AbstractSequencerView.COLOR_MEASURE) : AbstractSequencerView.COLOR_NO_CONTENT, null, false);
         else
             this.surface.pads.lightEx (pad, 0, AbstractSequencerView.COLOR_NO_CONTENT, null, false);
+    }
+};
+
+AbstractNoteSequencerView.prototype.getStepColor = function (isKeyboardEnabled, isSet, hilite, note, selectedTrack)
+{
+    if (!isKeyboardEnabled)
+        return AbstractSequencerView.COLOR_NO_CONTENT;
+        
+    switch (isSet)
+    {
+        // Note continues
+        case 1:
+            return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT_CONT;
+        // Note starts
+        case 2:
+            return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT;
+        // Empty
+        default:
+            return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT : this.getColor (note, selectedTrack)
     }
 };
 
