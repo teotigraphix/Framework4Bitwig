@@ -26,6 +26,12 @@ AbstractNoteSequencerView.prototype.onActivate = function ()
     AbstractSequencerView.prototype.onActivate.call (this);
 };
 
+AbstractNoteSequencerView.prototype.updateNoteMapping = function ()
+{
+    AbstractSequencerView.prototype.updateNoteMapping.call (this);
+    this.updateScale ();
+};
+
 AbstractNoteSequencerView.prototype.updateScale = function ()
 {
     this.noteMap = this.model.canSelectedTrackHoldNotes () ? this.scales.getSequencerMatrix (8, this.offsetY) : this.scales.getEmptyMatrix ();
