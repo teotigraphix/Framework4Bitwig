@@ -47,7 +47,7 @@ function Model (userCCStart,               // The MIDI CC at which the user para
     this.mixer = new MixerProxy ();
     this.sceneBank = new SceneBankProxy (this.numScenes);
     
-    this.browser = new BrowserProxy (this.cursorDevice, this.numFilterColumns, this.numFilterColumnEntries, this.numResults);
+    this.browser = new BrowserProxy (this.trackBank, this.cursorDevice, this.numFilterColumns, this.numFilterColumnEntries, this.numResults);
 
     this.currentTrackBank = this.trackBank;
 

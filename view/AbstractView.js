@@ -132,7 +132,9 @@ AbstractView.prototype.scrollRight = function (event) {};
 
 AbstractView.prototype.selectTrack = function (index)
 {
-    this.model.getCurrentTrackBank ().select (index);
+    var tb = this.model.getCurrentTrackBank ();
+    tb.select (index);
+    tb.makeVisible (index);
 };
 
 AbstractView.prototype.updateButtons = function () {};

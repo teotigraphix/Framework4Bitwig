@@ -218,7 +218,16 @@ CursorClipProxy.prototype.scrollStepsPageForward = function ()
     this.clip.scrollStepsPageForward ();
 };
 
-// Only quantizes the selected notes
+CursorClipProxy.prototype.duplicate = function ()
+{
+    this.clip.duplicate ();
+};
+
+CursorClipProxy.prototype.duplicateContent = function ()
+{
+    this.clip.duplicateContent ();
+};
+
 CursorClipProxy.prototype.quantize = function (amount)
 {
     this.clip.quantize (amount);

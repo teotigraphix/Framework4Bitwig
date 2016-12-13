@@ -12,6 +12,7 @@ function MasterTrackProxy ()
     this.color = null;
     this.mute = null;
     this.solo = null;
+    this.recarm = false;
     this.monitor = false;
     this.autoMonitor = false;
     this.activated = true;
@@ -159,7 +160,6 @@ MasterTrackProxy.prototype.toggleSolo = function ()
 
 MasterTrackProxy.prototype.setArm = function (value)
 {
-    this.recarm = value;
     this.masterTrack.getArm ().set (value);
 };
 

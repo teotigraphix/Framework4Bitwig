@@ -63,7 +63,7 @@ AbstractRaindropsView.prototype.onGridNote = function (note, velocity)
     {
         var offset = this.clip.getCurrentStep () % stepsize;
         for (var i = offset; i < length; i += stepsize)
-            this.clip.setStep (i, this.noteMap[x], velocity, this.resolutions[this.selectedIndex]);
+            this.clip.setStep (i, this.noteMap[x], Config.accentActive ? Config.fixedAccentValue : velocity, this.resolutions[this.selectedIndex]);
     }
 };
 

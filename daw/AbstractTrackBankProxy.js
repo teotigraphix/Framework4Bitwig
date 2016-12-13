@@ -213,6 +213,22 @@ AbstractTrackBankProxy.prototype.select = function (index)
         t.selectInEditor ();
 };
 
+AbstractTrackBankProxy.prototype.duplicate = function (index)
+{
+    var t = this.trackBank.getChannel (index);
+    if (t != null)
+        t.duplicate ();
+};
+
+AbstractTrackBankProxy.prototype.makeVisible = function (index)
+{
+    var t = this.trackBank.getChannel (index);
+    if (t == null)
+        return;
+    t.makeVisibleInArranger ();
+    t.makeVisibleInMixer ();
+};
+
 AbstractTrackBankProxy.prototype.changeVolume = function (index, value, fractionValue)
 {
     var t = this.getTrack (index);

@@ -3,16 +3,17 @@
 // (c) 2014-2016
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function BrowserProxy (device, numFilterColumns, numFilterColumnEntries, numResults)
+function BrowserProxy (cursorTrackBank, cursorDevice, numFilterColumns, numFilterColumnEntries, numResults)
 {
     this.numFilterColumns       = numFilterColumns;
     this.numFilterColumnEntries = numFilterColumnEntries;
     this.numResults             = numResults;
     
     this.textLength = GlobalConfig.PRESET_TEXT_LENGTH;
-
-    this.browser = device.cursorDevice.createDeviceBrowser (this.numFilterColumnEntries, this.numResults);
-
+    
+    this.cursorTrack = cursorTrackBank.cursorTrack;
+    this.cursorDevice = cursorDevice;
+    this.browser = cursorDevice.cursorDevice.createDeviceBrowser (this.numFilterColumnEntries, this.numResults);
     this.presetBrowsingSession = new BrowserSessionProxy (this.browser.getPresetSession (), this.textLength, this.numFilterColumns, this.numFilterColumnEntries, this.numResults);
     this.deviceBrowsingSession = new BrowserSessionProxy (this.browser.getDeviceSession (), this.textLength, this.numFilterColumns, this.numFilterColumnEntries, this.numResults);
 }
@@ -29,20 +30,21 @@ BrowserProxy.prototype.browseForPresets = function ()
     this.browser.startBrowsing ();
 };
 
-BrowserProxy.prototype.browseForDevices = function ()
-{
-    this.stopBrowsing (false);
-    
-    this.deviceBrowsingSession.activate ();
-    this.browser.startBrowsing ();
-};
-
 BrowserProxy.prototype.stopBrowsing = function (commitSelection)
 {
-    if (commitSelection)
-        this.browser.commitSelectedResult ();
-    else
-        this.browser.cancelBrowsing ();
+    if (this.getActiveSession () == null)
+        return;
+
+    if (this.presetBrowsingSession.isActive)
+    {
+        if (commitSelection)
+            this.browser.commitSelectedResult ();
+        else
+            this.browser.cancelBrowsing ();
+        
+        // Prevent double calls before the observer updates the variables
+        this.presetBrowsingSession.isActive = false;
+    }
 };
 
 BrowserProxy.prototype.getActiveSession = function ()

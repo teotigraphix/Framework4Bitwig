@@ -9,10 +9,27 @@ function ApplicationProxy ()
     
     this.panelLayout = 'ARRANGE';
     this.engineActive = false;
+    this.projectName = 'None';
 
-    this.application.addPanelLayoutObserver (doObject (this, ApplicationProxy.prototype.handlePanelLayout), 10);
+    this.application.addPanelLayoutObserver (doObject (this, ApplicationProxy.prototype.handlePanelLayout), GlobalConfig.LAYOUT_TEXT_LENGTH);
     this.application.addHasActiveEngineObserver (doObject (this, ApplicationProxy.prototype.handleHasActiveEngine));
+    this.application.addProjectNameObserver (doObject (this, ApplicationProxy.prototype.handleProjectName), GlobalConfig.PROJECT_TEXT_LENGTH);
 }
+
+ApplicationProxy.prototype.getProjectName = function ()
+{
+    return this.projectName;
+};
+
+ApplicationProxy.prototype.previousProject = function ()
+{
+    this.application.previousProject ();
+};
+
+ApplicationProxy.prototype.nextProject = function ()
+{
+    this.application.nextProject ();
+};
 
 /**
  * Returns whether the current project's audio engine is active.
@@ -315,4 +332,9 @@ ApplicationProxy.prototype.handlePanelLayout = function (panelLayout)
 ApplicationProxy.prototype.handleHasActiveEngine = function (active)
 {
     this.engineActive = active;
+};
+
+ApplicationProxy.prototype.handleProjectName = function (name)
+{
+    this.projectName = name;
 };
