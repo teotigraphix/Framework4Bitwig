@@ -74,8 +74,7 @@ MasterTrackProxy.prototype.getVolumeString = function () { return this.volumeStr
 
 MasterTrackProxy.prototype.changeVolume = function (value, fractionValue)
 {
-    this.volume = changeValue (value, this.volume, fractionValue, Config.maxParameterValue);
-    this.masterTrack.getVolume ().set (this.volume, Config.maxParameterValue);
+    this.masterTrack.getVolume ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 MasterTrackProxy.prototype.setVolume = function (value)
@@ -101,8 +100,7 @@ MasterTrackProxy.prototype.touchVolume = function (isBeingTouched)
 
 MasterTrackProxy.prototype.changePan = function (value, fractionValue)
 {
-    this.pan = changeValue (value, this.pan, fractionValue, Config.maxParameterValue);
-    this.masterTrack.getPan ().set (this.pan, Config.maxParameterValue);
+    this.masterTrack.getPan ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 MasterTrackProxy.prototype.setPan = function (value)

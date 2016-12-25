@@ -50,10 +50,7 @@ TrackBankProxy.prototype.selectParent = function ()
 
 TrackBankProxy.prototype.changeSend = function (index, sendIndex, value, fractionValue)
 {
-    var t = this.getTrack (index);
-    var send = t.sends[sendIndex];
-    send.volume = changeValue (value, send.volume, fractionValue, Config.maxParameterValue);
-    this.trackBank.getChannel (t.index).getSend (sendIndex).set (send.volume, Config.maxParameterValue);
+    this.trackBank.getChannel (index).getSend (sendIndex).inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 TrackBankProxy.prototype.setSend = function (index, sendIndex, value)

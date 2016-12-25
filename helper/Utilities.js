@@ -8,13 +8,17 @@ function toggleValue (value)
     return !value;
 }
 
+function calcKnobSpeed (control, fractionValue)
+{
+    return (control <= 61 ? control :  control - 128) * fractionValue;
+}
+
 function changeIntValue (control, value, fractionValue, maxParameterValue, minParameterValue)
 {
     if (typeof (minParameterValue) == 'undefined')
         minParameterValue = 0;
-    var isInc = control <= 61;
-    var speed = Math.max ((isInc ? control : 127 - control) * fractionValue, fractionValue);
-    return isInc ? Math.min (value + speed, maxParameterValue - 1) : Math.max (value - speed, minParameterValue);
+    var speed = calcKnobSpeed (control, fractionValue);
+    return Math.max (Math.min (value + speed, maxParameterValue - 1), minParameterValue);
 }
 
 function changeValue (control, value, fractionValue, maxParameterValue, minParameterValue)

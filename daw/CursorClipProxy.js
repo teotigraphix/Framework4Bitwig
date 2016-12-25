@@ -68,6 +68,10 @@ CursorClipProxy.prototype.changePlayStart = function (value, fractionValue)
 {
     this.playStart = Math.min (this.playEnd, changeValue (value, this.playStart, fractionValue, Number.MAX_VALUE));
     this.setPlayStart (this.playStart);
+  
+// TODO Crashes 1.3.15:
+//    this.clip.getPlayStart ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
+    
 };
 
 CursorClipProxy.prototype.getPlayEnd = function ()

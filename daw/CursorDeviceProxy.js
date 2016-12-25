@@ -33,7 +33,7 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
     this.isParameterPageSectionVisibleValue = false;
 
     this.selectedParameterPage = -1;
-    this.parameterPageNames = null;
+    this.parameterPageNames = [];
 
     this.fxparams = this.createFXParams (this.numParams);
     this.commonParams = this.createFXParams (this.numParams);
@@ -106,6 +106,7 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
         p.addIsMappingObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleModulationSourceIsMapping));
     }
     
+    // Direct parameters
     this.cursorDevice.addDirectParameterIdObserver (doObject (this, CursorDeviceProxy.prototype.handleDirectParameterIds));
     this.cursorDevice.addDirectParameterNameObserver (this.textLength, doObject (this, CursorDeviceProxy.prototype.handleDirectParameterNames));
     this.directParameterValueDisplayObserver = this.cursorDevice.addDirectParameterValueDisplayObserver (this.textLength, doObject (this, CursorDeviceProxy.prototype.handleDirectParameterValueDisplay));
@@ -247,6 +248,11 @@ CursorDeviceProxy.prototype.getModulationSource = function (index)
 CursorDeviceProxy.prototype.getParameter = function (indexInPage)
 {
     return this.cursorDevice.getParameter (indexInPage);
+};
+
+CursorDeviceProxy.prototype.changeParameter = function (index, value, fractionValue)
+{
+    this.getParameter (index).inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 CursorDeviceProxy.prototype.setParameter = function (index, value)
@@ -777,9 +783,7 @@ CursorDeviceProxy.prototype.scrollLayersPageDown = function ()
 
 CursorDeviceProxy.prototype.changeLayerVolume = function (index, value, fractionValue)
 {
-    var t = this.getLayer (index);
-    t.volume = changeValue (value, t.volume, fractionValue, Config.maxParameterValue);
-    this.layerBank.getChannel (index).getVolume ().set (t.volume, Config.maxParameterValue);
+    this.layerBank.getChannel (index).getVolume ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 CursorDeviceProxy.prototype.setLayerVolume = function (index, value)
@@ -801,9 +805,7 @@ CursorDeviceProxy.prototype.touchLayerVolume = function (index, isBeingTouched)
 
 CursorDeviceProxy.prototype.changeLayerPan = function (index, value, fractionValue)
 {
-    var t = this.getLayer (index);
-    t.pan = changeValue (value, t.pan, fractionValue, Config.maxParameterValue);
-    this.layerBank.getChannel (index).getPan ().set (t.pan, Config.maxParameterValue);
+    this.layerBank.getChannel (index).getPan ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 CursorDeviceProxy.prototype.setLayerPan = function (index, value)
@@ -825,10 +827,7 @@ CursorDeviceProxy.prototype.touchLayerPan = function (index, isBeingTouched)
 
 CursorDeviceProxy.prototype.changeLayerSend = function (index, sendIndex, value, fractionValue)
 {
-    var s = this.getLayer (index).sends[sendIndex];
-    s.volume = changeValue (value, s.volume, fractionValue, Config.maxParameterValue);
-    var send = this.layerBank.getChannel (index).getSend (sendIndex);
-    send.set (s.volume, Config.maxParameterValue);
+    this.layerBank.getChannel (index).getSend (sendIndex).inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 CursorDeviceProxy.prototype.setLayerSend = function (index, sendIndex, value)
@@ -947,9 +946,7 @@ CursorDeviceProxy.prototype.enterDrumPad = function (index)
 
 CursorDeviceProxy.prototype.changeDrumPadVolume = function (index, value, fractionValue)
 {
-    var t = this.getDrumPad (index);
-    t.volume = changeValue (value, t.volume, fractionValue, Config.maxParameterValue);
-    this.drumPadBank.getChannel (index).getVolume ().set (t.volume, Config.maxParameterValue);
+    this.drumPadBank.getChannel (index).getVolume ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 CursorDeviceProxy.prototype.setDrumPadVolume = function (index, value)
@@ -971,9 +968,7 @@ CursorDeviceProxy.prototype.touchDrumPadVolume = function (index, isBeingTouched
 
 CursorDeviceProxy.prototype.changeDrumPadPan = function (index, value, fractionValue)
 {
-    var t = this.getDrumPad (index);
-    t.pan = changeValue (value, t.pan, fractionValue, Config.maxParameterValue);
-    this.drumPadBank.getChannel (index).getPan ().set (t.pan, Config.maxParameterValue);
+    this.drumPadBank.getChannel (index).getPan ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 CursorDeviceProxy.prototype.setDrumPadPan = function (index, value)
@@ -995,10 +990,7 @@ CursorDeviceProxy.prototype.touchDrumPadPan = function (index, isBeingTouched)
 
 CursorDeviceProxy.prototype.changeDrumPadSend = function (index, sendIndex, value, fractionValue)
 {
-    var s = this.getDrumPad (index).sends[sendIndex];
-    s.volume = changeValue (value, s.volume, fractionValue, Config.maxParameterValue);
-    var send = this.drumPadBank.getChannel (index).getSend (sendIndex);
-    send.set (s.volume, Config.maxParameterValue);
+    this.drumPadBank.getChannel (index).getSend (sendIndex).inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 CursorDeviceProxy.prototype.setDrumPadSend = function (index, sendIndex, value)
@@ -1087,11 +1079,7 @@ CursorDeviceProxy.prototype.getDirectParameter = function (id)
 
 CursorDeviceProxy.prototype.changeDirectParameter = function (index, value, fractionValue)
 {
-    // Scale up from [0..1] to [0..1000000000000] to prevent rounding errors
-    var UP_SCALE = 1000000000000;
-    var frac = fractionValue / Config.maxParameterValue * UP_SCALE;
-    var newvalue = changeValue (value, Math.floor (this.directParameters[index].value * UP_SCALE), frac, UP_SCALE);
-    this.cursorDevice.setDirectParameterValueNormalized (this.directParameters[index].id, newvalue, UP_SCALE);
+    this.cursorDevice.incDirectParameterValueNormalized (this.directParameters[index].id, calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 CursorDeviceProxy.prototype.hasPreviousDirectParameterPage = function ()
