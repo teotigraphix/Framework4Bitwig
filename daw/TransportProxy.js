@@ -54,7 +54,7 @@ function TransportProxy ()
     this.transport.addPreRollObserver (doObject (this, TransportProxy.prototype.handlePreRoll));
     this.transport.addPreRollClickObserver (doObject (this, TransportProxy.prototype.handlePreRollClick));
     this.transport.getTempo ().addRawValueObserver (doObject (this, TransportProxy.prototype.handleTempo));
-    this.transport.getCrossfade ().addValueObserver (Config.maxParameterValue, doObject (this, TransportProxy.prototype.handleCrossfade));
+    this.transport.getCrossfade ().addValueObserver (Config.parameterRange, doObject (this, TransportProxy.prototype.handleCrossfade));
     this.transport.getPosition ().addTimeObserver (":", 3, 2, 2, 2, doObject (this, TransportProxy.prototype.handlePosition));
 
     var ts = this.transport.getTimeSignature ();
@@ -264,7 +264,7 @@ TransportProxy.prototype.setTempoIndication = function (isTouched)
 
 TransportProxy.prototype.setCrossfade = function (value)
 {
-    this.transport.getCrossfade ().set (value, Config.maxParameterValue);
+    this.transport.getCrossfade ().set (value, Config.parameterRange);
 };
 
 TransportProxy.prototype.getCrossfade = function ()
@@ -280,8 +280,8 @@ TransportProxy.prototype.setLauncherOverdub = function (on)
 
 TransportProxy.prototype.changeMetronomeVolume = function (value, fractionValue)
 {
-    this.metroVolume = changeValue (value, this.metroVolume, fractionValue, Config.maxParameterValue);
-    this.transport.setMetronomeValue (this.metroVolume, Config.maxParameterValue);
+    this.metroVolume = changeValue (value, this.metroVolume, fractionValue, Config.parameterRange);
+    this.transport.setMetronomeValue (this.metroVolume, Config.parameterRange);
 };
 
 TransportProxy.prototype.getPreroll = function ()
@@ -380,8 +380,8 @@ TransportProxy.prototype.handleIsWritingClipLauncherAutomation = function (isAut
 
 TransportProxy.prototype.handleMetronomeVolume = function (volume)
 {
-    // volume is in the range of -48.0 to 0.0, scale to 0 to Config.maxParameterValue - 1
-    this.metroVolume = Math.round ((48.0 + volume) * (Config.maxParameterValue - 1) / 48.0);
+    // volume is in the range of -48.0 to 0.0, scale to 0 to Config.parameterRange - 1
+    this.metroVolume = Math.round ((48.0 + volume) * (Config.parameterRange - 1) / 48.0);
 };
 
 TransportProxy.prototype.handlePreRoll = function (prerollValue)

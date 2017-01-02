@@ -70,7 +70,7 @@ CursorClipProxy.prototype.changePlayStart = function (value, fractionValue)
     this.setPlayStart (this.playStart);
   
 // TODO Crashes 1.3.15:
-//    this.clip.getPlayStart ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
+//    this.clip.getPlayStart ().inc (calcKnobSpeed (value, fractionValue), Config.parameterRange);
     
 };
 

@@ -32,14 +32,14 @@ function MasterTrackProxy ()
     // Channel attributes
     this.masterTrack.isActivated ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleActivated));
     var v = this.masterTrack.getVolume ();
-    v.addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handleVolume));
+    v.addValueObserver (Config.parameterRange, doObject (this, MasterTrackProxy.prototype.handleVolume));
     v.addValueDisplayObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handleVolumeStr));
     var p = this.masterTrack.getPan ();
-    p.addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handlePan));
+    p.addValueObserver (Config.parameterRange, doObject (this, MasterTrackProxy.prototype.handlePan));
     p.addValueDisplayObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handlePanStr));
     this.masterTrack.getMute ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleMute));
     this.masterTrack.getSolo ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleSolo));
-    this.masterTrack.addVuMeterObserver (Config.maxParameterValue, -1, true, doObject (this, MasterTrackProxy.prototype.handleVuMeter));
+    this.masterTrack.addVuMeterObserver (Config.parameterRange, -1, true, doObject (this, MasterTrackProxy.prototype.handleVuMeter));
     this.masterTrack.addColorObserver (doObject (this, MasterTrackProxy.prototype.handleColor));
 
     // Track attributes
@@ -74,13 +74,13 @@ MasterTrackProxy.prototype.getVolumeString = function () { return this.volumeStr
 
 MasterTrackProxy.prototype.changeVolume = function (value, fractionValue)
 {
-    this.masterTrack.getVolume ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
+    this.masterTrack.getVolume ().inc (calcKnobSpeed (value, fractionValue), Config.parameterRange);
 };
 
 MasterTrackProxy.prototype.setVolume = function (value)
 {
     this.volume = value;
-    this.masterTrack.getVolume ().set (this.volume, Config.maxParameterValue);
+    this.masterTrack.getVolume ().set (this.volume, Config.parameterRange);
 };
 
 MasterTrackProxy.prototype.setVolumeIndication = function (indicate)
@@ -100,13 +100,13 @@ MasterTrackProxy.prototype.touchVolume = function (isBeingTouched)
 
 MasterTrackProxy.prototype.changePan = function (value, fractionValue)
 {
-    this.masterTrack.getPan ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
+    this.masterTrack.getPan ().inc (calcKnobSpeed (value, fractionValue), Config.parameterRange);
 };
 
 MasterTrackProxy.prototype.setPan = function (value)
 {
     this.pan = value;
-    this.masterTrack.getPan ().set (this.pan, Config.maxParameterValue);
+    this.masterTrack.getPan ().set (this.pan, Config.parameterRange);
 };
 
 MasterTrackProxy.prototype.setPanIndication = function (indicate)

@@ -16,7 +16,7 @@ function UserControlBankProxy (ccStart)
         var c = this.userControlBank.getControl (i);
         c.setLabel ("CC" + (i + ccStart));
         c.addNameObserver (this.textLength, '', doObjectIndex (this, i, UserControlBankProxy.prototype.handleParameterName));
-        c.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, UserControlBankProxy.prototype.handleValue));
+        c.addValueObserver (Config.parameterRange, doObjectIndex (this, i, UserControlBankProxy.prototype.handleValue));
         c.addValueDisplayObserver (this.textLength, '',  doObjectIndex (this, i, UserControlBankProxy.prototype.handleValueDisplay));
     }
 }

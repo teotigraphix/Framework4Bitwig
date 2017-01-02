@@ -100,14 +100,14 @@ AbstractTrackBankProxy.prototype.init = function ()
         // Channel attributes
         t.isActivated ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleActivated));
         var v = t.getVolume ();
-        v.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleVolume));
+        v.addValueObserver (Config.parameterRange, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleVolume));
         v.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleVolumeStr));
         var p = t.getPan ();
-        p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePan));
+        p.addValueObserver (Config.parameterRange, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePan));
         p.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePanStr));
         t.getMute ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleMute));
         t.getSolo ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSolo));
-        t.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleVUMeters));
+        t.addVuMeterObserver (Config.parameterRange, -1, true, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleVUMeters));
         t.addColorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleColor));
         t.addNoteObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleNotes));
         
@@ -231,14 +231,14 @@ AbstractTrackBankProxy.prototype.makeVisible = function (index)
 
 AbstractTrackBankProxy.prototype.changeVolume = function (index, value, fractionValue)
 {
-    this.trackBank.getChannel (index).getVolume ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
+    this.trackBank.getChannel (index).getVolume ().inc (calcKnobSpeed (value, fractionValue), Config.parameterRange);
 };
 
 AbstractTrackBankProxy.prototype.setVolume = function (index, value)
 {
     var t = this.getTrack (index);
     t.volume = value;
-    this.trackBank.getChannel (t.index).getVolume ().set (t.volume, Config.maxParameterValue);
+    this.trackBank.getChannel (t.index).getVolume ().set (t.volume, Config.parameterRange);
 };
 
 AbstractTrackBankProxy.prototype.resetVolume = function (index)
@@ -258,14 +258,14 @@ AbstractTrackBankProxy.prototype.setVolumeIndication = function (index, indicate
 
 AbstractTrackBankProxy.prototype.changePan = function (index, value, fractionValue)
 {
-    this.trackBank.getChannel (index).getPan ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
+    this.trackBank.getChannel (index).getPan ().inc (calcKnobSpeed (value, fractionValue), Config.parameterRange);
 };
 
 AbstractTrackBankProxy.prototype.setPan = function (index, value)
 {
     var t = this.getTrack (index);
     t.pan = value;
-    this.trackBank.getChannel (t.index).getPan ().set (t.pan, Config.maxParameterValue);
+    this.trackBank.getChannel (t.index).getPan ().set (t.pan, Config.parameterRange);
 };
 
 AbstractTrackBankProxy.prototype.resetPan = function (index)
@@ -679,10 +679,10 @@ AbstractTrackBankProxy.prototype.handleName = function (index, name)
 
 AbstractTrackBankProxy.prototype.handleVUMeters = function (index, value)
 {
-    // Limit value to Config.maxParameterValue due to https://github.com/teotigraphix/Framework4Bitwig/issues/98
-    if (value >= Config.maxParameterValue)
+    // Limit value to Config.parameterRange due to https://github.com/teotigraphix/Framework4Bitwig/issues/98
+    if (value >= Config.parameterRange)
         println ("VU sent with outside range value: " + value);
-    this.tracks[index].vu = Math.min (Config.maxParameterValue - 1, value);
+    this.tracks[index].vu = Math.min (Config.parameterRange - 1, value);
 };
 
 AbstractTrackBankProxy.prototype.handleColor = function (index, red, green, blue)
