@@ -18,7 +18,7 @@ function changeIntValue (control, value, fractionValue, maxParameterValue, minPa
     if (typeof (minParameterValue) == 'undefined')
         minParameterValue = 0;
     var speed = calcKnobSpeed (control, fractionValue);
-    return Math.max (Math.min (value + speed, maxParameterValue - 1), minParameterValue);
+    return Math.max (Math.min (value + speed, maxParameterValue), minParameterValue);
 }
 
 function changeValue (control, value, fractionValue, maxParameterValue, minParameterValue)
