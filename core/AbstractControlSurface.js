@@ -475,3 +475,8 @@ AbstractControlSurface.prototype.changeValue = function (control, value)
 {
     return changeValue (control, value, this.getFractionValue (), Config.maxParameterValue);
 };
+
+AbstractControlSurface.prototype.sendMidiEvent = function (status, data1, data2)
+{
+    this.noteInput.sendRawMidiEvent (status, data1, data2);
+};
