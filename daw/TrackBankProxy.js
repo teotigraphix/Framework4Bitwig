@@ -30,7 +30,7 @@ function TrackBankProxy (numTracks, numScenes, numSends, hasFlatTrackList)
         {
             var s = t.getSend (j);
             s.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, TrackBankProxy.prototype.handleSendName));
-            s.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, TrackBankProxy.prototype.handleSendVolume));
+            s.addValueObserver (Config.parameterRange, doObjectDoubleIndex (this, i, j, TrackBankProxy.prototype.handleSendVolume));
             s.addValueDisplayObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, TrackBankProxy.prototype.handleSendVolumeStr));
         }
     }
@@ -50,7 +50,7 @@ TrackBankProxy.prototype.selectParent = function ()
 
 TrackBankProxy.prototype.changeSend = function (index, sendIndex, value, fractionValue)
 {
-    this.trackBank.getChannel (index).getSend (sendIndex).inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
+    this.trackBank.getChannel (index).getSend (sendIndex).inc (calcKnobSpeed (value, fractionValue), Config.parameterRange);
 };
 
 TrackBankProxy.prototype.setSend = function (index, sendIndex, value)
@@ -58,7 +58,7 @@ TrackBankProxy.prototype.setSend = function (index, sendIndex, value)
     var t = this.getTrack (index);
     var send = t.sends[sendIndex];
     send.volume = value;
-    this.trackBank.getChannel (t.index).getSend (sendIndex).set (send.volume, Config.maxParameterValue);
+    this.trackBank.getChannel (t.index).getSend (sendIndex).set (send.volume, Config.parameterRange);
 };
 
 TrackBankProxy.prototype.resetSend = function (index, sendIndex)

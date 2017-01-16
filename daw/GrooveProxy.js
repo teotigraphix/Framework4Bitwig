@@ -114,7 +114,7 @@ GrooveProxy.prototype.addValue = function (kind)
         this.values[kind].name = name;
     }));
 
-    v.addValueObserver (Config.maxParameterValue, doObject (this, function (value)
+    v.addValueObserver (Config.parameterRange, doObject (this, function (value)
     {
         this.values[kind].value = value;
     }));

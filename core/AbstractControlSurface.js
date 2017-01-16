@@ -473,7 +473,7 @@ AbstractControlSurface.prototype.getFractionValue = function ()
 
 AbstractControlSurface.prototype.changeValue = function (control, value)
 {
-    return changeValue (control, value, this.getFractionValue (), Config.maxParameterValue);
+    return changeValue (control, value, this.getFractionValue (), Config.parameterRange);
 };
 
 AbstractControlSurface.prototype.sendMidiEvent = function (status, data1, data2)
