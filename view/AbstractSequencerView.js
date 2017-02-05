@@ -28,7 +28,8 @@ AbstractSequencerView.prototype.updateArrowStates = function ()
     this.canScrollUp = this.offsetY + offset < this.clip.getRowSize ();
     this.canScrollDown = this.offsetY - offset >= 0;
     this.canScrollLeft = this.offsetX > 0;
-    this.canScrollRight = true; // TODO API extension required - We do not know the number of steps
+    // You can always scroll "after" the end
+    this.canScrollRight = true;
 };
 
 AbstractSequencerView.prototype.scrollLeft = function (event)

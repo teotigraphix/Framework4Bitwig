@@ -13,17 +13,17 @@ function calcKnobSpeed (control, fractionValue)
     return (control <= 61 ? control :  control - 128) * fractionValue;
 }
 
-function changeIntValue (control, value, fractionValue, maxParameterValuePlusOne, minParameterValue)
+function changeIntValue (control, value, fractionValue, maxParameterValue, minParameterValue)
 {
     if (typeof (minParameterValue) == 'undefined')
         minParameterValue = 0;
     var speed = calcKnobSpeed (control, fractionValue);
-    return Math.max (Math.min (value + speed, maxParameterValuePlusOne - 1), minParameterValue);
+    return Math.max (Math.min (value + speed, maxParameterValue - 1), minParameterValue);
 }
 
-function changeValue (control, value, fractionValue, maxParameterValuePlusOne, minParameterValue)
+function changeValue (control, value, fractionValue, maxParameterValue, minParameterValue)
 {
-    return changeIntValue (control, value, fractionValue, maxParameterValuePlusOne, minParameterValue);
+    return changeIntValue (control, value, fractionValue, maxParameterValue, minParameterValue);
 }
 
 function doObject (object, f)

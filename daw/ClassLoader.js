@@ -7,7 +7,6 @@ load ("GlobalConfig.js");
 load ("Globals.js");
 load ("ArrangerProxy.js");
 load ("ApplicationProxy.js");
-load ("BrowserSessionProxy.js");
 load ("BrowserProxy.js");
 load ("TransportProxy.js");
 load ("CursorClipProxy.js");

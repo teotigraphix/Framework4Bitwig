@@ -215,7 +215,8 @@ AbstractDrumView.prototype.clearPressedKeys = function ()
 AbstractDrumView.prototype.updateArrowStates = function ()
 {
     this.canScrollLeft = this.offsetX > 0;
-    this.canScrollRight = true; // TODO API extension required - We do not know the number of steps
+    // You can always scroll "after" the end
+    this.canScrollRight = true;
 };
 
 AbstractDrumView.prototype.updateNoteMapping = function ()
@@ -311,6 +312,8 @@ AbstractDrumView.prototype.onSelect = function (event)
 {
     if (!event.isLong ())
         this.updateNoteMapping ();
+    
+    AbstractView.prototype.onSelect.call (this, event);
 };
 
 AbstractDrumView.prototype.onDelete = function (event)

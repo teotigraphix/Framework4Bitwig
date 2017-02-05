@@ -23,7 +23,7 @@ EffectTrackBankProxy.prototype.setSendIndication = function (index, sendIndex, i
 EffectTrackBankProxy.prototype.scrollToChannel = function (channel)
 {
     channel = channel - this.audioInstrumentTrackBank.getTrackCount ();
-    if (channel >= 0 && channel < this.trackCount)
+    if (channel >= 0 && channel < this.getTrackCount ())
         this.trackBank.scrollToChannel (Math.floor (channel / this.numTracks) * this.numTracks);
 };
 

@@ -26,7 +26,7 @@ function MasterTrackProxy ()
     this.textLength = GlobalConfig.MASTER_TRACK_TEXT_LENGTH;
 
     // DeviceChain attributes
-    this.masterTrack.addIsSelectedObserver (doObject (this, MasterTrackProxy.prototype.handleIsSelected));
+    this.masterTrack.addIsSelectedInEditorObserver (doObject (this, MasterTrackProxy.prototype.handleIsSelected));
     this.masterTrack.addNameObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handleName));
     
     // Channel attributes
@@ -64,6 +64,11 @@ MasterTrackProxy.prototype.getColorEntry = function ()
 };
 
 MasterTrackProxy.prototype.getColor = function () { return this.color; };
+
+MasterTrackProxy.prototype.setColor = function (red, green, blue)
+{
+    this.masterTrack.color ().set (red, green, blue);
+};
 
 MasterTrackProxy.prototype.isMute = function () { return this.mute; };
 MasterTrackProxy.prototype.isSolo = function () { return this.solo; };

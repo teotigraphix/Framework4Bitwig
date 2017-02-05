@@ -56,7 +56,10 @@ function TransportProxy ()
     this.transport.getTempo ().addRawValueObserver (doObject (this, TransportProxy.prototype.handleTempo));
     this.transport.getCrossfade ().addValueObserver (Config.maxParameterValue, doObject (this, TransportProxy.prototype.handleCrossfade));
     this.transport.getPosition ().addTimeObserver (":", 3, 2, 2, 2, doObject (this, TransportProxy.prototype.handlePosition));
-
+    
+    // Workaround
+    this.transport.getPosition ().markInterested ();
+    
     var ts = this.transport.getTimeSignature ();
     ts.getNumerator ().addValueObserver (doObject (this, TransportProxy.prototype.handleNumerator));
     ts.getDenominator ().addValueObserver (doObject (this, TransportProxy.prototype.handleDenominator));
@@ -242,8 +245,7 @@ TransportProxy.prototype.tapTempo = function ()
 TransportProxy.prototype.changeTempo = function (increase, fine)
 {
     var offset = fine ? 0.01 : 1;
-    this.tempo = increase ? Math.min (this.tempo + offset, TransportProxy.TEMPO_MAX) : Math.max (TransportProxy.TEMPO_MIN, this.tempo - offset);
-    this.transport.getTempo ().setRaw (this.tempo);
+    this.transport.getTempo ().incRaw (increase ? offset : -offset);
 };
 
 TransportProxy.prototype.setTempo = function (bpm)

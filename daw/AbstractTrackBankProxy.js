@@ -71,14 +71,12 @@ function AbstractTrackBankProxy (numTracks, numScenes, numSends)
     // 6: 16 Bars
     // 7: 32 Bars
     this.newClipLength = 2;
-    this.recCount = numTracks * numScenes;
     this.listeners = [];
     this.noteListeners = [];
     this.prefferedViews = [];
     this.primaryDevice = null;
+    this.isClipRecCache = false;
     
-    this.trackCount = 0;
-
     this.tracks = this.createTracks (this.numTracks);
     
     this.cursorTrack = host.createArrangerCursorTrack (0, 0);
@@ -94,7 +92,7 @@ AbstractTrackBankProxy.prototype.init = function ()
 
         // DeviceChain attributes
         t.exists ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleExists));
-        t.addIsSelectedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleBankTrackSelection));
+        t.addIsSelectedInEditorObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleBankTrackSelection));
         t.addNameObserver (this.textLength, '', doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleName));
 
         // Channel attributes
@@ -137,12 +135,12 @@ AbstractTrackBankProxy.prototype.init = function ()
     this.trackBank.addCanScrollScenesDownObserver (doObject (this, AbstractTrackBankProxy.prototype.handleCanScrollScenesDown));
     this.trackBank.addSceneScrollPositionObserver (doObject (this, AbstractTrackBankProxy.prototype.handleSceneScrollPosition), -1);
     
-    this.trackBank.addChannelCountObserver (doObject (this, AbstractTrackBankProxy.prototype.handleChannelCount));
+    this.trackBank.channelCount ().markInterested ();
 };
 
 AbstractTrackBankProxy.prototype.getTrackCount = function ()
 {
-    return this.trackCount;
+    return this.trackBank.channelCount ().get ();
 };
 
 AbstractTrackBankProxy.prototype.isMuteState = function ()
@@ -160,7 +158,24 @@ AbstractTrackBankProxy.prototype.setTrackState = function (state)
     this.trackState = state;
 };
 
-AbstractTrackBankProxy.prototype.isClipRecording = function () { return this.recCount != 0; };
+AbstractTrackBankProxy.prototype.isClipRecording = function ()
+{
+    return this.isClipRecCache;
+};
+
+AbstractTrackBankProxy.prototype.internalIsClipRecording = function ()
+{
+    for (var t = 0; t < this.numTracks; t++)
+    {
+        for (var s = 0; s < this.numScenes; s++)
+        {
+            var slot = this.tracks[t].slots[s];
+            if (slot.hasContent && slot.isRecording)
+                return true;
+        }
+    }
+    return false;
+};
 
 AbstractTrackBankProxy.prototype.getNewClipLength = function () { return this.newClipLength; };
 AbstractTrackBankProxy.prototype.setNewClipLength = function (value) { this.newClipLength = value; };
@@ -529,6 +544,7 @@ AbstractTrackBankProxy.prototype.scrollToScene = function (position)
 {
     this.trackBank.scrollToScene (position);
     // TODO Bugfix required - Call it twice to work around a Bitwig bug
+    // https://github.com/teotigraphix/Framework4Bitwig/issues/103
     this.trackBank.scrollToScene (position);
 };
 
@@ -538,6 +554,11 @@ AbstractTrackBankProxy.prototype.scrollToScene = function (position)
 AbstractTrackBankProxy.prototype.getClipLauncherScenes = function ()
 {
     return this.trackBank.getClipLauncherScenes ();
+};
+
+AbstractTrackBankProxy.prototype.setTrackColor = function (trackIndex, red, green, blue)
+{
+    this.trackBank.getChannel (trackIndex).color ().set (red, green, blue);
 };
 
 AbstractTrackBankProxy.prototype.getTrackColorEntry = function (trackIndex)
@@ -644,13 +665,15 @@ AbstractTrackBankProxy.prototype.notifyListeners = function (pressed, note, velo
 // Callback Handlers
 //--------------------------------------
 
+// Scrolls the channel bank window so that the channel at the given position becomes visible as part of the window
 AbstractTrackBankProxy.prototype.scrollToChannel = function (channel)
 {
-    if (channel < this.trackCount)
+    if (channel < this.getTrackCount ())
     {
         var pos = Math.floor (channel / this.numTracks) * this.numTracks;
         this.trackBank.scrollToChannel (pos);
         // TODO Bugfix required - Call it twice to work around a Bitwig bug
+        // https://github.com/teotigraphix/Framework4Bitwig/issues/103
         this.trackBank.scrollToChannel (pos);
     }
 };
@@ -799,18 +822,11 @@ AbstractTrackBankProxy.prototype.handleSlotColor = function (index, slot, red, g
 
 AbstractTrackBankProxy.prototype.handlePlaybackState = function (index, slot, state, isQueued)
 {
-    var wasRecording = this.tracks[index].slots[slot].isRecording;
-
     this.tracks[index].slots[slot].isPlaying = state == 1;
     this.tracks[index].slots[slot].isRecording = state == 2;
     this.tracks[index].slots[slot].isQueued = isQueued;
-
-    if (wasRecording === this.tracks[index].slots[slot].isRecording)
-        return;
-    if (wasRecording)
-        this.recCount++;
-    else
-        this.recCount--;
+    
+    this.internalIsClipRecording ();
 };
 
 AbstractTrackBankProxy.prototype.handleCanScrollTracksUp = function (canScroll)
@@ -836,9 +852,4 @@ AbstractTrackBankProxy.prototype.handleCanScrollScenesDown = function (canScroll
 AbstractTrackBankProxy.prototype.handleSceneScrollPosition = function (position)
 {
     this.scenePosition = position;
-};
-
-AbstractTrackBankProxy.prototype.handleChannelCount = function (count)
-{
-    this.trackCount = count;
 };

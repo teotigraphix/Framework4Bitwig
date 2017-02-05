@@ -33,6 +33,11 @@ function CursorClipProxy (stepSize, rowSize)
     this.clip.getAccent ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handleAccent));
 }
 
+CursorClipProxy.prototype.setColor = function (red, green, blue)
+{
+    this.clip.color ().set (red, green, blue);
+};
+
 CursorClipProxy.prototype.getPlayStart = function ()
 {
     return this.playStart;
@@ -69,9 +74,9 @@ CursorClipProxy.prototype.changePlayStart = function (value, fractionValue)
     this.playStart = Math.min (this.playEnd, changeValue (value, this.playStart, fractionValue, Number.MAX_VALUE));
     this.setPlayStart (this.playStart);
   
-// TODO Crashes 1.3.15:
-//    this.clip.getPlayStart ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
-    
+    // TODO Bugfix required - Crashes 1.3.15
+    // https://github.com/teotigraphix/Framework4Bitwig/issues/137
+    // this.clip.getPlayStart ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 CursorClipProxy.prototype.getPlayEnd = function ()
@@ -85,6 +90,10 @@ CursorClipProxy.prototype.changePlayEnd = function (value, fractionValue)
     if (this.loopEnabled)
         this.playEnd = Math.min (this.loopStart + this.loopLength, this.playEnd);
     this.setPlayEnd (this.playEnd);
+
+    // TODO Bugfix required - Crashes 1.3.15
+    // https://github.com/teotigraphix/Framework4Bitwig/issues/137
+    //    this.clip.getPlayStop ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
 };
 
 CursorClipProxy.prototype.getLoopStart = function ()
