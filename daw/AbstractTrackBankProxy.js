@@ -668,7 +668,7 @@ AbstractTrackBankProxy.prototype.notifyListeners = function (pressed, note, velo
 // Scrolls the channel bank window so that the channel at the given position becomes visible as part of the window
 AbstractTrackBankProxy.prototype.scrollToChannel = function (channel)
 {
-    if (channel < this.getTrackCount ())
+    if (channel >= 0 && channel < this.getTrackCount ())
     {
         var pos = Math.floor (channel / this.numTracks) * this.numTracks;
         this.trackBank.scrollToChannel (pos);
