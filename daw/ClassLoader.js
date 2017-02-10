@@ -17,6 +17,5 @@ load ("MixerProxy.js");
 load ("AbstractTrackBankProxy.js");
 load ("TrackBankProxy.js");
 load ("EffectTrackBankProxy.js");
-load ("UserControlBankProxy.js");
 load ("SceneBankProxy.js");
 load ("Model.js");

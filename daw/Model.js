@@ -3,7 +3,7 @@
 // (c) 2014-2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function Model (userCCStart,               // The MIDI CC at which the user parameters start
+function Model (userCCStart,               // The MIDI CC at which the user parameters start          - TODO Remove
                 scales,                    // The scales object
                 numTracks,                 // The number of track to monitor (per track bank)
                 numScenes,                 // The number of scenes to monitor (per scene bank)
@@ -39,8 +39,6 @@ function Model (userCCStart,               // The MIDI CC at which the user para
     this.masterTrack = new MasterTrackProxy ();
     this.trackBank = new TrackBankProxy (this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
     this.effectTrackBank = new EffectTrackBankProxy (this.numTracks, this.numScenes, this.trackBank);
-    if (userCCStart >= 0)
-        this.userControlBank = new UserControlBankProxy (userCCStart);
 
     this.cursorDevice = new CursorDeviceProxy (host.createEditorCursorDevice (this.numSends), this.numSends);
     this.sceneBank = new SceneBankProxy (this.numScenes);
@@ -153,11 +151,6 @@ Model.prototype.getDevice = function ()
     
     return this.getCursorDevice ();
 };
-
-/**
- * @returns {UserControlBankProxy}
- */
-Model.prototype.getUserControlBank = function () { return this.userControlBank; };
 
 /**
  * @returns {ApplicationProxy}
