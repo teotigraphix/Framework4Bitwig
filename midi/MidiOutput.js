@@ -8,11 +8,6 @@ function MidiOutput ()
     this.port = host.getMidiOutPort (0);
 }
 
-MidiOutput.prototype.setShouldSendMidiBeatClock = function (shouldSendClock)
-{
-	this.port.setShouldSendMidiBeatClock (shouldSendClock);
-};
-
 MidiOutput.prototype.sendCC = function (cc, value)
 {
     this.port.sendMidi (0xB0, cc, value);

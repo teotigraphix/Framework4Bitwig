@@ -57,9 +57,6 @@ function TransportProxy ()
     this.transport.getCrossfade ().addValueObserver (Config.maxParameterValue, doObject (this, TransportProxy.prototype.handleCrossfade));
     this.transport.getPosition ().addTimeObserver (":", 3, 2, 2, 2, doObject (this, TransportProxy.prototype.handlePosition));
     
-    // Workaround
-    this.transport.getPosition ().markInterested ();
-    
     var ts = this.transport.getTimeSignature ();
     ts.getNumerator ().addValueObserver (doObject (this, TransportProxy.prototype.handleNumerator));
     ts.getDenominator ().addValueObserver (doObject (this, TransportProxy.prototype.handleDenominator));
@@ -78,21 +75,6 @@ TransportProxy.prototype.getInPosition = function ()
 TransportProxy.prototype.getOutPosition = function ()
 {
     return this.transport.getOutPosition ();
-};
-
-TransportProxy.prototype.getPosition = function ()
-{
-    return this.transport.getPosition ();
-};
-
-TransportProxy.prototype.getPositionText = function ()
-{
-    return this.position;
-};
-
-TransportProxy.prototype.incPosition = function (deltaBase, snap)
-{
-    this.transport.incPosition (deltaBase, snap);
 };
 
 TransportProxy.prototype.play = function ()
@@ -156,9 +138,30 @@ TransportProxy.prototype.setOverdub = function (on)
     this.transport.setOverdub (on);
 };
 
+TransportProxy.prototype.getPosition = function ()
+{
+    return this.transport.getPosition ();
+};
+
+TransportProxy.prototype.getPositionText = function ()
+{
+    return this.position;
+};
+
 TransportProxy.prototype.setPosition = function (beats)
 {
     this.transport.setPosition (beats);
+};
+
+TransportProxy.prototype.changePosition = function (increase, slow)
+{
+    var frac = slow ? TransportProxy.INC_FRACTION_TIME_SLOW : TransportProxy.INC_FRACTION_TIME;
+    this.transport.incPosition (increase ? frac : -frac, false);
+};
+
+TransportProxy.prototype.incPosition = function (deltaBase, snap)
+{
+    this.transport.incPosition (deltaBase, snap);
 };
 
 TransportProxy.prototype.stop = function ()
@@ -229,12 +232,6 @@ TransportProxy.prototype.stopAndRewind = function ()
     {
         this.transport.setPosition (0);
     }), null, 100);
-};
-
-TransportProxy.prototype.changePosition = function (increase, slow)
-{
-    var frac = slow ? TransportProxy.INC_FRACTION_TIME_SLOW : TransportProxy.INC_FRACTION_TIME;
-    this.transport.incPosition (increase ? frac : -frac, false);
 };
 
 TransportProxy.prototype.tapTempo = function ()
