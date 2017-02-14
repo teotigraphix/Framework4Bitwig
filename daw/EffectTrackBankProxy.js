@@ -3,9 +3,11 @@
 // (c) 2014-2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function EffectTrackBankProxy (numTracks, numScenes, audioInstrumentTrackBank)
+function EffectTrackBankProxy (cursorTrack, numTracks, numScenes, audioInstrumentTrackBank)
 {
     AbstractTrackBankProxy.call (this, numTracks, numScenes, 0);
+    
+    this.cursorTrack = cursorTrack;
     
     this.audioInstrumentTrackBank = audioInstrumentTrackBank;
 

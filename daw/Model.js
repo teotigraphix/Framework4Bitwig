@@ -37,8 +37,10 @@ function Model (userCCStart,               // The MIDI CC at which the user para
     this.transport = new TransportProxy ();
     this.groove = new GrooveProxy ();
     this.masterTrack = new MasterTrackProxy ();
-    this.trackBank = new TrackBankProxy (this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
-    this.effectTrackBank = new EffectTrackBankProxy (this.numTracks, this.numScenes, this.trackBank);
+    this.cursorTrack = host.createArrangerCursorTrack (0, 0);
+    this.trackBank = new TrackBankProxy (this.cursorTrack, this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
+    this.effectTrackBank = new EffectTrackBankProxy (this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
+    this.primaryDevice = new CursorDeviceProxy (this.cursorTrack.createCursorDevice ("Primary", this.numSends), this.numSends);
 
     this.cursorDevice = new CursorDeviceProxy (host.createEditorCursorDevice (this.numSends), this.numSends);
     this.sceneBank = new SceneBankProxy (this.numScenes);
@@ -47,10 +49,9 @@ function Model (userCCStart,               // The MIDI CC at which the user para
     this.arranger = new ArrangerProxy ();
     this.mixer = new MixerProxy ();
     
-    this.browser = new BrowserProxy (this.trackBank.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
+    this.browser = new BrowserProxy (this.cursorTrack, this.cursorDevice, this.numFilterColumnEntries, this.numResults);
 
     this.currentTrackBank = this.trackBank;
-
     this.scales = scales;
 }
 
@@ -70,6 +71,11 @@ Model.prototype.hasSelectedDevice = function ()
 Model.prototype.getSelectedDevice = function ()
 {
     return this.cursorDevice.getSelectedDevice ();
+};
+
+Model.prototype.getPrimaryDevice = function ()
+{
+    return this.primaryDevice;
 };
 
 Model.prototype.getProject = function () { return this.project; };
@@ -135,20 +141,12 @@ Model.prototype.getCursorDevice = function () { return this.cursorDevice; };
 
 
 /**
- * Get the selected device. If there is none try with the primary device of the current track.
+ * Get the selected device.
  * 
  * @returns {CursorDeviceProxy}
  */
 Model.prototype.getDevice = function ()
 {
-    if (this.hasSelectedDevice ())
-        return this.getCursorDevice ();
-
-    var tb = this.getCurrentTrackBank ();
-    var primary = tb.primaryDevice;
-    if (primary.hasSelectedDevice ())
-        return primary;
-    
     return this.getCursorDevice ();
 };
 

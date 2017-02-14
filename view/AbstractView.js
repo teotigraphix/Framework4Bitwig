@@ -40,6 +40,8 @@ AbstractView.prototype.onActivate = function ()
     this.updateNoteMapping ();
 };
 
+AbstractView.prototype.onDeactivate = function () {};
+
 AbstractView.prototype.onChannelAftertouch = function (value) {};
 
 AbstractView.prototype.onPolyAftertouch = function (note, value) {};

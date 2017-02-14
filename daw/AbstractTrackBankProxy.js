@@ -74,18 +74,13 @@ function AbstractTrackBankProxy (numTracks, numScenes, numSends)
     this.listeners = [];
     this.noteListeners = [];
     this.prefferedViews = [];
-    this.primaryDevice = null;
     this.isClipRecCache = false;
     
     this.tracks = this.createTracks (this.numTracks);
-    
-    this.cursorTrack = host.createArrangerCursorTrack (0, 0);
 }
 
 AbstractTrackBankProxy.prototype.init = function ()
 {
-    this.primaryDevice = new CursorDeviceProxy (this.cursorTrack.createCursorDevice ("Primary", this.numSends), this.numSends);
-
     for (var i = 0; i < this.numTracks; i++)
     {
         var t = this.trackBank.getChannel (i);

@@ -43,6 +43,24 @@ function AbstractDrumView (model, numSequencerLines, numPlayLines)
 }
 AbstractDrumView.prototype = new AbstractSequencerView ();
 
+AbstractDrumView.prototype.onActivate = function ()
+{
+    AbstractSequencerView.prototype.onActivate.call (this);
+    
+    var primary = this.model.getPrimaryDevice ();
+    primary.enableObservers (true);
+    primary.setDrumPadIndication (true);
+};
+
+AbstractDrumView.prototype.onDeactivate = function ()
+{
+    AbstractSequencerView.prototype.onDeactivate.call (this);
+    
+    var primary = this.model.getPrimaryDevice ();
+    primary.enableObservers (false);
+    primary.setDrumPadIndication (false);
+};
+
 AbstractDrumView.prototype.onGridNote = function (note, velocity)
 {
     if (!this.model.canSelectedTrackHoldNotes ())
@@ -113,7 +131,7 @@ AbstractDrumView.prototype.drawGrid = function ()
     }
 
     // halfColumns x playLines Drum Pad Grid
-    var primary = this.model.getTrackBank ().primaryDevice;
+    var primary = this.model.getPrimaryDevice ();
     var hasDrumPads = primary.hasDrumPads ();
     var isSoloed = false;
     if (hasDrumPads)
@@ -235,7 +253,7 @@ AbstractDrumView.prototype.onOctaveDown = function (event)
     this.offsetY = AbstractDrumView.DRUM_START_KEY + this.scales.getDrumOctave () * 16;
     this.updateNoteMapping ();
     displayNotification (this.scales.getDrumRangeText ());
-    this.model.getTrackBank ().primaryDevice.scrollDrumPadsPageUp ();
+    this.model.getPrimaryDevice ().scrollDrumPadsPageUp ();
 };
 
 AbstractDrumView.prototype.onOctaveUp = function (event)
@@ -247,7 +265,7 @@ AbstractDrumView.prototype.onOctaveUp = function (event)
     this.offsetY = AbstractDrumView.DRUM_START_KEY + this.scales.getDrumOctave () * 16;
     this.updateNoteMapping ();
     displayNotification (this.scales.getDrumRangeText ());
-    this.model.getTrackBank ().primaryDevice.scrollDrumPadsPageDown ();
+    this.model.getPrimaryDevice ().scrollDrumPadsPageDown ();
 };
 
 AbstractDrumView.prototype.playNote = function (note, velocity)
@@ -294,13 +312,13 @@ AbstractDrumView.prototype.handleDeleteButton = function (playedPad)
 AbstractDrumView.prototype.handleMuteButton = function (playedPad)
 {
     this.surface.setButtonConsumed (this.surface.muteButtonId);
-    this.model.getTrackBank ().primaryDevice.toggleLayerOrDrumPadMute (playedPad);
+    this.model.getPrimaryDevice ().toggleLayerOrDrumPadMute (playedPad);
 };
 
 AbstractDrumView.prototype.handleSoloButton = function (playedPad)
 {
     this.surface.setButtonConsumed (this.surface.soloButtonId);
-    this.model.getTrackBank ().primaryDevice.toggleLayerOrDrumPadSolo (playedPad);
+    this.model.getPrimaryDevice ().toggleLayerOrDrumPadSolo (playedPad);
 };
 
 AbstractDrumView.prototype.handleSelectButton = function (playedPad)

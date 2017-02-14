@@ -5,16 +5,17 @@
 
 function CursorClipProxy (stepSize, rowSize)
 {
-    this.stepSize    = stepSize;
-    this.rowSize     = rowSize;
-    this.step        = -1;
-    this.playStart   = 0.0;
-    this.playEnd     = 4.0;
-    this.loopStart   = 0.0;
-    this.loopLength  = 4.0;
-    this.loopEnabled = true;
-    this.shuffle     = true;
-    this.accent      = 0;
+    this.stepSize      = stepSize;
+    this.rowSize       = rowSize;
+    this.step          = -1;
+    this.playStart     = 0.0;
+    this.playEnd       = 4.0;
+    this.loopStart     = 0.0;
+    this.loopLength    = 4.0;
+    this.loopEnabled   = true;
+    this.shuffle       = true;
+    this.accent        = 0;
+    this.accentDisplay = 0;
 
     this.data = [];
     for (var step = 0; step < this.stepSize; step++)
@@ -33,6 +34,19 @@ function CursorClipProxy (stepSize, rowSize)
     this.clip.getAccent ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handleAccent));
 }
 
+CursorClipProxy.prototype.enableObservers = function (enable)
+{
+    // TODO
+    
+    this.clip.getPlayStart ().setIsSubscribed (enable);
+    this.clip.getPlayStop ().setIsSubscribed (enable);
+    this.clip.getLoopStart ().setIsSubscribed (enable);
+    this.clip.getLoopLength ().setIsSubscribed (enable);
+    this.clip.isLoopEnabled ().setIsSubscribed (enable);
+    this.clip.getShuffle ().setIsSubscribed (enable);
+    this.clip.getAccent ().setIsSubscribed (enable);
+};
+
 CursorClipProxy.prototype.setColor = function (red, green, blue)
 {
     this.clip.color ().set (red, green, blue);
@@ -45,12 +59,12 @@ CursorClipProxy.prototype.getPlayStart = function ()
 
 CursorClipProxy.prototype.setPlayStart = function (start)
 {
-    this.clip.getPlayStart ().setRaw (start);
+    this.clip.getPlayStart ().set (start);
 };
 
 CursorClipProxy.prototype.setPlayEnd = function (end)
 {
-    this.clip.getPlayStop ().setRaw (end);
+    this.clip.getPlayStop ().set (end);
 };
 
 CursorClipProxy.prototype.setPlayRange = function (start, end)
@@ -71,12 +85,7 @@ CursorClipProxy.prototype.setPlayRange = function (start, end)
 
 CursorClipProxy.prototype.changePlayStart = function (value, fractionValue)
 {
-    this.playStart = Math.min (this.playEnd, changeValue (value, this.playStart, fractionValue, Number.MAX_VALUE));
-    this.setPlayStart (this.playStart);
-  
-    // TODO Bugfix required - Crashes 1.3.15
-    // https://github.com/teotigraphix/Framework4Bitwig/issues/137
-    // this.clip.getPlayStart ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
+    this.clip.getPlayStart ().inc (calcKnobSpeed (value, fractionValue));
 };
 
 CursorClipProxy.prototype.getPlayEnd = function ()
@@ -86,14 +95,7 @@ CursorClipProxy.prototype.getPlayEnd = function ()
 
 CursorClipProxy.prototype.changePlayEnd = function (value, fractionValue)
 {
-    this.playEnd = Math.max (this.playStart, changeValue (value, this.playEnd, fractionValue, Number.MAX_VALUE));
-    if (this.loopEnabled)
-        this.playEnd = Math.min (this.loopStart + this.loopLength, this.playEnd);
-    this.setPlayEnd (this.playEnd);
-
-    // TODO Bugfix required - Crashes 1.3.15
-    // https://github.com/teotigraphix/Framework4Bitwig/issues/137
-    //    this.clip.getPlayStop ().inc (calcKnobSpeed (value, fractionValue), Config.maxParameterValue);
+    this.clip.getPlayStop ().inc (calcKnobSpeed (value, fractionValue));
 };
 
 CursorClipProxy.prototype.getLoopStart = function ()
@@ -103,13 +105,12 @@ CursorClipProxy.prototype.getLoopStart = function ()
 
 CursorClipProxy.prototype.setLoopStart = function (start)
 {
-    this.clip.getLoopStart ().setRaw (start);
+    this.clip.getLoopStart ().set (start);
 };
 
 CursorClipProxy.prototype.changeLoopStart = function (value, fractionValue)
 {
-    this.loopStart = changeValue (value, this.loopStart, fractionValue, Number.MAX_VALUE);
-    this.setLoopStart (this.loopStart);
+    this.clip.getLoopStart ().inc (calcKnobSpeed (value, fractionValue));
 };
 
 CursorClipProxy.prototype.getLoopLength = function ()
@@ -119,13 +120,12 @@ CursorClipProxy.prototype.getLoopLength = function ()
 
 CursorClipProxy.prototype.setLoopLength = function (length)
 {
-    this.clip.getLoopLength ().setRaw (length);
+    this.clip.getLoopLength ().set (length);
 };
 
 CursorClipProxy.prototype.changeLoopLength = function (value, fractionValue)
 {
-    this.loopLength = changeValue (value, this.loopLength, fractionValue, Number.MAX_VALUE);
-    this.setLoopLength (this.loopLength);
+    this.clip.getLoopLength ().inc (calcKnobSpeed (value, fractionValue));
 };
 
 CursorClipProxy.prototype.isLoopEnabled = function ()
@@ -150,14 +150,17 @@ CursorClipProxy.prototype.setShuffleEnabled = function (enable)
 
 CursorClipProxy.prototype.getAccent = function ()
 {
-    var value = Math.round (this.accent * 10000) / 100;
-    return value + "%";
+    return (Math.round (this.accent * 10000) / 100) + "%";
+};
+
+CursorClipProxy.prototype.resetAccent = function ()
+{
+    this.clip.getAccent ().set (0.5);
 };
 
 CursorClipProxy.prototype.changeAccent = function (value, fractionValue)
 {
-    this.accent = Math.max (-1, changeValue (value, this.accent, fractionValue / 100, 2, -1));
-    this.clip.getAccent ().setRaw (this.accent);
+    this.clip.getAccent ().inc (calcKnobSpeed (value, fractionValue / 100));
 };
 
 CursorClipProxy.prototype.getStepSize = function ()

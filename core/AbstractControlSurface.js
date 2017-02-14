@@ -157,16 +157,26 @@ AbstractControlSurface.prototype.addView = function (viewId, view)
 {
     view.attachTo (this);
     this.views[viewId] = view;
+    
+    // Make sure it is off until used
+    view.onDeactivate ();
 };
 
 AbstractControlSurface.prototype.setActiveView = function (viewId)
 {
+    // Deactivate current view
+    var view = this.getActiveView ();
+    if (view != null)
+        view.onDeactivate ();
+
+    // Set the new view
     this.previousViewId = this.activeViewId;
     this.activeViewId = viewId;
 
-    var view = this.getActiveView ();
+    view = this.getActiveView ();
     if (view == null)
     {
+        // The view does not exist -> critical error
         this.shutdown ();
         return;
     }
