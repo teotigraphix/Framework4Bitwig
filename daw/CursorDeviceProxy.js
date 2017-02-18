@@ -62,9 +62,9 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
     this.cursorDevice.isExpanded ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsExpanded));
     this.cursorDevice.isRemoteControlsSectionVisible ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleIsParameterPageSectionVisible));
     
-    this.remoteControls = this.cursorDevice.createMainRemoteControls (this.numParams);
-    this.remoteControls.hasPreviousPage ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handlePreviousParameterPageEnabled));
-    this.remoteControls.hasNextPage ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleNextParameterPageEnabled));
+    this.remoteControls = this.cursorDevice.createCursorRemoteControlsPage (this.numParams);
+    this.remoteControls.hasPrevious ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handlePreviousParameterPageEnabled));
+    this.remoteControls.hasNext ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleNextParameterPageEnabled));
     this.remoteControls.selectedPageIndex ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handleSelectedPage));
     this.remoteControls.pageNames ().addValueObserver (doObject (this, CursorDeviceProxy.prototype.handlePageNames));
     
@@ -198,8 +198,8 @@ CursorDeviceProxy.prototype.enableObservers = function (enable)
     this.cursorDevice.isExpanded ().setIsSubscribed (enable);
     this.cursorDevice.isRemoteControlsSectionVisible ().setIsSubscribed (enable);
     
-    this.remoteControls.hasPreviousPage ().setIsSubscribed (enable);
-    this.remoteControls.hasNextPage ().setIsSubscribed (enable);
+    this.remoteControls.hasPrevious ().setIsSubscribed (enable);
+    this.remoteControls.hasNext ().setIsSubscribed (enable);
     this.remoteControls.selectedPageIndex ().setIsSubscribed (enable);
     this.remoteControls.pageNames ().setIsSubscribed (enable);
 

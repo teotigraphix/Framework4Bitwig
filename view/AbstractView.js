@@ -3,6 +3,10 @@
 // (c) 2014-2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
+
+AbstractView.scrollerTask = new TimerTask (Config.scrollInterval);
+
+
 function AbstractView (model)
 {
     this.surface = null;
@@ -17,8 +21,6 @@ function AbstractView (model)
 
     // Override in subclass with specific Config value
     this.scrollerInterval = 100;
-
-    this.scrollerTask = new TimerTask (this, null, this.scrollerInterval);
 }
 
 AbstractView.prototype.attachTo = function (surface)
@@ -98,13 +100,9 @@ AbstractView.prototype.handleScroller = function (event, method)
     if (event.isDown ())
         method.call (this, event);
     else if (event.isLong ())
-    {
-        this.scrollerTask.stop ();
-        this.scrollerTask.callback = method;
-        this.scrollerTask.start ([event]);
-    }
+        AbstractView.scrollerTask.start (this, method, [event]);
     else if (event.isUp ())
-        this.scrollerTask.stop ();
+        AbstractView.scrollerTask.stop ();
 };
 
 AbstractView.prototype.getColor = function (pad, selectedTrack)

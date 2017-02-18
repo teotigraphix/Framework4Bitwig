@@ -3,19 +3,20 @@
 // (c) 2014-2017
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-function TimerTask (scope, callback, interval)
+function TimerTask (interval)
 {
-    this.scope = scope;
-    this.callback = callback;
     this.interval = interval;
     this.args = [];
     this.isRunning = false;
 }
 
-TimerTask.prototype.start = function (args)
+TimerTask.prototype.start = function (scope, callback, args)
 {
-    this.isRunning = true;
+    this.scope = scope;
+    this.callback = callback;
     this.args = args;
+
+    this.isRunning = true;
     this._timer ();
 };
 

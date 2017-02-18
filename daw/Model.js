@@ -40,7 +40,7 @@ function Model (userCCStart,               // The MIDI CC at which the user para
     this.cursorTrack = host.createArrangerCursorTrack (0, 0);
     this.trackBank = new TrackBankProxy (this.cursorTrack, this.numTracks, this.numScenes, this.numSends, this.hasFlatTrackList);
     this.effectTrackBank = new EffectTrackBankProxy (this.cursorTrack, this.numTracks, this.numScenes, this.trackBank);
-    this.primaryDevice = new CursorDeviceProxy (this.cursorTrack.createCursorDevice ("Primary", this.numSends), this.numSends);
+    this.primaryDevice = new CursorDeviceProxy (this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", this.numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), this.numSends);
 
     this.cursorDevice = new CursorDeviceProxy (host.createEditorCursorDevice (this.numSends), this.numSends);
     this.sceneBank = new SceneBankProxy (this.numScenes);

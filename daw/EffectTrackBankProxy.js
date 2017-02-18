@@ -12,7 +12,7 @@ function EffectTrackBankProxy (cursorTrack, numTracks, numScenes, audioInstrumen
     this.audioInstrumentTrackBank = audioInstrumentTrackBank;
 
     this.trackBank = host.createEffectTrackBank (numTracks, numScenes);
-    this.cursorTrack.addPositionObserver (doObject (this, EffectTrackBankProxy.prototype.handleTrackSelection));
+    this.trackBank.followCursorTrack (cursorTrack);
     
     this.init ();
 }
@@ -27,9 +27,4 @@ EffectTrackBankProxy.prototype.scrollToChannel = function (channel)
     channel = channel - this.audioInstrumentTrackBank.getTrackCount ();
     if (channel >= 0 && channel < this.getTrackCount ())
         this.trackBank.scrollToChannel (Math.floor (channel / this.numTracks) * this.numTracks);
-};
-
-EffectTrackBankProxy.prototype.handleTrackSelection = function (index)
-{
-   this.scrollToChannel (index);
 };

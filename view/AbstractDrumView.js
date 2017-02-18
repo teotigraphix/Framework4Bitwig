@@ -249,11 +249,14 @@ AbstractDrumView.prototype.onOctaveDown = function (event)
     if (!event.isDown ())
         return;
     this.clearPressedKeys ();
+    var oldDrumOctave = this.scales.getDrumOctave ();
     this.scales.decDrumOctave ();
-    this.offsetY = AbstractDrumView.DRUM_START_KEY + this.scales.getDrumOctave () * 16;
+    var newDrumOctave = this.scales.getDrumOctave ();
+    this.offsetY = AbstractDrumView.DRUM_START_KEY + newDrumOctave * 16;
     this.updateNoteMapping ();
     displayNotification (this.scales.getDrumRangeText ());
-    this.model.getPrimaryDevice ().scrollDrumPadsPageUp ();
+    if (oldDrumOctave != newDrumOctave)
+        this.model.getPrimaryDevice ().scrollDrumPadsPageUp ();
 };
 
 AbstractDrumView.prototype.onOctaveUp = function (event)
@@ -261,11 +264,14 @@ AbstractDrumView.prototype.onOctaveUp = function (event)
     if (!event.isDown ())
         return;
     this.clearPressedKeys ();
+    var oldDrumOctave = this.scales.getDrumOctave ();
     this.scales.incDrumOctave ();
-    this.offsetY = AbstractDrumView.DRUM_START_KEY + this.scales.getDrumOctave () * 16;
+    var newDrumOctave = this.scales.getDrumOctave ();
+    this.offsetY = AbstractDrumView.DRUM_START_KEY + newDrumOctave * 16;
     this.updateNoteMapping ();
     displayNotification (this.scales.getDrumRangeText ());
-    this.model.getPrimaryDevice ().scrollDrumPadsPageDown ();
+    if (oldDrumOctave != newDrumOctave)
+        this.model.getPrimaryDevice ().scrollDrumPadsPageDown ();
 };
 
 AbstractDrumView.prototype.playNote = function (note, velocity)

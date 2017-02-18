@@ -272,7 +272,7 @@ Scales.prototype.decOctave = function ()
 
 Scales.prototype.setDrumOctave = function (drumOctave)
 {
-    this.drumOctave = Math.max (-3, Math.min (drumOctave, 5));
+    this.drumOctave = Math.max (-2, Math.min (drumOctave, 4));
 };
 
 Scales.prototype.getDrumOctave = function ()
