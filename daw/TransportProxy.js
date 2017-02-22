@@ -38,24 +38,29 @@ function TransportProxy ()
     this.prerollClick                    = false;
     this.position                        = 0;
     
-    this.transport.addClickObserver (doObject (this, TransportProxy.prototype.handleClick));
-    this.transport.addIsPlayingObserver (doObject (this, TransportProxy.prototype.handleIsPlaying));
-    this.transport.addIsRecordingObserver (doObject (this, TransportProxy.prototype.handleIsRecording));
-    this.transport.addIsLoopActiveObserver (doObject (this, TransportProxy.prototype.handleIsLoopActive));
-    this.transport.addPunchInObserver (doObject (this, TransportProxy.prototype.handlePunchIn));
-    this.transport.addPunchOutObserver (doObject (this, TransportProxy.prototype.handlePunchOut));
-    this.transport.addOverdubObserver (doObject (this, TransportProxy.prototype.handleOverdub));
-    this.transport.addLauncherOverdubObserver (doObject (this, TransportProxy.prototype.handleLauncherOverdub));
-    this.transport.addAutomationWriteModeObserver (doObject (this, TransportProxy.prototype.handleAutomationWriteMode));
-    this.transport.addAutomationOverrideObserver (doObject (this, TransportProxy.prototype.handleAutomationOverrideObserver));
-    this.transport.addIsWritingArrangerAutomationObserver (doObject (this, TransportProxy.prototype.handleIsWritingArrangerAutomation));
-    this.transport.addIsWritingClipLauncherAutomationObserver (doObject (this, TransportProxy.prototype.handleIsWritingClipLauncherAutomation));
-    this.transport.addMetronomeVolumeObserver (doObject (this, TransportProxy.prototype.handleMetronomeVolume));
-    this.transport.addPreRollObserver (doObject (this, TransportProxy.prototype.handlePreRoll));
-    this.transport.addPreRollClickObserver (doObject (this, TransportProxy.prototype.handlePreRollClick));
-    this.transport.getTempo ().addRawValueObserver (doObject (this, TransportProxy.prototype.handleTempo));
-    this.transport.getCrossfade ().addValueObserver (Config.maxParameterValue, doObject (this, TransportProxy.prototype.handleCrossfade));
+    this.transport.isPlaying ().addValueObserver (doObject (this, TransportProxy.prototype.handleIsPlaying));
+    this.transport.isArrangerRecordEnabled ().addValueObserver (doObject (this, TransportProxy.prototype.handleIsRecording));
+    this.transport.isArrangerOverdubEnabled ().addValueObserver (doObject (this, TransportProxy.prototype.handleOverdub));
+    this.transport.isClipLauncherOverdubEnabled ().addValueObserver (doObject (this, TransportProxy.prototype.handleLauncherOverdub));
+    this.transport.automationWriteMode ().addValueObserver (doObject (this, TransportProxy.prototype.handleAutomationWriteMode));
+    this.transport.isArrangerAutomationWriteEnabled ().addValueObserver (doObject (this, TransportProxy.prototype.handleIsWritingArrangerAutomation));
+    this.transport.isClipLauncherAutomationWriteEnabled ().addValueObserver (doObject (this, TransportProxy.prototype.handleIsWritingClipLauncherAutomation));
+    this.transport.isAutomationOverrideActive ().addValueObserver (doObject (this, TransportProxy.prototype.handleAutomationOverrideObserver));
+    this.transport.isArrangerLoopEnabled ().addValueObserver (doObject (this, TransportProxy.prototype.handleIsLoopActive));
+    this.transport.isPunchInEnabled ().addValueObserver (doObject (this, TransportProxy.prototype.handlePunchIn));
+    this.transport.isPunchOutEnabled ().addValueObserver (doObject (this, TransportProxy.prototype.handlePunchOut));
+    this.transport.isMetronomeEnabled ().addValueObserver (doObject (this, TransportProxy.prototype.handleClick));
+    
+    // TODO
+    // isMetronomeTickPlaybackEnabled ()  
+    
+    this.transport.metronomeVolume ().addValueObserver (doObject (this, TransportProxy.prototype.handleMetronomeVolume));
+    this.transport.isMetronomeAudibleDuringPreRoll ().addValueObserver (doObject (this, TransportProxy.prototype.handlePreRollClick));
+    this.transport.preRoll ().addValueObserver (doObject (this, TransportProxy.prototype.handlePreRoll));
+    
+    this.transport.tempo ().addRawValueObserver (doObject (this, TransportProxy.prototype.handleTempo));
     this.transport.getPosition ().addTimeObserver (":", 3, 2, 2, 2, doObject (this, TransportProxy.prototype.handlePosition));
+    this.transport.getCrossfade ().addValueObserver (Config.maxParameterValue, doObject (this, TransportProxy.prototype.handleCrossfade));
     
     var ts = this.transport.getTimeSignature ();
     ts.getNumerator ().addValueObserver (doObject (this, TransportProxy.prototype.handleNumerator));
@@ -273,8 +278,7 @@ TransportProxy.prototype.getCrossfade = function ()
 
 TransportProxy.prototype.setLauncherOverdub = function (on)
 {
-    // Note: This is a bug: On and off are switched
-    this.transport.setLauncherOverdub (!on);
+    this.transport.isClipLauncherOverdubEnabled ().set (on);
 };
 
 TransportProxy.prototype.changeMetronomeVolume = function (value, fractionValue)

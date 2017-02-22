@@ -15,6 +15,7 @@ function BrowserProxy (cursorTrack, cursorDevice, numFilterColumnEntries, numRes
     this.browser.exists ().markInterested ();
     this.browser.selectedContentTypeIndex().markInterested ();
     this.browser.selectedContentTypeName ().markInterested ();
+    this.browser.contentTypeNames ().markInterested ();
     
     this.selectedResult = null;
     
@@ -29,23 +30,23 @@ function BrowserProxy (cursorTrack, cursorDevice, numFilterColumnEntries, numRes
     var item;
     for (i = 0; i < this.numFilterColumns; i++)
     {
-        this.filterColumns[i].addExistsObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleColumnExists));
-        this.filterColumns[i].addNameObserver (this.textLength, "", doObjectIndex (this, i, BrowserProxy.prototype.handleColumnName));
+        this.filterColumns[i].exists ().addValueObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleColumnExists));
+        this.filterColumns[i].name ().addValueObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleColumnName));
         this.filterColumns[i].getWildcardItem ().name ().addValueObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleColumnWildcard));   
         this.filterColumnItemBanks[i] = this.filterColumns[i].createItemBank (this.numFilterColumnEntries);
         
         for (j = 0; j < this.numFilterColumnEntries; j++)
         {
             item = this.filterColumnItemBanks[i].getItem (j);
-            item.addExistsObserver (doObjectDoubleIndex (this, i, j, BrowserProxy.prototype.handleItemExists));
-            item.addValueObserver (this.textLength, "", doObjectDoubleIndex (this, i, j, BrowserProxy.prototype.handleItemName));
-            item.addHitCountObserver (doObjectDoubleIndex (this, i, j, BrowserProxy.prototype.handleHitCount));
+            item.exists ().addValueObserver (doObjectDoubleIndex (this, i, j, BrowserProxy.prototype.handleItemExists));
+            item.name ().addValueObserver (doObjectDoubleIndex (this, i, j, BrowserProxy.prototype.handleItemName));
+            item.hitCount ().addValueObserver (doObjectDoubleIndex (this, i, j, BrowserProxy.prototype.handleHitCount));
             item.isSelected ().addValueObserver (doObjectDoubleIndex (this, i, j, BrowserProxy.prototype.handleItemIsSelected));
         }
         
         this.cursorItems[i] = this.filterColumns[i].createCursorItem ();
-        this.cursorItems[i].addExistsObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleCursorItemExists));
-        this.cursorItems[i].addValueObserver (this.textLength, "", doObjectIndex (this, i, BrowserProxy.prototype.handleCursorItemName));
+        this.cursorItems[i].exists ().addValueObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleCursorItemExists));
+        this.cursorItems[i].name ().addValueObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleCursorItemName));
     }
 
     this.resultsColumn = this.browser.resultsColumn ();
@@ -56,7 +57,7 @@ function BrowserProxy (cursorTrack, cursorDevice, numFilterColumnEntries, numRes
     for (i = 0; i < this.numFilterColumnEntries; i++)
     {
         item = this.resultsItemBank.getItem (i);
-        item.addExistsObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleResultExists));
+        item.exists ().addValueObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleResultExists));
         item.addValueObserver (this.textLength, "", doObjectIndex (this, i, BrowserProxy.prototype.handleResultName));
         item.isSelected ().addValueObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleResultIsSelected));
     }
@@ -68,12 +69,34 @@ function BrowserProxy (cursorTrack, cursorDevice, numFilterColumnEntries, numRes
 
 BrowserProxy.prototype.isPresetContentType = function ()
 {
-    return this.browser.selectedContentTypeIndex().get () == 1;
+    return this.getSelectedContentTypeIndex () == 1;
+};
+
+BrowserProxy.prototype.getSelectedContentTypeIndex = function ()
+{
+    return this.browser.selectedContentTypeIndex ().get ();
+};
+
+BrowserProxy.prototype.previousContentType = function ()
+{
+    if (this.getSelectedContentTypeIndex () > 0)
+        this.browser.selectedContentTypeIndex ().inc (-1);
+};
+
+BrowserProxy.prototype.nextContentType = function ()
+{
+    if (this.getSelectedContentTypeIndex () < this.getSelectedContentTypeNames ().length - 1)
+        this.browser.selectedContentTypeIndex ().inc (1);
 };
 
 BrowserProxy.prototype.getSelectedContentType = function ()
 {
     return this.browser.selectedContentTypeName ().get ();
+};
+
+BrowserProxy.prototype.getSelectedContentTypeNames = function ()
+{
+    return this.browser.contentTypeNames ().get ();
 };
 
 BrowserProxy.prototype.browseForPresets = function ()

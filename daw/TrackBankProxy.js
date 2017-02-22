@@ -39,8 +39,7 @@ TrackBankProxy.prototype = new AbstractTrackBankProxy ();
 
 TrackBankProxy.prototype.selectChildren = function ()
 {
-    var subChannel = this.childTrackBank.getChannel (0);
-    this.cursorTrack.selectChannel (subChannel);
+    this.cursorTrack.selectFirstChild ();
 };
 
 TrackBankProxy.prototype.selectParent = function ()

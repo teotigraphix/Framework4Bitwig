@@ -11,9 +11,9 @@ function ApplicationProxy ()
     this.engineActive = false;
     this.projectName = 'None';
 
-    this.application.addPanelLayoutObserver (doObject (this, ApplicationProxy.prototype.handlePanelLayout), GlobalConfig.LAYOUT_TEXT_LENGTH);
-    this.application.addHasActiveEngineObserver (doObject (this, ApplicationProxy.prototype.handleHasActiveEngine));
-    this.application.addProjectNameObserver (doObject (this, ApplicationProxy.prototype.handleProjectName), GlobalConfig.PROJECT_TEXT_LENGTH);
+    this.application.hasActiveEngine ().addValueObserver (doObject (this, ApplicationProxy.prototype.handleHasActiveEngine));
+    this.application.projectName ().addValueObserver (doObject (this, ApplicationProxy.prototype.handleProjectName));
+    this.application.panelLayout ().addValueObserver (doObject (this, ApplicationProxy.prototype.handlePanelLayout));
 }
 
 ApplicationProxy.prototype.getProjectName = function ()
@@ -73,6 +73,17 @@ ApplicationProxy.prototype.isMixerLayout = function ()
 ApplicationProxy.prototype.isEditLayout = function ()
 {
     return this.panelLayout == 'EDIT';
+};
+
+/**
+ * Returns whether the current Bitwig panel layout is PLAY.
+ *
+ * @return {boolean}
+ * @see ApplicationProxy.setPanelLayout()
+ */
+ApplicationProxy.prototype.isPlayLayout = function ()
+{
+    return this.panelLayout == 'PLAY';
 };
 
 /**
@@ -324,11 +335,6 @@ ApplicationProxy.prototype.getActions  = function ()
 // Callback Handlers
 //--------------------------------------
 
-ApplicationProxy.prototype.handlePanelLayout = function (panelLayout)
-{
-    this.panelLayout = panelLayout;
-};
-
 ApplicationProxy.prototype.handleHasActiveEngine = function (active)
 {
     this.engineActive = active;
@@ -336,5 +342,16 @@ ApplicationProxy.prototype.handleHasActiveEngine = function (active)
 
 ApplicationProxy.prototype.handleProjectName = function (name)
 {
-    this.projectName = name;
+    if (name.length > this.textLength)
+        this.projectName = this.application.projectName ().getLimited (GlobalConfig.PROJECT_TEXT_LENGTH);
+    else
+        this.projectName = name;
+};
+
+ApplicationProxy.prototype.handlePanelLayout = function (panelLayout)
+{
+    if (panelLayout.length > this.textLength)
+        this.panelLayout = this.application.panelLayout ().getLimited (GlobalConfig.PROJECT_TEXT_LENGTH);
+    else
+        this.panelLayout = panelLayout;
 };
