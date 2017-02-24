@@ -28,6 +28,7 @@ function TrackBankProxy (cursorTrack, numTracks, numScenes, numSends, hasFlatTra
             var s = t.getSend (j);
             s.addNameObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, TrackBankProxy.prototype.handleSendName));
             s.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, TrackBankProxy.prototype.handleSendVolume));
+            s.modulatedValue ().addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, TrackBankProxy.prototype.handleModulatedSendVolume));
             s.addValueDisplayObserver (this.textLength, '', doObjectDoubleIndex (this, i, j, TrackBankProxy.prototype.handleSendVolumeStr));
         }
     }
@@ -84,6 +85,11 @@ TrackBankProxy.prototype.handleSendName = function (index1, index2, text)
 TrackBankProxy.prototype.handleSendVolume = function (index1, index2, value)
 {
     this.tracks[index1].sends[index2].volume = value;
+};
+
+TrackBankProxy.prototype.handleModulatedSendVolume = function (index1, index2, value)
+{
+    this.tracks[index1].sends[index2].modulatedVolume = value;
 };
 
 TrackBankProxy.prototype.handleSendVolumeStr = function (index1, index2, text)

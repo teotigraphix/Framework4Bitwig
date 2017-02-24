@@ -94,9 +94,11 @@ AbstractTrackBankProxy.prototype.init = function ()
         t.isActivated ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleActivated));
         var v = t.getVolume ();
         v.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleVolume));
+        v.modulatedValue ().addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleModulatedVolume));
         v.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleVolumeStr));
         var p = t.getPan ();
         p.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePan));
+        p.modulatedValue ().addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleModulatedPan));
         p.addValueDisplayObserver (this.textLength, '', doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handlePanStr));
         t.getMute ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleMute));
         t.getSolo ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSolo));
@@ -621,8 +623,10 @@ AbstractTrackBankProxy.prototype.createTracks = function (count)
             name: '',
             volumeStr: '',
             volume: 0,
+            modulatedVolume: -1,
             panStr: '',
             pan: 0,
+            modulatedPan: -1,
             color: 0,
             vu: 0,
             mute: false,
@@ -766,6 +770,11 @@ AbstractTrackBankProxy.prototype.handleVolume = function (index, value)
     this.tracks[index].volume = value;
 };
 
+AbstractTrackBankProxy.prototype.handleModulatedVolume = function (index, value)
+{
+    this.tracks[index].modulatedVolume = value;
+};
+
 AbstractTrackBankProxy.prototype.handleVolumeStr = function (index, text)
 {
     this.tracks[index].volumeStr = text;
@@ -774,6 +783,11 @@ AbstractTrackBankProxy.prototype.handleVolumeStr = function (index, text)
 AbstractTrackBankProxy.prototype.handlePan = function (index, value)
 {
     this.tracks[index].pan = value;
+};
+
+AbstractTrackBankProxy.prototype.handleModulatedPan = function (index, value)
+{
+    this.tracks[index].modulatedPan = value;
 };
 
 AbstractTrackBankProxy.prototype.handlePanStr = function (index, text)

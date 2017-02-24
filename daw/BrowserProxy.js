@@ -34,6 +34,7 @@ function BrowserProxy (cursorTrack, cursorDevice, numFilterColumnEntries, numRes
         this.filterColumns[i].name ().addValueObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleColumnName));
         this.filterColumns[i].getWildcardItem ().name ().addValueObserver (doObjectIndex (this, i, BrowserProxy.prototype.handleColumnWildcard));   
         this.filterColumnItemBanks[i] = this.filterColumns[i].createItemBank (this.numFilterColumnEntries);
+        this.filterColumnItemBanks[i].cursorIndex ().markInterested ();
         
         for (j = 0; j < this.numFilterColumnEntries; j++)
         {
@@ -79,14 +80,12 @@ BrowserProxy.prototype.getSelectedContentTypeIndex = function ()
 
 BrowserProxy.prototype.previousContentType = function ()
 {
-    if (this.getSelectedContentTypeIndex () > 0)
-        this.browser.selectedContentTypeIndex ().inc (-1);
+    this.browser.selectedContentTypeIndex ().inc (-1);
 };
 
 BrowserProxy.prototype.nextContentType = function ()
 {
-    if (this.getSelectedContentTypeIndex () < this.getSelectedContentTypeNames ().length - 1)
-        this.browser.selectedContentTypeIndex ().inc (1);
+    this.browser.selectedContentTypeIndex ().inc (1);
 };
 
 BrowserProxy.prototype.getSelectedContentType = function ()
@@ -179,12 +178,12 @@ BrowserProxy.prototype.nextFilterItemPage = function (column)
 
 BrowserProxy.prototype.getSelectedFilterItemIndex = function (column)
 {
-    for (var i = 0; i < this.numFilterColumnEntries; i++)
-    {
-        if (this.filterColumnData[column].items[i].isSelected)
-            return i;
-    }
-    return -1;
+    return this.filterColumnItemBanks[column].cursorIndex ().get ();
+};
+
+BrowserProxy.prototype.setSelectedFilterItemIndex = function (column, index)
+{
+    return this.filterColumnItemBanks[column].cursorIndex ().set (index);
 };
 
 BrowserProxy.prototype.selectPreviousResult = function ()

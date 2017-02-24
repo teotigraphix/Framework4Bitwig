@@ -7,19 +7,21 @@ function MasterTrackProxy ()
 {
     this.masterTrack = host.createMasterTrack (0);
     this.listeners = [];
-    this.name = null;
-    this.vu = null;
-    this.color = null;
-    this.mute = null;
-    this.solo = null;
+    this.name = '';
+    this.vu = 0;
+    this.color = 0;
+    this.mute = false;
+    this.solo = false;
     this.recarm = false;
     this.monitor = false;
     this.autoMonitor = false;
     this.activated = true;
-    this.pan = null;
-    this.panStr = null;
-    this.volume = null;
-    this.volumeStr = null;
+    this.pan = 0;
+    this.modulatedPan = -1;
+    this.panStr = '';
+    this.volume = 0;
+    this.modulatedVolume = -1;
+    this.volumeStr = '';
     this.selected = false;
     this.isGroup = false;
 
@@ -33,9 +35,11 @@ function MasterTrackProxy ()
     this.masterTrack.isActivated ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleActivated));
     var v = this.masterTrack.getVolume ();
     v.addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handleVolume));
+    v.modulatedValue ().addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handleModulatedVolume));
     v.addValueDisplayObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handleVolumeStr));
     var p = this.masterTrack.getPan ();
     p.addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handlePan));
+    p.modulatedValue ().addValueObserver (Config.maxParameterValue, doObject (this, MasterTrackProxy.prototype.handleModulatedPan));
     p.addValueDisplayObserver (this.textLength, '', doObject (this, MasterTrackProxy.prototype.handlePanStr));
     this.masterTrack.getMute ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleMute));
     this.masterTrack.getSolo ().addValueObserver (doObject (this, MasterTrackProxy.prototype.handleSolo));
@@ -261,6 +265,11 @@ MasterTrackProxy.prototype.handlePan = function (value)
     this.pan = value;
 };
 
+MasterTrackProxy.prototype.handleModulatedPan = function (value)
+{
+    this.modulatedPan = value;
+};
+
 MasterTrackProxy.prototype.handlePanStr = function (text)
 {
     this.panStr = text;
@@ -269,6 +278,11 @@ MasterTrackProxy.prototype.handlePanStr = function (text)
 MasterTrackProxy.prototype.handleVolume = function (value)
 {
     this.volume = value;
+};
+
+MasterTrackProxy.prototype.handleModulatedVolume = function (value)
+{
+    this.modulatedVolume = value;
 };
 
 MasterTrackProxy.prototype.handleVolumeStr = function (text)

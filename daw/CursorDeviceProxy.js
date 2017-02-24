@@ -123,11 +123,13 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
         // Cannot be disabled
         layer.addVuMeterObserver (Config.maxParameterValue, -1, true, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerVUMeters));
         
-        v = layer.getVolume ().value ();
+        v = layer.getVolume ();
         v.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerVolume));
+        v.modulatedValue ().addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerModulatedVolume));
         v.displayedValue ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerVolumeStr));
-        v = layer.getPan ().value ();
+        v = layer.getPan ();
         v.addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerPan));
+        v.modulatedValue ().addValueObserver (Config.maxParameterValue, doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerModulatedPan));
         v.displayedValue ().addValueObserver (doObjectIndex (this, i, CursorDeviceProxy.prototype.handleLayerPanStr));
         
         // Sends values & texts
@@ -137,9 +139,9 @@ function CursorDeviceProxy (cursorDevice, numSends, numParams, numDevicesInBank,
             if (s == null)
                 continue;
             s.name ().addValueObserver (doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendName));
-            v = s.value (); 
-            v.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendVolume));
-            v.displayedValue ().addValueObserver (doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendVolumeStr));
+            s.addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendVolume));
+            s.modulatedValue ().addValueObserver (Config.maxParameterValue, doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerModulatedSendVolume));
+            s.displayedValue ().addValueObserver (doObjectDoubleIndex (this, i, j, CursorDeviceProxy.prototype.handleLayerSendVolumeStr));
         }
 
         this.deviceBanks[i] = layer.createDeviceBank (this.numDevicesInBank);
@@ -1433,6 +1435,11 @@ CursorDeviceProxy.prototype.handleLayerVolume = function (index, value)
     this.deviceLayers[index].volume = value;
 };
 
+CursorDeviceProxy.prototype.handleLayerModulatedVolume = function (index, value)
+{
+    this.deviceLayers[index].modulatedVolume = value;
+};
+
 CursorDeviceProxy.prototype.handleLayerVolumeStr = function (index, text)
 {
     if (text.length > this.textLength)
@@ -1444,6 +1451,11 @@ CursorDeviceProxy.prototype.handleLayerVolumeStr = function (index, text)
 CursorDeviceProxy.prototype.handleLayerPan = function (index, value)
 {
     this.deviceLayers[index].pan = value;
+};
+
+CursorDeviceProxy.prototype.handleLayerModulatedPan = function (index, value)
+{
+    this.deviceLayers[index].modulatedPan = value;
 };
 
 CursorDeviceProxy.prototype.handleLayerPanStr = function (index, text)
@@ -1485,6 +1497,11 @@ CursorDeviceProxy.prototype.handleLayerSendName = function (index, index2, text)
 CursorDeviceProxy.prototype.handleLayerSendVolume = function (index, index2, value)
 {
     this.deviceLayers[index].sends[index2].volume = value;
+};
+
+CursorDeviceProxy.prototype.handleLayerModulatedSendVolume = function (index, index2, value)
+{
+    this.deviceLayers[index].sends[index2].modulatedVolume = value;
 };
 
 CursorDeviceProxy.prototype.handleLayerSendVolumeStr = function (index, index2, text)
@@ -1630,8 +1647,10 @@ CursorDeviceProxy.prototype.createDeviceLayers = function (count)
             name: '',
             volumeStr: '',
             volume: 0,
+            modulatedVolume: -1,
             panStr: '',
             pan: 0,
+            modulatedPan: -1,
             vu: 0,
             mute: false,
             solo: false,
