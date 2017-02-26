@@ -34,6 +34,7 @@ function TransportProxy ()
     this.numerator                       = 4;
     this.denominator                     = 4;
     this.metroVolume                     = 95;
+    this.metroVolumeStr                  = ''; 
     this.preroll                         = 0;
     this.prerollClick                    = false;
     this.position                        = 0;
@@ -51,10 +52,10 @@ function TransportProxy ()
     this.transport.isPunchOutEnabled ().addValueObserver (doObject (this, TransportProxy.prototype.handlePunchOut));
     this.transport.isMetronomeEnabled ().addValueObserver (doObject (this, TransportProxy.prototype.handleClick));
     
-    // TODO
-    // isMetronomeTickPlaybackEnabled ()  
+    var metronomeVolume = this.transport.metronomeVolume (); 
+    metronomeVolume.addValueObserver (doObject (this, TransportProxy.prototype.handleMetronomeVolume));
+    metronomeVolume.displayedValue ().addValueObserver (doObject (this, TransportProxy.prototype.handleMetronomeVolumeDisplay));
     
-    this.transport.metronomeVolume ().addValueObserver (doObject (this, TransportProxy.prototype.handleMetronomeVolume));
     this.transport.isMetronomeAudibleDuringPreRoll ().addValueObserver (doObject (this, TransportProxy.prototype.handlePreRollClick));
     this.transport.preRoll ().addValueObserver (doObject (this, TransportProxy.prototype.handlePreRoll));
     
@@ -386,6 +387,11 @@ TransportProxy.prototype.handleMetronomeVolume = function (volume)
     // volume is in the range of -48.0 to 0.0, scale to 0 to Config.maxParameterValue - 1
     this.metroVolume = Math.round ((48.0 + volume) * (Config.maxParameterValue - 1) / 48.0);
 };
+
+TransportProxy.prototype.handleMetronomeVolumeDisplay = function (volumeStr)
+{
+    this.metroVolumeStr = volumeStr;
+}; 
 
 TransportProxy.prototype.handlePreRoll = function (prerollValue)
 {
