@@ -24,10 +24,10 @@ function SceneBankProxy (numScenes)
     for (var i = 0; i < numScenes; i++)
     {
         var scene = this.sceneBank.getScene (i);
-        scene.name ().addValueObserver (doObjectIndex (this, i, SceneBankProxy.prototype.handleSceneName));
         scene.exists ().addValueObserver (doObjectIndex (this, i, SceneBankProxy.prototype.handleSceneExists));
+        scene.name ().addValueObserver (doObjectIndex (this, i, SceneBankProxy.prototype.handleSceneName));
+        scene.sceneIndex ().addValueObserver (doObjectIndex (this, i, SceneBankProxy.prototype.handleScenePosition));
         scene.addIsSelectedInEditorObserver (doObjectIndex (this, i, SceneBankProxy.prototype.handleSceneSelected));
-        scene.addPositionObserver (doObjectIndex (this, i, SceneBankProxy.prototype.handleScenePosition));
     }
 }
 

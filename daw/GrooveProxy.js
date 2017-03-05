@@ -109,7 +109,7 @@ GrooveProxy.prototype.addValue = function (kind)
 
     var v = this.getRangedValue (kind);
 
-    v.addNameObserver (8, '', doObject (this, function (name)
+    v.name ().addValueObserver (doObject (this, function (name)
     {
         this.values[kind].name = name;
     }));
@@ -119,7 +119,7 @@ GrooveProxy.prototype.addValue = function (kind)
         this.values[kind].value = value;
     }));
 
-    v.addValueDisplayObserver (8, '',  doObject (this, function (value)
+    v.displayedValue ().addValueObserver (doObject (this, function (value)
     {
         this.values[kind].valueString = value;
     }));

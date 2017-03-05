@@ -118,7 +118,7 @@ AbstractTrackBankProxy.prototype.init = function ()
         t.getCanHoldAudioData ().addValueObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleCanHoldAudioData));
 
         // Slot content changes
-        var cs = t.getClipLauncherSlots ();
+        var cs = t.clipLauncherSlotBank ();
         cs.addNameObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotName));
         cs.addIsSelectedObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotSelection));
         cs.addHasContentObserver (doObjectIndex (this, i, AbstractTrackBankProxy.prototype.handleSlotHasContent));
