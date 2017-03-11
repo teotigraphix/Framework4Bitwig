@@ -22,6 +22,18 @@ function AbstractSequencerView (model, rows, cols)
 }
 AbstractSequencerView.prototype = new AbstractView ();
 
+AbstractSequencerView.prototype.onActivate = function ()
+{
+    AbstractView.prototype.onActivate.call (this);
+    this.clip.enableObservers (true);
+};
+
+AbstractSequencerView.prototype.onDeactivate = function ()
+{
+    AbstractView.prototype.onDeactivate.call (this);
+    this.clip.enableObservers (true);
+};
+
 AbstractSequencerView.prototype.updateArrowStates = function ()
 {
     var offset = this.getScrollOffset ();

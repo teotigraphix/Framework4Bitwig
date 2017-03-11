@@ -22,7 +22,7 @@ function CursorClipProxy (stepSize, rowSize)
         this.data[step] = initArray (false, this.rowSize);
 
     this.clip = host.createCursorClip (this.stepSize, this.rowSize);
-    this.clip.addPlayingStepObserver (doObject (this, CursorClipProxy.prototype.handlePlayingStep));
+    this.clip.playingStep ().addValueObserver (doObject (this, CursorClipProxy.prototype.handlePlayingStep));
     this.clip.addStepDataObserver (doObject (this, CursorClipProxy.prototype.handleStepData));
     
     this.clip.getPlayStart ().addRawValueObserver (doObject (this, CursorClipProxy.prototype.handlePlayStart));
@@ -36,8 +36,7 @@ function CursorClipProxy (stepSize, rowSize)
 
 CursorClipProxy.prototype.enableObservers = function (enable)
 {
-    // TODO
-    
+    this.clip.playingStep ().setIsSubscribed (enable);
     this.clip.getPlayStart ().setIsSubscribed (enable);
     this.clip.getPlayStop ().setIsSubscribed (enable);
     this.clip.getLoopStart ().setIsSubscribed (enable);

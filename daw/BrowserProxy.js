@@ -93,7 +93,7 @@ BrowserProxy.prototype.getSelectedContentType = function ()
     return this.browser.selectedContentTypeName ().get ();
 };
 
-BrowserProxy.prototype.getSelectedContentTypeNames = function ()
+BrowserProxy.prototype.getContentTypeNames = function ()
 {
     return this.browser.contentTypeNames ().get ();
 };
